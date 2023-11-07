@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'Bestie'; 
+    src: url('../assets/Bestie.otf') format('opentype');
+}
+
+.main-container {
+    background-color: rgb(244, 237, 228);
+}
+
+
+.content-container {
+    background-color: rgb(244, 237, 228);
+    padding: 0px;
+}
+
+.content-container.exiting {
+    opacity: 0;
+    filter: blur(10px);
+    transition: opacity 0.3s ease, filter 0.1s ease;
+}
+
+.content-container.entering {
+    opacity: 1;
+    filter: blur(0px);
+    transition: opacity 0.1s ease, filter 0.3s ease;
+}
+
+
+.sidebar-container {
+    padding: 0px;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, rgba(218, 231, 230, 1), rgb(156, 181, 187));
+    position: relative;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0, 0.9);
+    z-index: 1;
+}
+
+.sidebar-link-container {
+    position: fixed;
+}
+
+.sidebar-title-container {
+    margin-top: 40px;
+}
+
+.sidebar-title {
+    font-family: 'Bestie';
+    font-size: 80px;
+    color: white;
+    text-shadow: 0px 5px 8px #000000;
+    text-align: center;
+}
+
+.sidebar-title-image {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 3px;
+    right: 119px;
+    transform: scale(0.5) rotate(-8deg);
+}
+
+.sidebar-menu-container {
+    border-radius: 10px;
+    padding: 10px;
+    margin: 25px 0px;
+}
+
+.sidebar-link {
+    margin: 20px;
+    font-family: 'Bestie';
+    font-size: 60px;
+    color: white;
+    text-shadow: 2px 2px 6px #000000;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.sidebar-link:active {
+    transform: scale(0.95);
+    text-shadow: 1px 1px 3px #000000;
+}

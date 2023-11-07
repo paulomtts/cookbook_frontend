@@ -1,0 +1,151 @@
+.ComboBox {
+    background-color: transparent;
+    border: none;
+    /* margin: 10px; */
+}
+
+.ComboBox-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    padding: 0px 0px 0px 0px;
+    background-color: transparent;
+}
+
+.ComboBox-body {
+    padding: 0px;
+    max-height: 327px;
+    overflow-y: auto;
+}
+
+.ComboBox-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+}
+
+    .ComboBox-footer-span {
+        font-size: 12px;
+        color: gray;
+        user-select: none;
+    }
+
+
+/* Dropdown */
+.ComboBox-dropdown {
+    background-color: white;
+    min-width: 20%;
+    background-color: white;
+    border: 1px solid lightgray;
+    border-radius: 5px 0px 0px 5px;
+    box-shadow: 0px 1px 1px 0px lightgray;
+}
+
+.ComboBox-dropdown:hover {
+    color: white;
+    background-color: rgba(22, 69, 62, 0.8);
+    border-color: rgba(22, 69, 62, 0.8);
+}
+
+.ComboBox-dropdown:focus {
+    background-color: white;
+    color: black;
+}
+
+.ComboBox-dropdown-item:active {
+    background-color: rgba(22, 69, 62, 0.8);
+    color: white;
+}
+
+.ComboBox-dropdown:disabled {
+    background-color: rgb(225, 225, 225);
+}
+
+
+/* Lock button */
+.ComboBox-lock-button {
+    margin-left: 6px;
+    font-size: 14px;
+    width: 45px;
+    padding: 8px 0px;
+
+    color: black;
+    background-color: white;
+    border: 1px solid lightgray;
+    box-shadow: 0px 0px 3px 0px lightgray;
+}
+
+.ComboBox-lock-button:hover {
+    color: white;
+    background-color: rgba(22, 69, 62, 0.8);
+    border-color: rgba(22, 69, 62, 0.8);
+}
+
+.ComboBox-lock-button:active {
+    background-color: rgba(22, 69, 62, 0.4) !important;
+    border-color: rgba(22, 69, 62, 0.4) !important;
+    box-shadow: none;
+}
+
+.ComboBox-search-bar {
+    width: 88%;
+    border-radius: 0px 5px 5px 0px;
+    box-shadow: 0px 1px 1px 0px lightgray;
+}
+
+
+/* Switch */
+.ComboBox-switch {
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    min-width: 15%;
+}
+
+
+/* Table */
+.ComboBox-table {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.ComboBox-table-header {
+    background-color: rgba(218, 231, 230, 0.35) !important;
+}
+
+.ComboBox-table-row-data {
+    vertical-align: 'middle';
+    user-select: 'none';
+}
+
+.ComboBox-table-row-data-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.ComboBox-checkbox {
+    margin-left: 10px;
+}
+
+.ComboBox-delete-button {
+    display: inline-block;
+    font-size: 12px;
+    transition: all 0.05s ease-in-out;
+}
+
+.ComboBox-delete-button:active {
+    transform: scale(0.95);
+}
+
+.ComboBox-quantity-input {
+    text-align: center;
+    border: none;
+    border-radius: 0px;
+}
