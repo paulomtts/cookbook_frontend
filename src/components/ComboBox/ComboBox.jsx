@@ -1,9 +1,10 @@
 /* Foreign dependencies */
 import React, { createContext, useEffect, useState, useContext } from "react";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 
 /* Local dependencies */
-import { useToggle } from "./useToggle";
+import { useToggle } from "../../hooks/useToggle";
+import { useTrigger } from "../../hooks/useTrigger";
 import ComboBoxToolbar from "./Toolbar/ComboBoxToolbar";
 import ComboBoxTable from "./Table/ComboBoxTable";
 import ComboBoxInfo from "./InfoBar/ComboBoxInfo";
@@ -16,7 +17,8 @@ const { Provider } = ComboBoxContext;
 
 
 function ComboBox ({
-    data, pattern, avoid, selectable = false, editable = false, quantities = false, footer = false, parentContext
+    data, pattern, avoid, selectable = false, editable = false, quantities = false, footer = false, parentContext,
+    lockTrigger = null
 }) {
 
     const { 
@@ -38,9 +40,12 @@ function ComboBox ({
     const [searchFor, setSearchFor] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [quantitiesData, setQuantitiesData] = useState({});
+
     
     
-    /* Effects */
+    /* Hooks */
+    useTrigger(() => {setLock(true)}, lockTrigger);
+
     useEffect(() => {
         if(!quantities || !data) return;
         

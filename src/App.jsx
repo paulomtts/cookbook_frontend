@@ -125,8 +125,8 @@ export default function App() {
                 xs={9}
                 className={`content-container ${isContentMounted ? 'entering' : 'exiting'}`}
             >
-                {content}
-                {/* <FormContainer>
+                {/* {content} */}
+                <FormContainer>
                     <ComboBox
                         // data={dataA}
                         pattern='^([a-zA-Z0-9]{1,})$'
@@ -139,7 +139,7 @@ export default function App() {
                     />
                 </FormContainer>
                 
-                <FormContainer>
+                {/* <FormContainer>
                     <ComboBox
                         data={dataB}
                         pattern='^([a-zA-Z0-9]{1,})$'

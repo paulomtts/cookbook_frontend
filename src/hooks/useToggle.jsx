@@ -1,5 +1,13 @@
 import { useState } from 'react';
 
+
+/**
+ * Toggles a state between two values. If a list of values is provided, the 
+ * state will be toggled between the values in the list. Please note that only 
+ * a list of two values is supported. 
+ * @param {string} initialStatus - The initial value of the state. (default: false)
+ * @param {Array} valueList - The list of values to toggle between. (default: [] - toggle between true and false)
+ */
 export const useToggle = (
     initialStatus = false
     , valueList = []

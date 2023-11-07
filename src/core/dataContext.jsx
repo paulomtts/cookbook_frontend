@@ -13,7 +13,7 @@ const apiAddresses = {
             insert: 'http://localhost:8000/crud/insert',
             update: 'http://localhost:8000/crud/update',
             delete: 'http://localhost:8000/crud/delete',
-            bulk_insert: 'http://localhost:8000/crud/insert/bulk',
+            insert_bulk: 'http://localhost:8000/crud/insert_bulk',
         },
     }
     // add remote api here
@@ -31,6 +31,7 @@ export function DataProvider({ children }) {
     const [unitData, setUnitData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [recipeIngredientData, setRecipeIngredientData] = useState([]);
+    const [recipeCompositionInitialData, setRecipeCompositionInitialData] = useState([]);
 
     const getState = (objectName) => {
         switch (objectName) {
@@ -44,6 +45,8 @@ export function DataProvider({ children }) {
                 return categoryData;
             case 'recipe_ingredient':
                 return recipeIngredientData;
+            case 'recipe_composition_initial':
+                return recipeCompositionInitialData;
             default:
                 return null;
         }
@@ -61,6 +64,8 @@ export function DataProvider({ children }) {
                 return setCategoryData;
             case 'recipe_ingredient':
                 return setRecipeIngredientData;
+            case 'recipe_composition_initial':
+                return setRecipeCompositionInitialData;
             default:
                 return null;
         }    
@@ -137,7 +142,7 @@ export function DataProvider({ children }) {
 
     const submitData = async (tableName, data, bulk = false, notification = true, overlay = true, overlayLength = 250) => {
         const url = bulk ? 
-            api.crud.bulk_insert + '?table_name=' + tableName
+            api.crud.insert_bulk + '?table_name=' + tableName
             : 
             api.crud.insert + '?table_name=' + tableName;
 
