@@ -50,7 +50,7 @@ function ComboBox ({
         }, {});
 
         setQuantitiesData(newQuantitiesData);
-    }, [data]); // reason: setup quantities
+    }, [data]); // reason: setup quantities 
 
 
     /* Methods */
