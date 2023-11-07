@@ -1,14 +1,14 @@
 /* Foreign dependencies */
-import React, { createContext, useEffect, useState, useContext } from "react";
-import { Button, Card } from "react-bootstrap";
+import React, { createContext, useEffect, useState } from "react";
+import { Card } from "react-bootstrap";
 
 /* Local dependencies */
+import { getFields } from "../../core/utilities";
 import { useToggle } from "../../hooks/useToggle";
 import { useTrigger } from "../../hooks/useTrigger";
 import ComboBoxToolbar from "./Toolbar/ComboBoxToolbar";
 import ComboBoxTable from "./Table/ComboBoxTable";
 import ComboBoxInfo from "./InfoBar/ComboBoxInfo";
-import { getFields } from "../../core/utilities";
 import "./ComboBox.css";
 
 
@@ -17,21 +17,10 @@ const { Provider } = ComboBoxContext;
 
 
 function ComboBox ({
-    data, pattern, avoid, selectable = false, editable = false, quantities = false, footer = false, parentContext,
-    lockTrigger = null
+    name, // reason: differentiates between multiple ComboBoxes for FormContainer
+    data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false, lockTrigger = null,
+    onClickRow = () => {}, onClickDelete = () => {}, onChangeQuantity = () => {},
 }) {
-
-    const { 
-        onClickComboBoxRow: parentOnClickRow = () => {}
-        , onClickComboBoxDelete: parentOnClickDelete = () => {}
-        , onChangeComboBoxQuantity: parentOnChangeQuantity = () => {}
-        , comboboxData: parentData = []
-    } = parentContext ? useContext(parentContext) : {};
-
-    
-    if(parentContext) {
-        data = parentData;
-    }
     
     const fields = getFields(data, avoid);
     const { status: lock, toggleStatus: toggleLock, setStatus: setLock } = useToggle();
@@ -41,7 +30,6 @@ function ComboBox ({
     const [selectedRows, setSelectedRows] = useState([]);
     const [quantitiesData, setQuantitiesData] = useState({});
 
-    
     
     /* Hooks */
     useTrigger(() => {setLock(true)}, lockTrigger);
@@ -111,28 +99,33 @@ function ComboBox ({
     const handleClickRow = (row) => {
         if(lock) return;
 
-        if(selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])) {
+        if(!single && selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])) {
             setSelectedRows(selectedRows.filter((selRow) => selRow[`id`] !== row[`id`]));
             quantitiesData[row[`id`]] = 0;
         } else {
-            setSelectedRows([...selectedRows, row]);
+            if(single) {
+                setSelectedRows([row]);
+            } else {
+                setSelectedRows([...selectedRows, row]);
+            }
+            
             if(quantitiesData[row[`id`]] > 0 ) {
-                parentOnClickRow(row);
+                onClickRow(row);
                 return;
             }
             setQuantitiesData({...quantitiesData, [row[`id`]]: 1});
         }
 
-        parentOnClickRow(row);
+        onClickRow(row);
     }
 
     const handleClickDelete = (row) => {
-        parentOnClickDelete(row);
+        onClickDelete(row);
     }
 
     const handleQuantityChange = (row, value) => {
         setQuantitiesData({...quantitiesData, [row[`id`]]: value});
-        parentOnChangeQuantity(row, value);
+        onChangeQuantity(row, value);
     }
 
 
