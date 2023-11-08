@@ -16,12 +16,12 @@ const ComboBoxContext = createContext();
 const { Provider } = ComboBoxContext;
 
 
-function ComboBox ({
-    name, // reason: differentiates between multiple ComboBoxes for FormContainer
-    data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false, lockTrigger = null,
-    onClickRow = () => {}, onClickDelete = () => {}, onChangeQuantity = () => {},
-}) {
-    
+export default function ComboBox (props) {
+    const {
+        data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false, lockTrigger = null,
+        onClickRow = () => {}, onClickDelete = () => {}, onChangeQuantity = () => {},
+    } = props;
+
     const fields = getFields(data, avoid);
     const { status: lock, toggleStatus: toggleLock, setStatus: setLock } = useToggle();
     const { status: display, toggleStatus: toggleDisplay, setStatus: setDisplay } = useToggle("all", ["all", "selected"]);
@@ -171,4 +171,4 @@ function ComboBox ({
     </>);
 }
 
-export { ComboBox, ComboBoxContext };
+export { ComboBoxContext };

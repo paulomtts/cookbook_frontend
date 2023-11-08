@@ -6,14 +6,11 @@ import { Container, Row, Col } from "react-bootstrap";
 import GenericForm from "./components/GenericForm";
 // import RecipeForm from "./components/RecipeForm";
 import Select from "./components/Select";
-import { useData } from "./core/dataContext";
-import { ComboBox } from "./components/ComboBox/ComboBox";
-import { FormContainer } from "./components/FormContainer/FormContainer";
+import ComboBox from "./components/ComboBox/ComboBox";
+import { RecipeForm } from "./components/RecipeForm/RecipeForm";
 
 
-export default function App() {
-    const dataContext = useData();
-    
+export default function App() {   
     const elements = {
         'registry':
             <div>
@@ -51,24 +48,9 @@ export default function App() {
     
             </div>,
         'recipes':
-            // <RecipeForm
-            //     id='recipes-form'
-            //     title='recipes'
-            //     tableName='recipe'
-            //     inputFields={['name', 'description', 'period', 'type']}
-            //     avoidColumns={['id', 'created_at', 'updated_at']}
-            //     customInputs={{
-            //         'period': 
-            //             <Select tableName='category' filters={{'and': {'type': ["'period'"]}}} triggerChange={dataContext.getState('recipe')} />
-            //         , 'type':
-            //             <Select tableName='category' filters={{'and': {'type': ["'recipe'"]}}}/>
-            //     }}
-            //     imgSrc="./src/assets/recipes.avif"
-            //     editMode={true}
-            // />
-            <FormContainer>
+            <RecipeForm>
                 <ComboBox
-                    name='recipe'
+                    dynamicName='recipe'
                     pattern='^([a-zA-Z0-9]{1,})$'
                     avoid={['id', 'id_recipe_ingredient', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
                     selectable
@@ -76,17 +58,17 @@ export default function App() {
                     footer
                 />
                 <ComboBox
-                    name='recipe_composition'
+                    dynamicName='recipe_composition'
                     pattern='^([a-zA-Z0-9]{1,})$'
                     avoid={['id', 'id_recipe_ingredient', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
                     selectable
                     footer
                     quantities
                 />
-            </FormContainer>
+            </RecipeForm>
     }
 
-    const [content, setContent] = useState(elements['registry'])
+    const [content, setContent] = useState(elements['recipes'])
     const [isContentMounted, setIsContentMounted] = useState(true)
 
     const handleContentChange = (newContent) => {

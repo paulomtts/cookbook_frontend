@@ -130,9 +130,9 @@ export function DataProvider({ children }) {
      * @param {number} overlayLength - The length of time to show the overlay for.
      * @returns {Promise<{response: Response, json: {data: []}}>} - The response and JSON data from the API.
      */
-    const fetchData = async (tableName, filters = {}, notification = true, overlay = true, overlayLength = 250) => {
+    const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.select + '?table_name=' + tableName;
-        const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters}) });
+        const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters, lambda_args: lambdaArgs}) });
         const { response, json } = await _makeRequest(payload, url, notification, overlay, overlayLength);
 
         if(response.status === 200 && json.data !== undefined){
