@@ -8,12 +8,14 @@ import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 
 export default function ComboBoxTable() {
-    const { avoid } = useContext(ComboBoxContext);
-
+    const { containerRef, avoid } = useContext(ComboBoxContext);
+    
     return (<>
-        <Table hover size="sm" className="ComboBox-table">
-            <TableHeader />
-            <TableBody avoid={avoid} />
-        </Table>
+        <div ref={containerRef} className="ComboBox-table-container">
+            <Table hover size="sm" className="ComboBox-table">
+                <TableHeader />
+                <TableBody />
+            </Table>
+        </div>
     </>)
 }

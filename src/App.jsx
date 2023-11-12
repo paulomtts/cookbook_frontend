@@ -4,10 +4,8 @@ import { Container, Row, Col } from "react-bootstrap";
 
 /* Local dependencies */
 import GenericForm from "./components/GenericForm";
-// import RecipeForm from "./components/RecipeForm";
 import Select from "./components/Select";
-import ComboBox from "./components/ComboBox/ComboBox";
-import { RecipeForm } from "./components/RecipeForm/RecipeForm";
+import RecipeForm from "./components/RecipeForm/RecipeForm";
 
 
 export default function App() {   
@@ -44,28 +42,11 @@ export default function App() {
                     inputFields={['name', 'abbreviation', 'base']}
                     imgSrc="./src/assets/units.jpg"
                 />
-    
-    
             </div>,
         'recipes':
-            <RecipeForm>
-                <ComboBox
-                    dynamicName='recipe'
-                    pattern='^([a-zA-Z0-9]{1,})$'
-                    avoid={['id', 'id_recipe_ingredient', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
-                    selectable
-                    single
-                    footer
-                />
-                <ComboBox
-                    dynamicName='recipe_composition'
-                    pattern='^([a-zA-Z0-9]{1,})$'
-                    avoid={['id', 'id_recipe_ingredient', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
-                    selectable
-                    footer
-                    quantities
-                />
-            </RecipeForm>
+
+        <RecipeForm />
+
     }
 
     const [content, setContent] = useState(elements['recipes'])

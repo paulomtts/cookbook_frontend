@@ -8,6 +8,7 @@ import App from './App';
 import { NotificationProvider } from './core/notificationContext';
 import { OverlayProvider } from './core/overlayContext';
 import { DataProvider } from './core/dataContext';
+import { FormProvider } from './core/formContext';
 import './styles/layouts.css'
 import './styles/components.css'
 
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <NotificationProvider>
       <OverlayProvider>
         <DataProvider>
-          <App />
+          <FormProvider>
+            <App />
+          </FormProvider>
         </DataProvider>
       </OverlayProvider>
     </NotificationProvider>

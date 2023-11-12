@@ -1,7 +1,6 @@
 .ComboBox {
     background-color: transparent;
     border: none;
-    /* margin: 10px; */
 }
 
 .ComboBox-header {
@@ -11,12 +10,12 @@
     border: none;
     padding: 0px 0px 0px 0px;
     background-color: transparent;
+    margin-bottom: 10px;
 }
 
 .ComboBox-body {
     padding: 0px;
     max-height: 327px;
-    overflow-y: auto;
 }
 
 .ComboBox-footer {
@@ -106,8 +105,12 @@
 
 
 /* Table */
+.ComboBox-table-container {
+    max-height: 297px;
+    overflow-y: auto;
+}
+
 .ComboBox-table {
-    margin-top: 10px;
     margin-bottom: 0px;
 }
 
@@ -118,6 +121,22 @@
 .ComboBox-table-row-data {
     vertical-align: 'middle';
     user-select: 'none';
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn ease-in-out 1;
+    animation-fill-mode: forwards;
+    animation-duration: 0.5s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .ComboBox-table-row-data-container {

@@ -6,7 +6,7 @@ import { useNotification } from './notificationContext';
 import { useOverlay } from './overlayContext';
 
 
-const apiAddresses = {
+const addresses = {
     local: {
         crud: {
             select: 'http://localhost:8000/crud/select',
@@ -18,9 +18,11 @@ const apiAddresses = {
     }
     // add remote api here
 };
-const api = apiAddresses.local;
+const api = addresses.local;
 
-export const DataContext = createContext();
+
+const DataContext = createContext();
+const { Provider } = DataContext;
 
 export function DataProvider({ children }) {
     const overlayContext = useOverlay();
@@ -30,9 +32,6 @@ export function DataProvider({ children }) {
     const [recipeData, setRecipeData] = useState([]);
     const [unitData, setUnitData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
-    const [recipeIngredientData, setRecipeIngredientData] = useState([]);
-    const [recipeCompositionInitialData, setRecipeCompositionInitialData] = useState([]);
-    const [recipeCompositionLoadedData, setRecipeCompositionLoadedData] = useState([]);
 
     const getState = (objectName) => {
         switch (objectName) {
@@ -44,12 +43,6 @@ export function DataProvider({ children }) {
                 return unitData;
             case 'category':
                 return categoryData;
-            case 'recipe_ingredient':
-                return recipeIngredientData;
-            case 'recipe_composition_initial':
-                return recipeCompositionInitialData;
-            case 'recipe_composition_loaded':
-                return recipeCompositionLoadedData;
             default:
                 return null;
         }
@@ -65,12 +58,6 @@ export function DataProvider({ children }) {
                 return setUnitData;
             case 'category':
                 return setCategoryData;
-            case 'recipe_ingredient':
-                return setRecipeIngredientData;
-            case 'recipe_composition_initial':
-                return setRecipeCompositionInitialData;
-            case 'recipe_composition_loaded':
-                return setRecipeCompositionLoadedData;
             default:
                 return null;
         }    
@@ -99,12 +86,12 @@ export function DataProvider({ children }) {
         if (overlay) await overlayContext.show();
 
         const response = await fetch(url, payload).catch(error => error);
-        let json = { data: [] };
+        let content = { data: [] };
         let message = 'The resource was found but had no data stored.';
 
         if(response.status === 200) {
-            json = await response.json();
-            message = json.message;
+            content = await response.json();
+            message = content.message;
         }
 
         if(notification) {
@@ -117,7 +104,7 @@ export function DataProvider({ children }) {
 
         if (overlay) await overlayContext.hide(overlayLength);
 
-        return { response, json }
+        return { response, content }
     }
 
 
@@ -130,21 +117,20 @@ export function DataProvider({ children }) {
      * @param {number} overlayLength - The length of time to show the overlay for.
      * @returns {Promise<{response: Response, json: {data: []}}>} - The response and JSON data from the API.
      */
-    const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250) => {
-        const url = api.crud.select + '?table_name=' + tableName;
+    const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250, structured = true) => {
+        const url = api.crud.select + '?table_name=' + tableName + '&structured=' + structured;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters, lambda_args: lambdaArgs}) });
-        const { response, json } = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        const { response, content } = await _makeRequest(payload, url, notification, overlay, overlayLength);
 
-        if(response.status === 200 && json.data !== undefined){
+        if(response.status === 200 && content.data !== undefined){
             const stateSetter = _getStateSetter(tableName);
-            const newData = JSON.parse(json.data);
-
-            stateSetter(newData); 
+            const json = await JSON.parse(content.data);
+            if(stateSetter !== null) stateSetter(json); 
 
             return { response, json }
         }
         
-        return { response, json: { data: [] } }
+        return { response, json: [] }
     };
 
     /**
@@ -206,9 +192,9 @@ export function DataProvider({ children }) {
 
     
     return (
-        <DataContext.Provider value={{ getState, fetchData, updateData, deleteData, submitData, generatePayload }}>
+        <Provider value={{ getState, fetchData, updateData, deleteData, submitData, generatePayload }}>
             {children}
-        </DataContext.Provider>
+        </Provider>
     );
 }
 

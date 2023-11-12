@@ -44,7 +44,8 @@ export function NotificationProvider({ children }) {
                         style={{
                             display: 'flex'
                             , justifyContent: 'space-between'
-                        }} closeButton={true}
+                        }} 
+                        closeButton={true}
                     >
                         <strong>{title}</strong>
                     </Toast.Header>

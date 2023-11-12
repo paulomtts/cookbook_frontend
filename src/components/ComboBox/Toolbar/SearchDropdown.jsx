@@ -26,6 +26,7 @@ export default function SearchInput(){
                     All
                 </Dropdown.Item>
                 {fields.map((key, index) => {
+
                     return <Dropdown.Item
                         key={`dropdown-item-${index}`}
                         className="ComboBox-dropdown-item"

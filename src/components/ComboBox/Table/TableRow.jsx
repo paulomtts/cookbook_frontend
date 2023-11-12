@@ -26,36 +26,49 @@ export default function TableRow({
         , handleQuantityChange
     } = useContext(ComboBoxContext);
 
-
     return(<>
-        <tr key={`${index}`}>
+        <tr key={`${index}`} className="fade-in">
             <td className="ComboBox-table-row-data">
                 <div className="ComboBox-table-row-data-container">
 
-                {selectable && <Form.Check
-                    className="ComboBox-checkbox"
-                    type="checkbox"
-                    disabled={lock}
-                    checked={selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])}
-                    onChange={() => handleClickRow(row)}
-                    />}
+                    {selectable && <Form.Check
+                        className="ComboBox-checkbox"
+                        type="checkbox"
+                        disabled={lock}
+                        checked={selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])}
+                        onChange={() => handleClickRow(row)}
+                        />}
 
-                {editable && <Button
-                    className="ComboBox-delete-button"
-                    variant="outline-secondary"
-                    size="sm"
-                    disabled={lock}
-                    onClick={() => handleClickDelete(row)}
-                    >
-                    <FontAwesomeIcon icon={faTrash}/>
-                </Button>}
+                    {editable && <Button
+                        className="ComboBox-delete-button"
+                        variant="outline-secondary"
+                        size="sm"
+                        disabled={lock}
+                        onClick={() => handleClickDelete(row)}
+                        >
+                        <FontAwesomeIcon icon={faTrash}/>
+                    </Button>}
 
                 </div>
             </td>
 
             {Object.keys(row).map((key, idx) => {
-                if(key === 'quantity') return null;
                 if(!fields.includes(key)) return null;
+
+                if (quantities && key === 'quantity' && Object.keys(quantitiesData).length > 0) {
+                    return <td key={`option-${idx}`} style={{verticalAlign: 'middle', padding: '0px'}}>
+                    <Form.Control
+                        className="ComboBox-quantity-input"
+                        id={`quantity-${index}`}
+                        type="number"
+                        disabled={lock}
+                        min={0}
+                        value={quantitiesData[row['id']]}
+                        onChange={(e) => handleQuantityChange(row, parseInt(e.target.value))}
+                        style={{ backgroundColor: (editable ? lock : true) ? 'transparent' : 'white' }}
+                    />
+                </td>
+                }
 
                 return <td 
                     key={`option-${idx}`}
@@ -66,19 +79,6 @@ export default function TableRow({
                     {row[key]}
                 </td>
             })}
-
-            {quantities && Object.keys(quantitiesData).length > 0 && <td style={{verticalAlign: 'middle', padding: '0px'}}>
-                <Form.Control
-                    className="ComboBox-quantity-input"
-                    id={`quantity-${index}`}
-                    type="number"
-                    disabled={editable ? lock : true}
-                    min={0}
-                    value={quantitiesData[row['id']]}
-                    onChange={(e) => handleQuantityChange(row, parseInt(e.target.value))}
-                    style={{ backgroundColor: (editable ? lock : true) ? 'transparent' : 'white' }}
-                />
-            </td>}
         </tr>
     </>)
 }

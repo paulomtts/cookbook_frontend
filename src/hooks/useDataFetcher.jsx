@@ -17,8 +17,7 @@ export function useDataFetcher(name) {
     useEffect(() => {
         const fetchData = async () => {
             const { json } = await dataContext.fetchData(name, {}, false);
-            const newData = await JSON.parse(json.data);
-            setData(newData);
+            setData(json);
         }
 
         fetchData();

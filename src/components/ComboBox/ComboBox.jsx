@@ -1,5 +1,5 @@
 /* Foreign dependencies */
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useRef } from "react";
 import { Card } from "react-bootstrap";
 
 /* Local dependencies */
@@ -16,10 +16,34 @@ const ComboBoxContext = createContext();
 const { Provider } = ComboBoxContext;
 
 
+/**
+ * A component that renders a combo box with various features such as search, selection, and quantity management.
+ * @param {Object} props - The component props.
+ * @param {Array} props.data - The data to be displayed in the combo box.
+ * @param {string} props.pattern - The pattern to be used for searching.
+ * @param {Array} props.avoid - The fields to be avoided in the search.
+ * @param {boolean} [props.selectable=false] - Whether the combo box is selectable or not.
+ * @param {boolean} [props.single=false] - Whether only one row can be selected at a time or not.
+ * @param {boolean} [props.editable=false] - Whether the quantity of each row can be edited or not.
+ * @param {boolean} [props.quantities=false] - Whether the combo box should manage quantities or not.
+ * @param {boolean} [props.footer=false] - Whether to display a footer or not.
+ * @param {boolean} [props.lockTrigger=null] - The trigger for locking the combo box.
+ * @param {Array} [props.selectedRowsTrigger=null] - The trigger for selecting rows.
+ * @param {Function} [props.onClickRow=() => {}] - The function to be called when a row is clicked.
+ * @param {Function} [props.onClickDelete=() => {}] - The function to be called when a row is deleted.
+ * @param {Function} [props.onChangeQuantity=() => {}] - The function to be called when the quantity of a row is changed.
+ * @returns {JSX.Element} The combo box component.
+ */
 export default function ComboBox (props) {
     const {
-        data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false, lockTrigger = null,
-        onClickRow = () => {}, onClickDelete = () => {}, onChangeQuantity = () => {},
+        data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false
+        
+        , lockTrigger = null
+        , selectedRowsTrigger = null
+
+        , onClickRow = () => {} // receives selectedRows, row
+        , onClickDelete = () => {} // receives row
+        , onChangeQuantity = () => {} // receives quantitiesData, row
     } = props;
 
     const fields = getFields(data, avoid);
@@ -32,17 +56,25 @@ export default function ComboBox (props) {
 
     
     /* Hooks */
-    useTrigger(() => {setLock(true)}, lockTrigger);
+    useTrigger(() => {
+        setLock(lockTrigger);
+        setDisplay(lockTrigger ? "selected" : "all");
+    }, lockTrigger); // reason: receive lock/unlock from parent
+
+    useTrigger(() => {
+        setSelectedRows(selectedRowsTrigger);
+    }, selectedRowsTrigger); // reason: receive selected rows from parent
 
     useEffect(() => {
         if(!quantities || !data) return;
-        
+
         const newQuantitiesData = data.reduce((acc, row) => {
             acc[row[`id`]] = row[`quantity`]??0;
             return acc;
         }, {});
 
         setQuantitiesData(newQuantitiesData);
+        onChangeQuantity(newQuantitiesData);
     }, [data]); // reason: setup quantities 
 
 
@@ -79,6 +111,10 @@ export default function ComboBox (props) {
 
     const handleSwitchClick = () => {
         toggleDisplay();
+
+        // if(containerRef.current) {
+        //     containerRef.current.scrollTop = 0;
+        // }
     }
 
     const handleSearchInClick = (key) => {
@@ -96,42 +132,79 @@ export default function ComboBox (props) {
         setSearchFor(e.target.value);  
     }
     
+    /**
+     * Handles the click event on a row in the ComboBox component.
+     * 
+     * Triggers the onClickRow prop, passing the selected rows and the clicked row as arguments.
+     * Triggers the onChangeQuantity prop, passing the quantities data and the clicked row as arguments.
+     * @param {Object} row - The row object that was clicked.
+     * @returns {void}
+     */
     const handleClickRow = (row) => {
         if(lock) return;
+        if(single && selectedRows.includes(row)) return;
+
+        let newSelectedRows;
+        let newQuantitiesData
 
         if(!single && selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])) {
-            setSelectedRows(selectedRows.filter((selRow) => selRow[`id`] !== row[`id`]));
-            quantitiesData[row[`id`]] = 0;
+            newSelectedRows = selectedRows.filter((selRow) => selRow[`id`] !== row[`id`]);
+            newQuantitiesData = {...quantitiesData, [row[`id`]]: 0};
+
         } else {
             if(single) {
-                setSelectedRows([row]);
+                newSelectedRows = [row];
             } else {
-                setSelectedRows([...selectedRows, row]);
+                newSelectedRows = [...selectedRows, row];
             }
             
-            if(quantitiesData[row[`id`]] > 0 ) {
-                onClickRow(row);
-                return;
-            }
-            setQuantitiesData({...quantitiesData, [row[`id`]]: 1});
+            newQuantitiesData = {...quantitiesData, [row[`id`]]: 1};
         }
-
-        onClickRow(row);
+        
+        setSelectedRows(newSelectedRows);
+        setQuantitiesData(newQuantitiesData);
+        
+        onChangeQuantity(newQuantitiesData, row);
+        onClickRow(newSelectedRows, row);
     }
 
+    /**
+     * Handles the click event for the delete button.
+     * 
+     * This also triggers the onClickDelete prop, passing the clicked row as an argument.
+     * @param {Object} row - The row to be deleted.
+     */
     const handleClickDelete = (row) => {
         onClickDelete(row);
     }
 
+    /**
+     * Handles the change of quantity for a given row.
+     * 
+     * This also triggers the onChangeQuantity prop, passing the quantities data and the row as arguments.
+     * @param {Object} row - The row object.
+     * @param {number} value - The new quantity value.
+     */
     const handleQuantityChange = (row, value) => {
         setQuantitiesData({...quantitiesData, [row[`id`]]: value});
-        onChangeQuantity(row, value);
+        if (value < 1) {
+            setSelectedRows(selectedRows.filter((selRow) => selRow[`id`] !== row[`id`]));
+        }
+
+        onChangeQuantity({...quantitiesData, [row[`id`]]: value}, row);
     }
+
+
+    /* Virtualized list component */
+    const containerRef = useRef(null);
+    const rowHeight = 36;
 
 
     /* Context */
     const value = {
         data
+        , containerRef
+        , rowHeight
         , fields
         , pattern
         , checkDisplayConditions
@@ -147,6 +220,7 @@ export default function ComboBox (props) {
         , handleLockClick, handleSwitchClick, handleSearchInClick, handleSearchForChange
         , handleClickRow, handleClickDelete, handleQuantityChange
     }
+
 
     return (<>
         <Provider value={value}>

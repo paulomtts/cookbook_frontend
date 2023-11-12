@@ -1,104 +1,123 @@
 /* Foreign dependencies */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 
 /* Local dependencies */
-import { useDataFetcher } from "../../hooks/useDataFetcher";
+import { useForm } from "../../core/formContext";
 import { useData } from "../../core/dataContext";
+import { useDataFetcher } from "../../hooks/useDataFetcher";
+import { useTrigger } from "../../hooks/useTrigger";
+import ComboBox from "../ComboBox/ComboBox";
 
 
-export function RecipeForm({
-    children
-}) {
+export default function RecipeForm(props) {
+
+    
+    /* Contexts */
+    const formContext = useForm();
     const dataContext = useData();
   
+    /* Data */
     const [recipeData, setRecipeData] = useDataFetcher("recipe");
+    
+    const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
+    const [snapshotRecipeIngredientData, setSnapshotRecipeIngredientData] = useState([]); // snapshot
+    
+    // useEffect(() => {
+    //     console.log(recipeIngredientData);
+    // }, [recipeIngredientData]);
 
-    const [ingredientData, setIngredientData] = useDataFetcher("recipe_composition_initial");
-    const [ingredientSelectedRows, setIngredientSelectedRows] = useState([]);
-    const [ingredientQuantitiesData, setIngredientQuantitiesData] = useState({});
+    /* Quantities & Selected Rows */
+    const [recipeIngredientQuantitiesData, setRecipeIngredientQuantitiesData] = useState({});
+    const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]);
 
-    /* Hooks */
-    useEffect(() => {
-        console.log('ingredientData', ingredientData);
-    }, [ingredientData]);
 
-    useEffect(() => {
-        console.log('ingredientSelectedRows', ingredientSelectedRows);
-    }, [ingredientSelectedRows]);
+    /* Triggers */
+    const [triggerIngredientSelectedRows, setTriggerIngredientSelectedRows] = useState(null);
 
-    useEffect(() => {
-        console.log('ingredientQuantitiesData', ingredientQuantitiesData);
-    }, [ingredientQuantitiesData]);
+    const [triggerLockRecipeComboBox, setTriggerLockRecipeComboBox] = useState(false);
+    const [triggerLockRecipeIngredientComboBox, setTriggerLockRecipeIngredientComboBox] = useState(false);
+    
+    useTrigger(setTriggerLockRecipeComboBox, [triggerLockRecipeComboBox]); // reason: re-arm trigger
+    useTrigger(setTriggerLockRecipeIngredientComboBox, [triggerLockRecipeIngredientComboBox]); // reason: re-arm trigger
+        
 
     /* Events */
-    const onClickRecipeRow = async (row) => {
-        const { json } = await dataContext.fetchData("recipe_composition_loaded", {}, {"id_recipe": row[`id`]});
-        const newIngredientData = await JSON.parse(json.data);
+    const onClickRecipeRow = async (_, row) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
 
-        setIngredientData(newIngredientData);
+        const { json: snapshotData } = await dataContext.fetchData("recipe_composition_snapshot", {}, {"id_recipe": row[`id`]});
+        setSnapshotRecipeIngredientData(snapshotData);
+        
+        const { json: loadedData } = await dataContext.fetchData("recipe_composition_loaded", {}, {"id_recipe": row[`id`]});       
+        setRecipeIngredientData(loadedData);
+        
 
-        const newIngredientSelectedRows = [];
-        const newIngredientQuantitiesData = {};
+        // Cleanup
+        setRecipeIngredientQuantitiesData({});
+        setRecipeIngredientSelectedRows(snapshotData);
 
-        newIngredientData.forEach((row) => {
-            newIngredientSelectedRows.push(row);
-            newIngredientQuantitiesData[row[`id`]] = row[`quantity`];
-        });
 
-        setIngredientSelectedRows(newIngredientSelectedRows);
-        setIngredientQuantitiesData(newIngredientQuantitiesData);
-        // we need to add a triggerSelectedRows to the ComboBox component
+        // Triggers
+        setTriggerIngredientSelectedRows(snapshotData);
+
+        setTriggerLockRecipeComboBox(true);
+        setTriggerLockRecipeIngredientComboBox(true);
     }
 
-    const onClickIngredientRow = (row) => {
-        if(ingredientSelectedRows.includes(row)) {
-            setIngredientSelectedRows(ingredientSelectedRows.filter(selRow => selRow !== row));
-            onChangeIngredientQuantity(row, 0);
-        } else {
-            setIngredientSelectedRows([...ingredientSelectedRows, row]);
-            onChangeIngredientQuantity(row, 1);
-        }
+    const onChangeIngredientQuantity = (newQuantitiesData, _) => { // reason: ComboBox's onChangeQuantity sends (quantitiesData, row)
+        setRecipeIngredientQuantitiesData(newQuantitiesData);
     }
 
-    const onChangeIngredientQuantity = (row, value) => {
-        const newQuantitiesData = {...ingredientQuantitiesData};
-
-        if(value > 0) {
-            newQuantitiesData[row[`id`]] = value;
-        } else {
-            delete newQuantitiesData[row[`id`]];
-        }
-        setIngredientQuantitiesData(newQuantitiesData);
+    const onClickIngredientRow = async (selectedRows, _) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
+        setRecipeIngredientSelectedRows(selectedRows);
     }
 
-    /* Property injection */
-    const childrenWithProps = React.Children.map(children, (child) => {
-   
-        const name = child.props.dynamicName??null;
-        if(name === null) return child;
 
-        let props = {};
-        if (name === "recipe") {
-            props = {
-                data: recipeData,
-                onClickRow: onClickRecipeRow,
-            };
-        } else if (name === "recipe_composition") {
-            props = {
-                data: ingredientData,
-                onClickRow: onClickIngredientRow,
-                onChangeQuantity: onChangeIngredientQuantity,
-            };
-        }
+    const handleSaveClick = async () => {
 
-        return React.cloneElement(child, props);
-    });
+        const consolidatedData = formContext.consolidateData(recipeIngredientSelectedRows, recipeIngredientQuantitiesData, 'id', 'quantity');
+        // add unit consolidation here
+        
+        const consolidatedOperations = formContext.consolidateOperations(snapshotRecipeIngredientData, consolidatedData, 'id');
+        const { insertRows, updateRows, deleteRows } = consolidatedOperations;
 
-    const value = {}
+        const consolidatedInsertRows = formContext.consolidateColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type']);
+        // console.log("consolidatedInsertRows", consolidatedInsertRows);
+    }
 
     return(<>
         <div className="form-container">
-            {childrenWithProps}
+            <ComboBox
+                pattern='^([a-zA-Z0-9]{1,})$'
+                avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+                selectable
+                // single
+                footer
+
+                data={recipeData}
+                // onClickRow={onClickRecipeRow}
+                lockTrigger={triggerLockRecipeComboBox}
+            />
+            {/* <ComboBox
+                pattern='^([a-zA-Z0-9]{1,})$'
+                avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+                selectable
+                footer
+                quantities
+
+                data={recipeIngredientData}
+                onClickRow={onClickIngredientRow}
+                onChangeQuantity={onChangeIngredientQuantity}
+                lockTrigger={triggerLockRecipeIngredientComboBox}
+                selectedRowsTrigger={triggerIngredientSelectedRows}
+
+            /> */}
+            <Button 
+                variant="primary"
+                onClick={handleSaveClick}
+            >
+                Consolidate
+            </Button>
         </div>
     </>);
 }
