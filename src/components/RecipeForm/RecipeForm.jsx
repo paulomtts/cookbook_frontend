@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import { useForm } from "../../core/formContext";
 import { useData } from "../../core/dataContext";
 import { useDataFetcher } from "../../hooks/useDataFetcher";
+import { useRearm } from "../../hooks/useRearm";
 import { useTrigger } from "../../hooks/useTrigger";
 import ComboBox from "../ComboBox/ComboBox";
 
@@ -21,11 +22,7 @@ export default function RecipeForm(props) {
     const [recipeData, setRecipeData] = useDataFetcher("recipe");
     
     const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
-    const [snapshotRecipeIngredientData, setSnapshotRecipeIngredientData] = useState([]); // snapshot
-    
-    // useEffect(() => {
-    //     console.log(recipeIngredientData);
-    // }, [recipeIngredientData]);
+    const [snapshotRecipeIngredientData, setSnapshotRecipeIngredientData] = useState([]); // snapshot of recipe_ingredient
 
     /* Quantities & Selected Rows */
     const [recipeIngredientQuantitiesData, setRecipeIngredientQuantitiesData] = useState({});
@@ -33,13 +30,12 @@ export default function RecipeForm(props) {
 
 
     /* Triggers */
-    const [triggerIngredientSelectedRows, setTriggerIngredientSelectedRows] = useState(null);
-
-    const [triggerLockRecipeComboBox, setTriggerLockRecipeComboBox] = useState(false);
-    const [triggerLockRecipeIngredientComboBox, setTriggerLockRecipeIngredientComboBox] = useState(false);
+    const [triggerRecipeLock, setTriggerRecipeLock] = useTrigger();
+    const [triggerRecipeDisplay, setTriggerRecipeDisplay] = useTrigger();
     
-    useTrigger(setTriggerLockRecipeComboBox, [triggerLockRecipeComboBox]); // reason: re-arm trigger
-    useTrigger(setTriggerLockRecipeIngredientComboBox, [triggerLockRecipeIngredientComboBox]); // reason: re-arm trigger
+    const [triggerIngredientLock, setTriggerIngredientLock] = useTrigger();
+    const [triggerIngredientDisplay, setTriggerIngredientDisplay] = useTrigger();
+    const [triggerIngredientSelectedRows, setTriggerIngredientSelectedRows] = useTrigger();
         
 
     /* Events */
@@ -54,14 +50,15 @@ export default function RecipeForm(props) {
 
         // Cleanup
         setRecipeIngredientQuantitiesData({});
-        setRecipeIngredientSelectedRows(snapshotData);
-
 
         // Triggers
+        setTriggerRecipeLock(true);
+        setTriggerRecipeDisplay("selected");
+        
         setTriggerIngredientSelectedRows(snapshotData);
-
-        setTriggerLockRecipeComboBox(true);
-        setTriggerLockRecipeIngredientComboBox(true);
+        setTriggerIngredientDisplay("selected");
+        setTriggerIngredientLock(true);
+        
     }
 
     const onChangeIngredientQuantity = (newQuantitiesData, _) => { // reason: ComboBox's onChangeQuantity sends (quantitiesData, row)
@@ -82,23 +79,26 @@ export default function RecipeForm(props) {
         const { insertRows, updateRows, deleteRows } = consolidatedOperations;
 
         const consolidatedInsertRows = formContext.consolidateColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type']);
-        // console.log("consolidatedInsertRows", consolidatedInsertRows);
+        console.log("consolidatedInsertRows", consolidatedInsertRows);
     }
 
     return(<>
         <div className="form-container">
             <ComboBox
+                name="combo-1"
                 pattern='^([a-zA-Z0-9]{1,})$'
                 avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
                 selectable
-                // single
+                single
                 footer
 
                 data={recipeData}
-                // onClickRow={onClickRecipeRow}
-                lockTrigger={triggerLockRecipeComboBox}
+                onClickRow={onClickRecipeRow}
+                lockTrigger={triggerRecipeLock}
+                displayTrigger={triggerRecipeDisplay}
             />
-            {/* <ComboBox
+            <ComboBox
+                name="combo-2"
                 pattern='^([a-zA-Z0-9]{1,})$'
                 avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
                 selectable
@@ -108,10 +108,11 @@ export default function RecipeForm(props) {
                 data={recipeIngredientData}
                 onClickRow={onClickIngredientRow}
                 onChangeQuantity={onChangeIngredientQuantity}
-                lockTrigger={triggerLockRecipeIngredientComboBox}
+                lockTrigger={triggerIngredientLock}
+                displayTrigger={triggerIngredientDisplay}
                 selectedRowsTrigger={triggerIngredientSelectedRows}
 
-            /> */}
+            />
             <Button 
                 variant="primary"
                 onClick={handleSaveClick}

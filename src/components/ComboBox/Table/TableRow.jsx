@@ -28,6 +28,8 @@ export default function TableRow({
 
     return(<>
         <tr key={`${index}`} className="fade-in">
+
+            {/* Action cell */}
             <td className="ComboBox-table-row-data">
                 <div className="ComboBox-table-row-data-container">
 
@@ -52,10 +54,11 @@ export default function TableRow({
                 </div>
             </td>
 
+            {/* Data cells */}
             {Object.keys(row).map((key, idx) => {
                 if(!fields.includes(key)) return null;
 
-                if (quantities && key === 'quantity' && Object.keys(quantitiesData).length > 0) {
+                if (quantities && Object.keys(quantitiesData).length > 0 && key === 'quantity') {
                     return <td key={`option-${idx}`} style={{verticalAlign: 'middle', padding: '0px'}}>
                     <Form.Control
                         className="ComboBox-quantity-input"
@@ -73,7 +76,7 @@ export default function TableRow({
                 return <td 
                     key={`option-${idx}`}
                     className="ComboBox-table-row-data"
-                    style={{ cursor: lock ? 'default' : 'pointer' }} 
+                    style={{ cursor: lock ? 'default' : 'pointer', textAlign: ['unit', 'quantity'].includes(key) ? 'center' : 'left' }}
                     onClick={() => handleClickRow(row)}
                 >
                     {row[key]}

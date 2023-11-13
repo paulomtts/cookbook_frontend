@@ -1,24 +1,23 @@
-import { useState, useEffect } from "react";
+/* Foreign Dependencies */  
+import { useState } from "react";
 
-/** Trigger the callback function when the trigger value changes,
- *  allowing for a result to be returned. Note:
- * * __null__ and __undefined__ will not trigger the callback.
- * 
- * @param {function} callback - The function to be executed when the trigger value changes.
- * @param {any} trigger - The value to be used as a trigger.
+/* Local dependencies */    
+import { useRearm } from "./useRearm";
+
+
+/**
+ * Custom hook that returns a stateful value and a function to update it. The trigger is
+ * automatically re-armed (set to null) right after each update (using the useRearm hook). This hook is syntax
+ * sugar for the useState and useRearm hooks.
+ * @param {*} initialValue - The initial value of the state.
+ * @returns {[*, Function]} An array with the current state value and a function to update it.
  */
 export const useTrigger = (
-    callback
-    , trigger
+    initialValue = null
 ) => {
 
-    const [result, setResult] = useState(null);
+    const [state, setState] = useState(initialValue);
+    useRearm(setState, state); // re-arm mechanism
 
-    useEffect(() => {
-        if (trigger === null || trigger === undefined) return;
-        
-        setResult(callback());
-    }, [trigger]);
-
-    return result;
-} // capable of returning results
+    return [state, setState];
+}

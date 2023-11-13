@@ -13,6 +13,7 @@ export const useToggle = (
     , valueList = []
 ) => {
     const [status, setStatus] = useState(initialStatus);
+    
     const toggleStatus = () => {
         if(valueList.length === 0){
             setStatus(prevState => !prevState);

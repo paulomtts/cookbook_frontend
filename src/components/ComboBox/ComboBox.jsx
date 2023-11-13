@@ -5,7 +5,7 @@ import { Card } from "react-bootstrap";
 /* Local dependencies */
 import { getFields } from "../../core/utilities";
 import { useToggle } from "../../hooks/useToggle";
-import { useTrigger } from "../../hooks/useTrigger";
+import { useRearm } from "../../hooks/useRearm";
 import ComboBoxToolbar from "./Toolbar/ComboBoxToolbar";
 import ComboBoxTable from "./Table/ComboBoxTable";
 import ComboBoxInfo from "./InfoBar/ComboBoxInfo";
@@ -27,8 +27,9 @@ const { Provider } = ComboBoxContext;
  * @param {boolean} [props.editable=false] - Whether the quantity of each row can be edited or not.
  * @param {boolean} [props.quantities=false] - Whether the combo box should manage quantities or not.
  * @param {boolean} [props.footer=false] - Whether to display a footer or not.
- * @param {boolean} [props.lockTrigger=null] - The trigger for locking the combo box.
- * @param {Array} [props.selectedRowsTrigger=null] - The trigger for selecting rows.
+ * @param {boolean} [props.lockTrigger=null] - The trigger for locking the combo box. Receives a boolean value.
+ * @param {boolean} [props.displayTrigger=null] - The trigger for changing the display mode. Receives either "all" or "selected".
+ * @param {Array} [props.selectedRowsTrigger=null] - The trigger for selecting rows. Receives an array of rows.
  * @param {Function} [props.onClickRow=() => {}] - The function to be called when a row is clicked.
  * @param {Function} [props.onClickDelete=() => {}] - The function to be called when a row is deleted.
  * @param {Function} [props.onChangeQuantity=() => {}] - The function to be called when the quantity of a row is changed.
@@ -39,11 +40,13 @@ export default function ComboBox (props) {
         data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false
         
         , lockTrigger = null
+        , displayTrigger = null
         , selectedRowsTrigger = null
 
         , onClickRow = () => {} // receives selectedRows, row
         , onClickDelete = () => {} // receives row
         , onChangeQuantity = () => {} // receives quantitiesData, row
+        , name
     } = props;
 
     const fields = getFields(data, avoid);
@@ -56,14 +59,20 @@ export default function ComboBox (props) {
 
     
     /* Hooks */
-    useTrigger(() => {
+    useEffect(() => {
+        if(!lockTrigger) return;
         setLock(lockTrigger);
-        setDisplay(lockTrigger ? "selected" : "all");
-    }, lockTrigger); // reason: receive lock/unlock from parent
+    }, [lockTrigger]);
 
-    useTrigger(() => {
-        setSelectedRows(selectedRowsTrigger);
-    }, selectedRowsTrigger); // reason: receive selected rows from parent
+    useEffect(() => {
+        if(!displayTrigger) return;
+        setDisplay(displayTrigger);
+    }, [displayTrigger]);
+
+    useEffect(() => {
+        if(!selectedRowsTrigger) return;
+        setSelectedRows(selectedRowsTrigger??[]);
+    }, [selectedRowsTrigger]);
 
     useEffect(() => {
         if(!quantities || !data) return;
@@ -79,7 +88,12 @@ export default function ComboBox (props) {
 
 
     /* Methods */
-    const checkDisplayConditions = (row) => {
+    /**
+     * Determines whether a row should be displayed based on search criteria and display mode.
+     * @param {Object} row - The row to be checked.
+     * @returns {boolean} - True if the row should be displayed, false otherwise.
+     */
+    const checkDisplay = (row) => {
         if (searchFor) {
 
             const values = searchIn === "all" ? 
@@ -95,7 +109,7 @@ export default function ComboBox (props) {
             if (found.filter(String).length === 0) return false;
         }
 
-        if (display === "selected" && !selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`]))
+        if (display === "selected" && !(selectedRowsTrigger??selectedRows).map((selRow) => selRow[`id`]).includes(row[`id`]))
             return false;
 
         return true;
@@ -112,9 +126,9 @@ export default function ComboBox (props) {
     const handleSwitchClick = () => {
         toggleDisplay();
 
-        // if(containerRef.current) {
-        //     containerRef.current.scrollTop = 0;
-        // }
+        if(containerRef.current) {
+            containerRef.current.scrollTop = 0;
+        }
     }
 
     const handleSearchInClick = (key) => {
@@ -197,17 +211,16 @@ export default function ComboBox (props) {
 
     /* Virtualized list component */
     const containerRef = useRef(null);
-    const rowHeight = 36;
 
 
     /* Context */
     const value = {
         data
         , containerRef
-        , rowHeight
         , fields
         , pattern
-        , checkDisplayConditions
+        , checkDisplay
+        , selectedRowsTrigger
         , selectable
         , editable
         , quantities
@@ -219,6 +232,7 @@ export default function ComboBox (props) {
         , quantitiesData, setQuantitiesData
         , handleLockClick, handleSwitchClick, handleSearchInClick, handleSearchForChange
         , handleClickRow, handleClickDelete, handleQuantityChange
+        , name
     }
 
 
