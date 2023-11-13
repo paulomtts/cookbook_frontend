@@ -10,25 +10,35 @@ import TableRow from "./TableRow";
 export default function TableBody() {
     const { data, display, searchFor, rowHeight, containerRef, checkDisplayConditions } = useContext(ComboBoxContext);
 
-    const [filteredData, setFilteredData] = useState([]);
+    // const [filteredData, setFilteredData] = useState([]);
 
-    useEffect(() => {
-        const newFilteredData = data.reduce((acc, row) => {
-            if (checkDisplayConditions(row)) acc.push(row);
-            return acc;
-        }, []);
+    const rowBuilder = (row) => {
+        return <TableRow key={`option-${row['id']}`} row={row} index={row[`id`]} />
+    }
+
+    // useEffect(() => {
+    //     const newFilteredData = data.reduce((acc, row) => {
+    //         if (checkDisplayConditions(row)) acc.push(row);
+    //         return acc;
+    //     }, []);
 
 
-        setFilteredData(newFilteredData);
-        console.log(newFilteredData);
-    }, [searchFor, display]);
+    //     setFilteredData(newFilteredData);
+    //     console.log(newFilteredData);
+    // }, [searchFor, display]);
 
+
+    // const [
+    //     visibleData
+    //     , prevHeight
+    //     , postHeight
+    // ] = useVirtualizedList(filteredData, checkDisplayConditions, rowHeight, containerRef, 8, 4);
 
     const [
         visibleData
         , prevHeight
         , postHeight
-    ] = useVirtualizedList(filteredData, checkDisplayConditions, rowHeight, containerRef, 8, 4);
+    ] = useVirtualizedList(data, checkDisplayConditions, rowBuilder, [searchFor, display], containerRef, rowHeight, 8, 4);
 
     return(<>
         <tbody>
@@ -36,7 +46,7 @@ export default function TableBody() {
                 <tr key={`option-prev`} style={{height: `${prevHeight}px`}} />
             }
 
-            {filteredData.reduce((acc, row) => {
+            {/* {filteredData.reduce((acc, row) => {
                 if(visibleData.includes(row)) acc.push(
                     <TableRow
                         key={`option-${row[`id`]}`}
@@ -46,8 +56,8 @@ export default function TableBody() {
                 );
                 return acc;
 
-            }, [])}
-
+            }, [])} */}
+            {visibleData}
             {display === 'all' &&
                 <tr key={`option-post`} style={{height: `${postHeight}px`}} />
             }
