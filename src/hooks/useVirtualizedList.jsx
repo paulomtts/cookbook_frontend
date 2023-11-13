@@ -21,13 +21,12 @@ export const useVirtualizedList = (data, conditionsCallback, rowHeight, containe
         setPostDivHeight(newPostDivHeight);
 
         const slicedData = data.slice(lookBehind, lookAhead).filter(conditionsCallback);
-        const newVisibleData = slicedData.map((row) => { 
-            if (conditionsCallback(row)) return row;
-        });
+        // const newVisibleData = slicedData.map((row) => { 
+        //     if (conditionsCallback(row)) return row;
+        // });
 
 
-        setVisibleData(newVisibleData);
-        console.log(lookBehind, startVisible, lookAhead);
+        setVisibleData(slicedData);
     }
 
     useEffect(() => {
