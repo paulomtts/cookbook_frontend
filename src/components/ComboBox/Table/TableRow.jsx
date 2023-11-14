@@ -15,6 +15,7 @@ export default function TableRow({
 
     const {
         fields
+        , customColumns
         , selectable
         , editable
         , quantities
@@ -56,7 +57,13 @@ export default function TableRow({
 
             {/* Data cells */}
             {Object.keys(row).map((key, idx) => {
-                if(!fields.includes(key)) return null;
+                if (!fields.includes(key)) return null;
+
+                if (Object.keys(customColumns).includes(key)) {
+                    return <td key={`option-${idx}`} className="ComboBox-table-row-data" style={{ cursor: lock ? 'default' : 'pointer' }} onClick={() => handleClickRow(row)}>
+                        {React.cloneElement(customColumns[key], { row })}
+                    </td>
+                }
 
                 if (quantities && Object.keys(quantitiesData).length > 0 && key === 'quantity') {
                     return <td key={`option-${idx}`} style={{verticalAlign: 'middle', padding: '0px'}}>

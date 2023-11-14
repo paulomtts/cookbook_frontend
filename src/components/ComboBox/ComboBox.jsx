@@ -27,6 +27,9 @@ const { Provider } = ComboBoxContext;
  * @param {boolean} [props.editable=false] - Whether the quantity of each row can be edited or not.
  * @param {boolean} [props.quantities=false] - Whether the combo box should manage quantities or not.
  * @param {boolean} [props.footer=false] - Whether to display a footer or not.
+ * @param {Object} [props.customColumns={}] - The custom columns to be displayed in the combo box. The keys work as 
+ * the column title, while the values are the component type to be rendered. Note that these components will receive
+ * standard onClick and onChange props, which will be handled by the combo box.
  * @param {boolean} [props.lockTrigger=null] - The trigger for locking the combo box. Receives a boolean value.
  * @param {boolean} [props.displayTrigger=null] - The trigger for changing the display mode. Receives either "all" or "selected".
  * @param {Array} [props.selectedRowsTrigger=null] - The trigger for selecting rows. Receives an array of rows.
@@ -38,6 +41,8 @@ const { Provider } = ComboBoxContext;
 export default function ComboBox (props) {
     const {
         data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false
+
+        , customColumns = {}
         
         , lockTrigger = null
         , displayTrigger = null
@@ -46,7 +51,6 @@ export default function ComboBox (props) {
         , onClickRow = () => {} // receives selectedRows, row
         , onClickDelete = () => {} // receives row
         , onChangeQuantity = () => {} // receives quantitiesData, row
-        , name
     } = props;
 
     const fields = getFields(data, avoid);
@@ -216,6 +220,7 @@ export default function ComboBox (props) {
     /* Context */
     const value = {
         data
+        , customColumns
         , containerRef
         , fields
         , pattern
@@ -232,7 +237,6 @@ export default function ComboBox (props) {
         , quantitiesData, setQuantitiesData
         , handleLockClick, handleSwitchClick, handleSearchInClick, handleSearchForChange
         , handleClickRow, handleClickDelete, handleQuantityChange
-        , name
     }
 
 
