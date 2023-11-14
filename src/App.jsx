@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 /* Local dependencies */
+import MenuButton from "./components/MenuButton/MenuButton";
 import GenericForm from "./components/GenericForm";
 import Select from "./components/Select";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
@@ -86,7 +87,9 @@ export default function App() {
                         <p className="sidebar-link" id="ingredients-link" onClick={() => handleContentChange(elements['registry'])}>Registry</p>
                         <div className="text-divider-01"/>
                     </div>
+                    <MenuButton />
                 </div>
+
             </Col>
 
             {/* Content */}
