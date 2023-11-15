@@ -1,14 +1,8 @@
 import React from "react";
 
-import "./Navbar.css";
 
-function NavbarItem(props) {
-    return (<>
-        <span className="Navbar-item" onClick={props.onClick}>
-            {props.text}
-        </span>
-    </>);
-}
+import NavbarItem from "./NavbarItem";
+import "./Navbar.css";
 
 
 export default function Navbar(props) {
