@@ -31,12 +31,11 @@ export default function Select({
    
     async function retrieveData() {
         if(customOptions.length === 0) {
-            const { response, json } = await dataContext.fetchData(tableName, filters, false, false);
+            const { response, json } = await dataContext.fetchData(tableName, filters, {}, false, false);
 
             if(response.status === 200) {
-                const newData = JSON.parse(json.data);
                 const newOptions = [];
-                newData.map((row) => {
+                json.map((row) => {
                     newOptions.push(row.name);
                 })
                 setOptions(newOptions);

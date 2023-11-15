@@ -46,14 +46,18 @@ export const useVirtualizedList = (data, conditionsCallback, builderCallback, tr
     
     useEffect(() => {
         if (!containerRef.current) return;
-
+        
         const filteredData = buildList();
-
+        
         updateVisibleItems(filteredData);
 
-        containerRef.current.addEventListener("scroll", () => updateVisibleItems(filteredData));
+        const handleScroll = () => updateVisibleItems(filteredData);
+        
+        containerRef.current.addEventListener("scroll", handleScroll);
         return () => {
-            containerRef.current.removeEventListener("scroll", () => updateVisibleItems(filteredData));
+            if (!containerRef.current) return;
+            console.log('this is not being run')
+            containerRef.current.removeEventListener("scroll", handleScroll);
         }
     }, [data, ...triggers]);
 

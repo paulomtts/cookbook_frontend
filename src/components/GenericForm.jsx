@@ -35,14 +35,13 @@ export default function GenericForm({
     }, []);
 
     const retrieveData = async () => {
-        const { response, json } = await dataContext.fetchData(tableName, {}, false, true);
+        const { response, json } = await dataContext.fetchData(tableName, {}, {}, false, true);
 
         if(response.status === 200) {
-            const newData = JSON.parse(json.data);
-            setData(newData);
+            setData(json);
 
             const newFormData = {};
-            Object.keys(newData[0]).map((key) => {
+            Object.keys(json[0]).map((key) => {
                 if(avoidColumns.includes(key)) return;
 
                 if(Object.keys(customInputs).includes(key)) {

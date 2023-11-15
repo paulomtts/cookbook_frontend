@@ -13,13 +13,13 @@ export function OverlayProvider({ children }) {
     const style = {
         position: 'fixed',
         top: '0',
-        left: '25%',
+        // left: '25%',
         width: '100%',
         height: '100%',
         backgroundColor: `rgba(0,0,0,${opacity})`,
         display: enabled ? 'block' : 'none',
         backdropFilter: 'blur(10px)',
-        zIndex: 9999,
+        zIndex: 9000,
     };
 
     const show = (opacity = null) => {
@@ -42,7 +42,8 @@ export function OverlayProvider({ children }) {
         <div>
             <OverlayContext.Provider value={{ show, hide }}>
                 <div style={style}>
-                    <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '37.5%' }} />
+                    {/* <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '37.5%' }} /> */}
+                    <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '50%' }} />
                 </div>
                 {children}
             </OverlayContext.Provider>

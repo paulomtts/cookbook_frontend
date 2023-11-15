@@ -1,3 +1,5 @@
+@import url("../../styles/keyframes.css");
+
 .ComboBox {
     display: flex;
     width: 100%;
@@ -125,22 +127,6 @@
 .ComboBox-table-row-data {
     vertical-align: 'middle';
     user-select: 'none';
-}
-
-.fade-in {
-    opacity: 0;
-    animation: fadeIn ease-in-out 1;
-    animation-fill-mode: forwards;
-    animation-duration: 0.5s;
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
 }
 
 .ComboBox-table-row-data-container {

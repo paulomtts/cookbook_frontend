@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faEdit, faBowlFood } from "@fortawesome/free-solid-svg-icons";
 
 import FloatingMenuButton from "./FloatingMenuButton";
-import "./Menu.css";
+import "./FloatingMenu.css";
 
 export default function FloatingMenu(props) {
 

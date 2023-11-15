@@ -1,27 +1,12 @@
-@font-face {
-    font-family: 'Bestie'; 
-    src: url('../assets/Bestie.otf') format('opentype');
-}
-
 .main-container {
-    background-color: rgb(244, 237, 228);
+    background-color: var(--main-bg-color);
 }
 
 .content-container {
-    padding: 20px;
-    flex-grow: 1;
-    background-color: rgb(244, 237, 228);
+    padding: 10px;
+    height: 100vh;
+
+    background-color: var(--main-bg-color);
+
     transition: all 0.1s ease-in-out;
-}
-
-.content-container.exiting {
-    opacity: 0;
-    filter: blur(10px);
-    transition: opacity 0.3s ease, filter 0.1s ease;
-}
-
-.content-container.entering {
-    opacity: 1;
-    filter: blur(0px);
-    transition: opacity 0.1s ease, filter 0.3s ease;
 }

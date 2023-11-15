@@ -216,7 +216,6 @@ export default function ComboBox (props) {
     /* Virtualized list component */
     const containerRef = useRef(null);
 
-
     /* Context */
     const value = {
         data

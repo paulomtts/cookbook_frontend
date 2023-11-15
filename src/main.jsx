@@ -9,6 +9,9 @@ import { NotificationProvider } from './core/notificationContext';
 import { OverlayProvider } from './core/overlayContext';
 import { DataProvider } from './core/dataContext';
 import { FormProvider } from './core/formContext';
+import './styles/root.css'
+import './styles/fonts.css'
+import './styles/keyframes.css'
 import './styles/layouts.css'
 import './styles/components.css'
 

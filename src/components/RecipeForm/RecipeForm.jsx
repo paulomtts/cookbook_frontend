@@ -1,19 +1,17 @@
 /* Foreign dependencies */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 
 /* Local dependencies */
 import { useForm } from "../../core/formContext";
 import { useData } from "../../core/dataContext";
 import { useDataFetcher } from "../../hooks/useDataFetcher";
-import { useRearm } from "../../hooks/useRearm";
 import { useTrigger } from "../../hooks/useTrigger";
 import ComboBox from "../ComboBox/ComboBox";
 
 
 export default function RecipeForm(props) {
-
-    
+   
     /* Contexts */
     const formContext = useForm();
     const dataContext = useData();
