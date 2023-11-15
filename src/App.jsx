@@ -1,9 +1,8 @@
 /* Foreign dependencies */
 import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
 
 /* Local dependencies */
-import MenuButton from "./components/MenuButton/MenuButton";
+import FloatingMenu from "./components/FloatingMenu/FloatingMenu";
 import GenericForm from "./components/GenericForm";
 import Select from "./components/Select";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
@@ -45,61 +44,23 @@ export default function App() {
                 />
             </div>,
         'recipes':
-
-        <RecipeForm />
+            <RecipeForm />
 
     }
 
-    const [content, setContent] = useState(elements['recipes'])
+    const [content, setContent] = useState(elements['registry'])
     const [isContentMounted, setIsContentMounted] = useState(true)
 
-    const handleContentChange = (newContent) => {
-        if(newContent === content) return;
-        setIsContentMounted(false)
-        setTimeout(() => {
-            setContent(newContent)
-            setIsContentMounted(true)
-        }, 500)
+    const handleContentChange = (key) => {
+        // if(key === content) return;
+        setIsContentMounted(false);
+        setContent(elements[key]);
     }
 
     return (<>
-    <Container 
-        fluid
-        className="main-container"
-    >
-        <Row >
-            {/* Sidebar */}
-            <Col  
-                xs={3}
-                className="sidebar-container"
-            >
-                
-                <div>
-                    <div className="sidebar-title-container">
-                        <h2 className="sidebar-title">
-                            The Cookbook
-                        </h2>
-                    </div>
-
-                    <div className="sidebar-menu-container">
-                        <div className="text-divider-01"/>
-                        <p className="sidebar-link" id="recipes-link" onClick={() => handleContentChange(elements['recipes'])}>Recipes</p>
-                        <p className="sidebar-link" id="ingredients-link" onClick={() => handleContentChange(elements['registry'])}>Registry</p>
-                        <div className="text-divider-01"/>
-                    </div>
-                    <MenuButton />
-                </div>
-
-            </Col>
-
-            {/* Content */}
-            <Col  
-                xs={9}
-                className={`content-container ${isContentMounted ? 'entering' : 'exiting'}`}
-            >
-                {content}
-            </Col>
-        </Row>
-    </Container>
+        <FloatingMenu onClickButton={handleContentChange}/>
+        <div className={`content-container ${isContentMounted ? 'entering' : 'exiting'}`}>
+            {content}
+        </div>
     </>)
 }

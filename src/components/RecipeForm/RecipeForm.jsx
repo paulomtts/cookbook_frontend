@@ -83,7 +83,6 @@ export default function RecipeForm(props) {
     }
 
     return(<>
-        <div className="form-container">
             <ComboBox
                 name="combo-1"
                 pattern='^([a-zA-Z0-9]{1,})$'
@@ -119,6 +118,5 @@ export default function RecipeForm(props) {
             >
                 Consolidate
             </Button>
-        </div>
     </>);
 }
