@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar/Navbar";
 import GenericForm from "./components/GenericForm";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
 import Select from "./components/Select";
+import DashboardButton from "./components/DashboardButton/DashboardButton";
 
 
 
@@ -52,12 +53,16 @@ export default function App() {
                 return ( 
                     <RecipeForm />
                 );
+            case 'dashboard':
+                return (<>
+                    <DashboardButton />
+                </>);
             default:
                 return null;
         }
     }
 
-    const [content, setContent] = useState(getComponents('registry'));
+    const [content, setContent] = useState(getComponents('dashboard'));
 
     const handleNavigationComponentClick = (key) => {
         setContent(getComponents(key));

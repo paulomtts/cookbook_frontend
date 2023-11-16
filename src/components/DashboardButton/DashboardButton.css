@@ -1,0 +1,57 @@
+.DashboardButton {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    justify-content: center;
+    align-items: center;
+
+    height: 28%;
+    width: 30%;
+    
+    border-radius: 20px;
+    
+    background-image: url("../../assets/ingredients.avif");
+    background-size: cover;
+    background-position: center;
+}
+
+.DashboardButton::after {
+    content: "";
+    
+    position: absolute;
+    
+    border-radius: 20px;
+    height: 100%;
+    width: 100%;
+    
+    backdrop-filter: blur(2px);
+    background-color: rgba(42, 95, 87, 0.60);
+    box-shadow: 5px 10px 10px 0px rgba(0, 0, 0, 0.65);
+}
+
+.DashboardButton-title {
+    color: white;
+    font-family: 'Bestie';
+    font-size: 3rem;
+    vertical-align: middle;
+    text-shadow: 3px 6px 6px #000000;
+
+    position: relative;
+    z-index: 3;
+    
+    cursor: pointer;
+    user-select: none;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.DashboardButton-text {
+    z-index: 3;
+
+    color: rgb(217, 240, 231);
+
+    font-weight: 200;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 4px black;
+}
