@@ -10,8 +10,9 @@ import { useTrigger } from "../../hooks/useTrigger";
 import ComboBox from "../ComboBox/ComboBox";
 
 
-export default function RecipeForm(props) {
-   
+
+export default function RecipeForm() {
+
     /* Contexts */
     const formContext = useForm();
     const dataContext = useData();
@@ -81,40 +82,40 @@ export default function RecipeForm(props) {
     }
 
     return(<>
-            <ComboBox
-                name="combo-1"
-                pattern='^([a-zA-Z0-9]{1,})$'
-                avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
-                selectable
-                single
-                footer
+        <ComboBox
+            name="combo-1"
+            pattern='^([a-zA-Z0-9]{1,})$'
+            avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+            selectable
+            single
+            footer
 
-                data={recipeData}
-                onClickRow={onClickRecipeRow}
-                lockTrigger={triggerRecipeLock}
-                displayTrigger={triggerRecipeDisplay}
-            />
-            <ComboBox
-                name="combo-2"
-                pattern='^([a-zA-Z0-9]{1,})$'
-                avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
-                selectable
-                footer
-                quantities
+            data={recipeData}
+            onClickRow={onClickRecipeRow}
+            lockTrigger={triggerRecipeLock}
+            displayTrigger={triggerRecipeDisplay}
+        />
+        <ComboBox
+            name="combo-2"
+            pattern='^([a-zA-Z0-9]{1,})$'
+            avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+            selectable
+            footer
+            quantities
 
-                data={recipeIngredientData}
-                onClickRow={onClickIngredientRow}
-                onChangeQuantity={onChangeIngredientQuantity}
-                lockTrigger={triggerIngredientLock}
-                displayTrigger={triggerIngredientDisplay}
-                selectedRowsTrigger={triggerIngredientSelectedRows}
+            data={recipeIngredientData}
+            onClickRow={onClickIngredientRow}
+            onChangeQuantity={onChangeIngredientQuantity}
+            lockTrigger={triggerIngredientLock}
+            displayTrigger={triggerIngredientDisplay}
+            selectedRowsTrigger={triggerIngredientSelectedRows}
 
-            />
-            <Button 
-                variant="primary"
-                onClick={handleSaveClick}
-            >
-                Consolidate
-            </Button>
+        />
+        <Button 
+            variant="primary"
+            onClick={handleSaveClick}
+        >
+            Consolidate
+        </Button>
     </>);
 }

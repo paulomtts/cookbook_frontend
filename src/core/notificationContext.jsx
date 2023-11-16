@@ -11,7 +11,7 @@ const NotificationContext = createContext();
 
 export function NotificationProvider({ children }) {
 
-    const [delay, setDelay] = useState(2000)
+    const delay = 2000;
     const [notification, setNotification] = useState([])
 
     useEffect(() => {
@@ -30,7 +30,6 @@ export function NotificationProvider({ children }) {
 
     function spawnToast({title, message, variant, Component = null, delay = 2000}) {
         const id = uuidv4();
-        setDelay(delay)
 
         setNotification([
             ...notification,
@@ -65,14 +64,12 @@ export function NotificationProvider({ children }) {
     }
     
     return (
-        <div>
-            <NotificationContext.Provider value={{ notification, spawnToast }}>
-                {children}
-                <div className='notification-container'>
-                    {...notification}
-                </div>
-            </NotificationContext.Provider>
-        </div>
+        <NotificationContext.Provider value={{ notification, spawnToast }}>
+            {children}
+            <div className='notification-container'>
+                {...notification}
+            </div>
+        </NotificationContext.Provider>
     );
 }
 

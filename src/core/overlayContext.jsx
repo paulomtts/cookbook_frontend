@@ -39,16 +39,13 @@ export function OverlayProvider({ children }) {
     };
 
     return (
-        <div>
-            <OverlayContext.Provider value={{ show, hide }}>
-                <div style={style}>
-                    {/* <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '37.5%' }} /> */}
-                    <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '50%' }} />
-                </div>
-                {children}
-            </OverlayContext.Provider>
-            
-        </div>
+        <OverlayContext.Provider value={{ show, hide }}>
+            <div style={style}>
+                {/* <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '37.5%' }} /> */}
+                <Spinner variant='primary' animation="border" role="status" style={{ position: 'absolute', top: '50%', left: '50%' }} />
+            </div>
+            {children}
+        </OverlayContext.Provider>
     );
 }
 

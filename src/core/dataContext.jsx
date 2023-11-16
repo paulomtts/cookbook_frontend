@@ -115,9 +115,9 @@ export function DataProvider({ children }) {
      * @param {boolean} notification - Whether to show a notification during the fetch.
      * @param {boolean} overlay - Whether to show an overlay during the fetch.
      * @param {number} overlayLength - The length of time to show the overlay for.
-     * @returns {Promise<{response: Response, json: {data: []}}>} - The response and JSON data from the API.
+     * @returns {Promise<{response: Response, json: {data: []}}>} The response and JSON data from the API.
      */
-    const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250, structured = true) => {
+    const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250, structured = false) => {
         const url = api.crud.select + '?table_name=' + tableName + '&structured=' + structured;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters, lambda_args: lambdaArgs}) });
         const { response, content } = await _makeRequest(payload, url, notification, overlay, overlayLength);

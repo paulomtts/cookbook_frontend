@@ -8,7 +8,7 @@ import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 
 export default function ComboBoxTable() {
-    const { containerRef, avoid } = useContext(ComboBoxContext);
+    const { containerRef } = useContext(ComboBoxContext);
     
     return (<>
         <div ref={containerRef} className="ComboBox-table-container">

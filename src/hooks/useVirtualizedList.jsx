@@ -17,7 +17,7 @@ export const useVirtualizedList = (data, conditionsCallback, builderCallback, tr
     const [visibleData, setVisibleData] = useState([]);
     const [prevHeight, setPrevDivHeight] = useState(0);
     const [postHeight, setPostDivHeight] = useState(0);
-    
+
     const buildList = () => {
         return data.reduce((acc, row) => {
             if (conditionsCallback(row)) acc.push(builderCallback(row));
@@ -56,7 +56,6 @@ export const useVirtualizedList = (data, conditionsCallback, builderCallback, tr
         containerRef.current.addEventListener("scroll", handleScroll);
         return () => {
             if (!containerRef.current) return;
-            console.log('this is not being run')
             containerRef.current.removeEventListener("scroll", handleScroll);
         }
     }, [data, ...triggers]);
