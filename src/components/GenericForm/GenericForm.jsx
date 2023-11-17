@@ -116,10 +116,10 @@ export default function GenericForm({
                 <div className="GenericForm-footer-container">
                     {data.length > 0 &&
                         <FormAccordion
-                        tableName={tableName}
-                        dataLength={data.length}
-                        inputFields={fields}
-                        onSubmit={handleSubmit}
+                            tableName={tableName}
+                            dataLength={data.length}
+                            inputFields={fields}
+                            onSubmit={handleSubmit}
                         >
                             <ComboBox 
                                 data={data}
