@@ -34,7 +34,7 @@ export default function FormFields({
                                 )
                                 :
                                 <Form.Control 
-                                    id={`${tableName}-generic-form-input-${key}`}
+                                    id={`${tableName}-form-input-${key}`}
                                     type="text" 
                                     placeholder={key.charAt(0).toUpperCase() + key.slice(1)} 
                                     value={formData[key]} 

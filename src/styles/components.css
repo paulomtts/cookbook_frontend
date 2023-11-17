@@ -47,7 +47,7 @@
 }
 
 .generic-form-inputs {
-    padding: 10px;
+    padding: 1rem;
 }
 
 /* Notification */
@@ -67,65 +67,7 @@
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.65);
 }
 
-
-
-/* Accordion button */
-.custom-accordion-button {
-    color: rgba(22, 69, 62, 1);
-    background-color: rgba(218, 231, 230, 0.35);
-    border-color: rgba(22, 69, 62, 1);
-    transition: all 0.1s ease-in-out;
-}
-
-.custom-accordion-button:hover {
-    color: white;
-    background-color: rgba(22, 69, 62, 0.8);
-    border-color: rgba(22, 69, 62, 0.8);
-    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.8);
-}
-
-.custom-accordion-button:active {
-    background-color: rgba(22, 69, 62, 0.4) !important;
-    border-color: rgba(22, 69, 62, 0.4) !important;
-    box-shadow: none;
-}
-
-.custom-accordion-button:focus {
-    background-color: rgba(22, 69, 62, 0.35) !important;
-    border-color: rgba(22, 69, 62, 1) !important;
-}
-
-/* Submit button */
-.generic-form-submit {
-    float: right;
-    color: white;
-    background-color: rgba(22, 69, 62, 0.8);
-    border-color: rgba(22, 69, 62, 1);
-    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.8);
-    transition: all 0.1s ease-in-out;
-}
-
-.generic-form-submit:hover {
-    color: white;
-    background-color: rgba(22, 69, 62, 0.6);
-    border-color: rgba(22, 69, 62, 1);
-}
-
-.generic-form-submit:active {
-    background-color: rgba(22, 69, 62, 0.4) !important;
-    border-color: rgba(22, 69, 62, 1) !important;
-    box-shadow: none;
-}
-
-.generic-form-submit:focus {
-    background-color: rgba(22, 69, 62, 0.8) !important;
-    border-color: rgba(22, 69, 62, 1) !important;
-}
-
-.generic-form-collapse {
-    transition: all 0.15s ease-in-out;
-}
-
+/* Recipe form text */
 .recipe-form-text {
     font-weight: 200;
     font-size: 20px;
