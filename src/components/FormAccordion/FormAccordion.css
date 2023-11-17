@@ -1,0 +1,54 @@
+@import url("../../styles/root.css");
+@import url("../../styles/fonts.css");
+
+.FormAccordion-item {
+    background-color: transparent;
+}
+
+.FormAccordion-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 0 0 1rem 0;
+
+    color: gray;
+    font-size: 2rem;
+    font-family: "Bestie";
+}
+
+.FormAccordion-collapse {
+    transition: all 0.1s ease-in-out;
+}
+
+/* Button Container */
+.FormAccordion-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: var(--spacing-margin);
+}
+
+/* Accordion button */
+.FormAccordionButton {
+    color: var(--darkgreen);
+    border-color: var(--darkgreen);
+
+    transition: all 0.1s ease-in-out;
+}
+
+.FormAccordionButton:hover {
+    color: white;
+    border-color: var(--darkgreen);
+    background-color: var(--darkgreen-fill);
+}
+
+.FormAccordionButton:active {
+    border-color: var(--darkgreen) !important;
+    transform: scale(0.975);
+}
+
+.FormAccordionButton:focus {
+    background-color: var(--darkgreen-opaque-35) !important;
+}

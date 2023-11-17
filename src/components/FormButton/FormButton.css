@@ -1,0 +1,23 @@
+@import url("../../styles/root.css");
+
+/* Button */
+.FormButton {
+    color: white;
+    background-color: var(--darkgreen);
+    border-color: var(--darkgreen);
+    box-shadow: var(--smooth-box-shadow);
+
+    transition: all 0.1s ease-in-out;
+}
+
+.FormButton:hover {
+    color: white;
+    background-color: var(--darkgreen-opaque-60);
+    border-color: var(--darkgreen);
+}
+
+.FormButton:active {
+    background-color: var(--darkgreen-fill) !important;
+    border-color: var(--darkgreen) !important;
+    box-shadow: none;
+}
