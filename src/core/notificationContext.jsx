@@ -3,9 +3,6 @@ import React, { useState, useContext, createContext, useEffect } from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 
-/* Local dependencies */
-import '../styles/components.css'
-
 
 const NotificationContext = createContext();
 

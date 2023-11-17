@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 /* Local dependencies */
 import Navbar from "./components/Navbar/Navbar";
-import GenericForm from "./components/GenericForm";
+import GenericForm from "./components/GenericForm/GenericForm";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
 import Select from "./components/Select";
 import DashboardButton from "./components/DashboardButton/DashboardButton";
@@ -15,40 +15,34 @@ export default function App() {
     const getComponents = (key) => {
         switch(key) {
             case 'registry':
-                return (
-                    <div>
+                return [
                         <GenericForm
-                            id='ingredients-form'
+                            key={'ingredients'}
                             title='ingredients' 
-                            tableName='ingredient' 
-                            inputFields={['name', 'description', 'type']}
+                            tableName='ingredients' 
                             customInputs={{
                                 'type': 
-                                <Select tableName='category' filters={{'and': {'type': ["'ingredient'"]}}}/>
+                                <Select tableName='categories' filters={{'and': {'type': ["'ingredient'"]}}}/>
                             }}
                             imgSrc="./src/assets/ingredients.avif"
                         />
-                        <div className="text-divider-02"/>
-                        <GenericForm
-                            id='categories-form'
+                        , <GenericForm
+                            key={'categories'}
                             title='categories'
-                            tableName='category'
-                            inputFields={['name', 'type']}
+                            tableName='categories'
                             customInputs={{'type':
                                 <Select customOptions={['ingredient', 'period', 'recipe']}/>
                             }}
                             imgSrc="./src/assets/categories.jpg"
                         />
-                        <div className="text-divider-02"/>
-                        <GenericForm
-                            id='units-form'
+                        , <GenericForm
+                            key={'units'}
                             title='units'
-                            tableName='unit'
-                            inputFields={['name', 'abbreviation', 'base']}
+                            tableName='units'
                             imgSrc="./src/assets/units.jpg"
                         />
-                    </div>
-                );
+                    
+                ];
             case 'recipes':
                 return ( 
                     <RecipeForm />

@@ -61,7 +61,10 @@ export default function ComboBox (props) {
     const [selectedRows, setSelectedRows] = useState([]);
     const [quantitiesData, setQuantitiesData] = useState({});
 
-    
+    // useEffect(() => {
+    //     console.log(data);
+    // }, [data]);
+
     /* Hooks */
     useEffect(() => {
         if(!lockTrigger) return;

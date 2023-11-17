@@ -16,6 +16,12 @@
     border-color: var(--darkgreen);
 }
 
+.FormButton:focus {
+    color: white;
+    background-color: var(--darkgreen-opaque-60);
+    border-color: var(--darkgreen);
+}
+
 .FormButton:active {
     background-color: var(--darkgreen-fill) !important;
     border-color: var(--darkgreen) !important;

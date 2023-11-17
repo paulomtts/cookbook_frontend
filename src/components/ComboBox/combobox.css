@@ -1,4 +1,5 @@
 @import url("../../styles/keyframes.css");
+@import url("../../styles/root.css");
 
 .ComboBox {
     display: flex;
@@ -38,72 +39,92 @@
 
 /* Dropdown */
 .ComboBox-dropdown {
-    background-color: white;
     min-width: 20%;
-    background-color: white;
+
     border: 1px solid lightgray;
     border-radius: 5px 0px 0px 5px;
-    box-shadow: 0px 1px 1px 0px lightgray;
+    
+    color: black;
+    background-color: white !important;
+    box-shadow: var(--margin-box-shadow) !important;
 }
 
 .ComboBox-dropdown:hover {
     color: white;
-    background-color: rgba(22, 69, 62, 0.8);
-    border-color: rgba(22, 69, 62, 0.8);
+    border-color: var(--darkgreen) !important;
+    background-color: var(--darkgreen-fill) !important;
 }
 
 .ComboBox-dropdown:focus {
-    background-color: white;
-    color: black;
+    border-color: var(--darkgreen) !important;
+    background-color: var(--darkgreen-opaque-35) !important;
+}
+
+.ComboBox-dropdown:active {
+    border-color: var(--darkgreen) !important;
+    background-color: var(--darkgreen-opaque-60) !important;
+}
+
+.ComboBox-dropdown-item:hover {
+    color: white;
+    background-color: var(--darkgreen-opaque-60);
 }
 
 .ComboBox-dropdown-item:active {
-    background-color: rgba(22, 69, 62, 0.8);
     color: white;
+    background-color: var(--darkgreen-opaque-35) !important;
 }
 
 .ComboBox-dropdown:disabled {
-    background-color: rgb(224, 235, 243);
-    box-shadow: 0px 1px 1px 0px lightgray;
     border: 1px solid lightgray;
+    box-shadow: none !important;
+}
+
+/* Search bar */
+.ComboBox-search-bar {
+    width: 88%;
+    border-radius: 0px 5px 5px 0px;
+    box-shadow: var(--margin-box-shadow);
+}
+
+.ComboBox-search-bar:disabled {
+    box-shadow: none;
 }
 
 
 /* Lock button */
 .ComboBox-lock-button {
-    margin-left: 6px;
-    font-size: 14px;
-    width: 45px;
-    padding: 8px 0px;
+    font-size: 1rem;
+    width: 3.1rem;
 
     color: black;
     background-color: white;
     border: 1px solid lightgray;
-    box-shadow: 0px 0px 3px 0px lightgray;
+    box-shadow: var(--margin-box-shadow);
 }
 
 .ComboBox-lock-button:hover {
     color: white;
-    background-color: rgba(22, 69, 62, 0.8);
-    border-color: rgba(22, 69, 62, 0.8);
+    border-color: var(--darkgreen);
+    background-color: var(--darkgreen-fill);
+}
+
+.ComboBox-lock-button:focus {
+    border-color: var(--darkgreen) !important;
+    background-color: var(--darkgreen-opaque-60) !important;
 }
 
 .ComboBox-lock-button:active {
-    background-color: rgba(22, 69, 62, 0.4) !important;
-    border-color: rgba(22, 69, 62, 0.4) !important;
-    box-shadow: none;
+    border-color: var(--darkgreen) !important;
+    background-color: var(--darkgreen-opaque-35) !important;
 }
 
-.ComboBox-search-bar {
-    width: 88%;
-    border-radius: 0px 5px 5px 0px;
-    box-shadow: 0px 1px 1px 0px lightgray;
-}
 
 
 /* Switch */
 .ComboBox-switch {
     text-align: center;
+
     user-select: none;
     cursor: pointer;
     min-width: 15%;
@@ -121,7 +142,7 @@
 }
 
 .ComboBox-table-header {
-    background-color: rgba(218, 231, 230, 0.35) !important;
+    background-color: var(--lightgreen) !important;
 }
 
 .ComboBox-table-row-data {
@@ -131,12 +152,11 @@
 
 .ComboBox-table-row-data-container {
     display: flex;
-    gap: 10px;
     align-items: center;
     justify-content: center;
+    gap: 10px;
+
     cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
 }
 
 .ComboBox-checkbox {
@@ -145,7 +165,7 @@
 
 .ComboBox-delete-button {
     display: inline-block;
-    font-size: 12px;
+    font-size: 0.75rem;
     transition: all 0.05s ease-in-out;
 }
 

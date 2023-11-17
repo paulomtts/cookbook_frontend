@@ -27,7 +27,7 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: var(--spacing-margin);
+    margin-bottom: 1rem;
 }
 
 /* Accordion button */

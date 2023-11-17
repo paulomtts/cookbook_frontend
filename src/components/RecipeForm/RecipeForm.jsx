@@ -18,7 +18,7 @@ export default function RecipeForm() {
     const dataContext = useData();
   
     /* Data */
-    const [recipeData, setRecipeData] = useDataFetcher("recipe");
+    const [recipeData, setRecipeData] = useDataFetcher("recipes");
     
     const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
     const [snapshotRecipeIngredientData, setSnapshotRecipeIngredientData] = useState([]); // snapshot of recipe_ingredient

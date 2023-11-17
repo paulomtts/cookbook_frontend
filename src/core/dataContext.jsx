@@ -9,6 +9,7 @@ import { useOverlay } from './overlayContext';
 const addresses = {
     local: {
         crud: {
+            maps: 'http://localhost:8000/crud/maps',
             select: 'http://localhost:8000/crud/select',
             insert: 'http://localhost:8000/crud/insert',
             update: 'http://localhost:8000/crud/update',
@@ -18,7 +19,7 @@ const addresses = {
     }
     // add remote api here
 };
-const api = addresses.local;
+export const api = addresses.local;
 
 
 const DataContext = createContext();
@@ -35,13 +36,13 @@ export function DataProvider({ children }) {
 
     const getState = (objectName) => {
         switch (objectName) {
-            case 'ingredient':
+            case 'ingredients':
                 return ingredientData;
-            case 'recipe':
+            case 'recipes':
                 return recipeData;
-            case 'unit':
+            case 'units':
                 return unitData;
-            case 'category':
+            case 'categories':
                 return categoryData;
             default:
                 return null;
@@ -50,13 +51,13 @@ export function DataProvider({ children }) {
 
     const _getStateSetter = (objectName) => {
         switch (objectName) {
-            case 'ingredient':
+            case 'ingredients':
                 return setIngredientData;
-            case 'recipe':
+            case 'recipes':
                 return setRecipeData;
-            case 'unit':
+            case 'units':
                 return setUnitData;
-            case 'category':
+            case 'categories':
                 return setCategoryData;
             default:
                 return null;
@@ -105,6 +106,20 @@ export function DataProvider({ children }) {
         if (overlay) await overlayContext.hide(overlayLength);
 
         return { response, content }
+    }
+
+    /**
+     * Makes a custom route request.
+     * @param {string} url - The URL of the route.
+     * @param {object} payload - The payload to send with the request.
+     * @param {boolean} notification - Whether to show a notification during the request.
+     * @param {boolean} overlay - Whether to show an overlay during the request.
+     * @param {number} overlayLength - The duration of the overlay in milliseconds.
+     * @returns {Promise<{ response: any, content: any }>} - The response and content of the request.
+     */
+    const customRoute = async (url, payload, notification = true, overlay = true, overlayLength = 250) => {
+        const { response, content } = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        return { response, content };
     }
 
 
@@ -192,7 +207,7 @@ export function DataProvider({ children }) {
 
     
     return (
-        <Provider value={{ getState, fetchData, updateData, deleteData, submitData, generatePayload }}>
+        <Provider value={{ getState, customRoute, fetchData, updateData, deleteData, submitData, generatePayload }}>
             {children}
         </Provider>
     );
