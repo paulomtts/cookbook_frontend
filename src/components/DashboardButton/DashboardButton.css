@@ -14,6 +14,9 @@
     background-image: url("../../assets/ingredients.avif");
     background-size: cover;
     background-position: center;
+    cursor: pointer;
+
+    transition: all 0.15s ease-in-out;
 }
 
 .DashboardButton::after {
@@ -27,7 +30,18 @@
     
     backdrop-filter: blur(2px);
     background-color: rgba(42, 95, 87, 0.60);
-    box-shadow: 5px 10px 10px 0px rgba(0, 0, 0, 0.65);
+    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.65);
+}
+
+.DashboardButton:hover {
+    box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.85);
+    transform: translateY(-2px);
+}
+
+.DashboardButton:active {
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.85);
+    transform: translateY(2px);
+
 }
 
 .DashboardButton-title {
@@ -40,18 +54,22 @@
     position: relative;
     z-index: 3;
     
-    cursor: pointer;
     user-select: none;
 
     transition: all 0.3s ease-in-out;
 }
 
 .DashboardButton-text {
-    z-index: 3;
-
-    color: rgb(217, 240, 231);
-
+    margin: 20px;
+    
+    color: rgb(231, 245, 239);
+    
     font-weight: 200;
     font-size: 1.5rem;
+    text-align: center;
     text-shadow: 2px 2px 4px black;
+
+    user-select: none;
+    
+    z-index: 3;
 }
