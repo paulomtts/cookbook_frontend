@@ -42,7 +42,7 @@ export default function ComboBox (props) {
     const {
         data, pattern, avoid, selectable = false, single = false, editable = false, quantities = false, footer = false
 
-        , customColumns = {}
+        , customComponents = {}
         
         , lockTrigger = null
         , displayTrigger = null
@@ -59,13 +59,22 @@ export default function ComboBox (props) {
     const [searchIn, setSearchIn] = useState("all");
     const [searchFor, setSearchFor] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [quantitiesData, setQuantitiesData] = useState({});
 
-    // useEffect(() => {
-    //     console.log(data);
-    // }, [data]);
+    /////////////////////////////////////////////////////////
+    // const [quantitiesData, setQuantitiesData] = useState({});
+    const [customData, setCustomData] = useState({});
+
 
     /* Hooks */
+    useEffect(() => {
+        const newCustomData = {};
+        Object.keys(customComponents).map((key) => {
+            newCustomData[key] = {};
+        });
+    }, [data]); // reason: setup customData
+
+    //////////////////////////////////////////////////////////
+
     useEffect(() => {
         if(!lockTrigger) return;
         setLock(lockTrigger);
@@ -80,18 +89,6 @@ export default function ComboBox (props) {
         if(!selectedRowsTrigger) return;
         setSelectedRows(selectedRowsTrigger??[]);
     }, [selectedRowsTrigger]);
-
-    useEffect(() => {
-        if(!quantities || !data) return;
-
-        const newQuantitiesData = data.reduce((acc, row) => {
-            acc[row[`id`]] = row[`quantity`]??0;
-            return acc;
-        }, {});
-
-        setQuantitiesData(newQuantitiesData);
-        onChangeQuantity(newQuantitiesData);
-    }, [data]); // reason: setup quantities 
 
 
     /* Methods */
