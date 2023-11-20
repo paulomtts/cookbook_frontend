@@ -31,14 +31,15 @@ export default function ComboBox (props) {
     } = props;
 
     const fields = getFields(data, avoid);
+
     const { status: lock, toggleStatus: toggleLock, setStatus: setLock } = useToggle();
     const { status: display, toggleStatus: toggleDisplay, setStatus: setDisplay } = useToggle("all", ["all", "selected"]);
+
     const [searchIn, setSearchIn] = useState("all");
     const [searchFor, setSearchFor] = useState("");
-    const [selectedRows, setSelectedRows] = useState([]);
 
-    /////////////////////////////////////////////////////////
     const [customData, setCustomData] = useState({});
+    const [selectedRows, setSelectedRows] = useState([]);
 
 
     /* Hooks */
@@ -49,14 +50,12 @@ export default function ComboBox (props) {
             Object.keys(customComponents).map((key) => {
                 if(newCustomData[key] === undefined) newCustomData[key] = {};
 
-                newCustomData[key][row[`id`]] = row[key];
+                newCustomData[key][row[`id`]] = row[key]??"";
             });
         });
 
         setCustomData(newCustomData);
     }, [data]); // reason: setup customData
-
-    //////////////////////////////////////////////////////////
 
     useEffect(() => {
         if(!lockTrigger) return;
