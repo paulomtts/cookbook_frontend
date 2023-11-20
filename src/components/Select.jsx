@@ -8,10 +8,12 @@ import { useData } from "../core/dataContext";
 
 export default function Select({
     tableName
+    , disabled
     , value
     , customOptions = []
     , filters = {}
     , onChange = () => {}
+    , style
 }) {
     const dataContext = useData();
 
@@ -50,9 +52,12 @@ export default function Select({
     return (<>
         <Form.Group>
             <Form.Control 
+                className="Select"
                 as="select"
                 onChange={handleSelectChange}
                 value={value}
+                disabled={disabled}
+                style={{...style, border: (disabled ? 'none': '1px solid lightgray'), cursor: (disabled ? 'auto' : 'pointer')}}
             >
                 <option key = 'blankChoice' hidden value>Select...</option>
                 {options.map((option, index) => {

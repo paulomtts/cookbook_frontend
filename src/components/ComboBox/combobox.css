@@ -92,6 +92,16 @@
 }
 
 
+/* Switch */
+.ComboBox-switch {
+    text-align: center;
+
+    user-select: none;
+    cursor: pointer;
+    min-width: 15%;
+}
+
+
 /* Lock button */
 .ComboBox-lock-button {
     font-size: 1rem;
@@ -120,17 +130,6 @@
 }
 
 
-
-/* Switch */
-.ComboBox-switch {
-    text-align: center;
-
-    user-select: none;
-    cursor: pointer;
-    min-width: 15%;
-}
-
-
 /* Table */
 .ComboBox-table-container {
     max-height: 297px;
@@ -139,6 +138,7 @@
 
 .ComboBox-table {
     margin-bottom: 0px;
+
 }
 
 .ComboBox-table-header {
@@ -173,8 +173,30 @@
     transform: scale(0.95);
 }
 
-.ComboBox-quantity-input {
+
+/* Specific custom rows */
+.ComboBox-table-quantity-header, .ComboBox-table-unit-header {
+    width: 10%;
+}
+
+.ComboBox-table-quantity-header, .ComboBox-table-unit-header, .Select {
+    text-align: center;
+}
+
+.Select {
+    padding: 0;
+    /* border-left: none !important; */
+    border-radius: 0px !important;
+}
+
+.ComboBox-quantity-input, .ComboBox-unit-input {
     text-align: center;
     border: none;
     border-radius: 0px;
+}
+
+.ComboBox-quantity-input:enabled {
+    padding: 0;
+    border: 1px solid lightgray !important;
+    border-radius: 0px !important;
 }

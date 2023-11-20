@@ -1,6 +1,6 @@
 /* Foreign dependencies */
 import React, { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 
 /* Local dependencies */
 import { useForm } from "../../core/formContext";
@@ -8,6 +8,7 @@ import { useData } from "../../core/dataContext";
 import { useDataFetcher } from "../../hooks/useDataFetcher";
 import { useTrigger } from "../../hooks/useTrigger";
 import ComboBox from "../ComboBox/ComboBox";
+import Select from "../Select";
 
 
 
@@ -91,7 +92,9 @@ export default function RecipeForm() {
             footer
 
             data={recipeData}
+
             onClickRow={onClickRecipeRow}
+
             lockTrigger={triggerRecipeLock}
             displayTrigger={triggerRecipeDisplay}
         />
@@ -101,15 +104,19 @@ export default function RecipeForm() {
             avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
             selectable
             footer
-            quantities
-
+                        
             data={recipeIngredientData}
+            customComponents={{
+                'quantity': <Form.Control as="input" type="number" min="0" />
+                , 'unit': <Select tableName='units' />
+            }}
+            
             onClickRow={onClickIngredientRow}
-            onChangeQuantity={onChangeIngredientQuantity}
+            onChangeCustomData={onChangeIngredientQuantity}
+
             lockTrigger={triggerIngredientLock}
             displayTrigger={triggerIngredientDisplay}
             selectedRowsTrigger={triggerIngredientSelectedRows}
-
         />
         <Button 
             variant="primary"

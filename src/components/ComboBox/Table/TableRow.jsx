@@ -15,16 +15,15 @@ export default function TableRow({
 
     const {
         fields
-        , customColumns
+        , customComponents
         , selectable
         , editable
-        , quantities
         , lock
-        , quantitiesData
+        , customData
         , selectedRows
         , handleClickRow
         , handleClickDelete
-        , handleQuantityChange
+        , handleCustomDataChange
     } = useContext(ComboBoxContext);
 
     return(<>
@@ -40,7 +39,7 @@ export default function TableRow({
                         disabled={lock}
                         checked={selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])}
                         onChange={() => handleClickRow(row)}
-                        />}
+                    />}
 
                     {editable && <Button
                         className="ComboBox-delete-button"
@@ -59,25 +58,17 @@ export default function TableRow({
             {Object.keys(row).map((key, idx) => {
                 if (!fields.includes(key)) return null;
 
-                if (Object.keys(customColumns).includes(key)) {
-                    return <td key={`option-${idx}`} className="ComboBox-table-row-data" style={{ cursor: lock ? 'default' : 'pointer' }} onClick={() => handleClickRow(row)}>
-                        {React.cloneElement(customColumns[key], { row })}
-                    </td>
-                }
-
-                if (quantities && Object.keys(quantitiesData).length > 0 && key === 'quantity') {
-                    return <td key={`option-${idx}`} style={{verticalAlign: 'middle', padding: '0px'}}>
-                    <Form.Control
-                        className="ComboBox-quantity-input"
-                        id={`quantity-${index}`}
-                        type="number"
-                        disabled={lock}
-                        min={0}
-                        value={quantitiesData[row['id']]}
-                        onChange={(e) => handleQuantityChange(row, parseInt(e.target.value))}
-                        style={{ backgroundColor: (editable ? lock : true) ? 'transparent' : 'white' }}
-                    />
-                </td>
+                if (Object.keys(customData).includes(key)) {
+                    return <td key={`option-${idx}`} style={{verticalAlign: 'middle', padding: '2px'}}>
+                        {React.cloneElement(customComponents[key], {
+                            className: `ComboBox-${key}-input`
+                            , id: `${key}-${index}`	
+                            , disabled: lock
+                            , value: customData[key][row['id']]
+                            , onChange: (e) => handleCustomDataChange(row, key, e.target.value)
+                            , style: { backgroundColor: (editable ? lock : true) ? 'transparent' : 'white', boxShadow: 'none'}
+                        })}
+                    </td>  
                 }
 
                 return <td 

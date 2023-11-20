@@ -56,7 +56,7 @@ export default function App() {
         }
     }
 
-    const [content, setContent] = useState(getComponents('dashboard'));
+    const [content, setContent] = useState(getComponents('recipes'));
 
     const handleNavigationComponentClick = (key) => {
         setContent(getComponents(key));
