@@ -24,8 +24,8 @@ export default function RecipeForm() {
     const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
     const [snapshotRecipeIngredientData, setSnapshotRecipeIngredientData] = useState([]); // snapshot of recipe_ingredient
 
-    /* Quantities & Selected Rows */
-    const [recipeIngredientQuantitiesData, setRecipeIngredientQuantitiesData] = useState({});
+    /* CustomData & Selected Rows */
+    const [recipeIngredientCustomData, setRecipeIngredientCustomData] = useState({});
     const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]);
 
 
@@ -49,20 +49,20 @@ export default function RecipeForm() {
         
 
         // Cleanup
-        setRecipeIngredientQuantitiesData({});
+        setRecipeIngredientCustomData({});
 
         // Triggers
         setTriggerRecipeLock(true);
         setTriggerRecipeDisplay("selected");
         
-        setTriggerIngredientSelectedRows(snapshotData);
-        setTriggerIngredientDisplay("selected");
         setTriggerIngredientLock(true);
+        setTriggerIngredientDisplay("selected");
+        setTriggerIngredientSelectedRows(snapshotData);
         
     }
 
-    const onChangeIngredientQuantity = (newQuantitiesData, _) => { // reason: ComboBox's onChangeQuantity sends (quantitiesData, row)
-        setRecipeIngredientQuantitiesData(newQuantitiesData);
+    const onChangeRecipeIngredientCustomData = (newCustomData, _) => { // reason: ComboBox's onChangeCustomData sends (quantitiesData, row)
+        setRecipeIngredientCustomData(newCustomData);
     }
 
     const onClickIngredientRow = async (selectedRows, _) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
@@ -71,11 +71,10 @@ export default function RecipeForm() {
 
 
     const handleSaveClick = async () => {
+        const consolidatedQuantities = formContext.consolidateData(recipeIngredientSelectedRows, recipeIngredientCustomData['quantity'], 'id', 'quantity');
+        const consolidatedUnits = formContext.consolidateData(consolidatedQuantities, recipeIngredientCustomData['unit'], 'id', 'unit');
 
-        const consolidatedData = formContext.consolidateData(recipeIngredientSelectedRows, recipeIngredientQuantitiesData, 'id', 'quantity');
-        // add unit consolidation here
-        
-        const consolidatedOperations = formContext.consolidateOperations(snapshotRecipeIngredientData, consolidatedData, 'id');
+        const consolidatedOperations = formContext.consolidateOperations(snapshotRecipeIngredientData, consolidatedUnits, 'id');
         const { insertRows, updateRows, deleteRows } = consolidatedOperations;
 
         const consolidatedInsertRows = formContext.consolidateColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type']);
@@ -112,7 +111,7 @@ export default function RecipeForm() {
             }}
             
             onClickRow={onClickIngredientRow}
-            onChangeCustomData={onChangeIngredientQuantity}
+            onChangeCustomData={onChangeRecipeIngredientCustomData}
 
             lockTrigger={triggerIngredientLock}
             displayTrigger={triggerIngredientDisplay}
