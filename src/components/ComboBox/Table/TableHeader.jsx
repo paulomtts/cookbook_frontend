@@ -7,7 +7,7 @@ import { ComboBoxContext } from '../ComboBox';
 
 export default function TableHeader() {
 
-    const { fields } = useContext(ComboBoxContext);
+    const { fields, rename } = useContext(ComboBoxContext);
 
     return (<>
         <thead style={{position: 'sticky', top: '0px', zIndex: '1', backgroundColor: 'white'}} >
@@ -19,7 +19,10 @@ export default function TableHeader() {
                         key={`option-${index}`}
                         className={`ComboBox-table-header ComboBox-table-${key}-header`}
                     >
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                        {Object.keys(rename).includes(key) ? 
+                            rename[key].charAt(0).toUpperCase() + rename[key].slice(1)
+                            : 
+                            key.charAt(0).toUpperCase() + key.slice(1)}
                     </th>
                 })}
             </tr>

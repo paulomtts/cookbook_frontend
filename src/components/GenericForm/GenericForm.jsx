@@ -20,7 +20,7 @@ export default function GenericForm({
     , avoid = ['id', 'created_at', 'updated_at']
     , pattern = '^([a-zA-Z0-9]{1,})$'
     
-    , customInputs = {'type': <Select tableName={tableName}/>}
+    , customInputs = {}
 }) {
 
 
@@ -90,7 +90,6 @@ export default function GenericForm({
         setFormData(newFormData);
     }
 
-    
     return (<>
         <Form className='GenericForm'>
     
@@ -110,7 +109,7 @@ export default function GenericForm({
                         customInputs={customInputs}
                         avoid={avoid}
                         onInputChange={onInputChange}
-                        />
+                    />
                 </div>
         
                 <div className="GenericForm-footer-container">

@@ -60,13 +60,13 @@ export default function TableRow({
 
                 if (Object.keys(customData).includes(key)) {
                     return <td key={`option-${idx}`} style={{verticalAlign: 'middle', padding: '2px'}}>
-                        {React.cloneElement(customComponents[key], {
-                            className: `ComboBox-${key}-input`
+                        {React.cloneElement(customComponents[key].component, {
+                            className: `ComboBox-${key}-input ComboBox-Select`
                             , id: `${key}-${index}`	
                             , disabled: lock
                             , value: customData[key][row['id']]
                             , onChange: (e) => handleCustomDataChange(row, key, e.target.value)
-                            , style: { backgroundColor: (editable ? lock : true) ? 'transparent' : 'white', boxShadow: 'none'}
+                            , style: { boxShadow: 'none'}
                         })}
                     </td>  
                 }

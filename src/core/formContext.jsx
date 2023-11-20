@@ -95,7 +95,8 @@ export function FormProvider({ children }) {
         }
     }
 
-    const consolidateColumns = (data, avoid) => {
+
+    const removeColumns = (data, avoid) => {
         const newData = data.map(row => {
             const newRow = { ...row };
 
@@ -113,7 +114,7 @@ export function FormProvider({ children }) {
         
 
     return (
-        <Provider value={{consolidateData, consolidateOperations, consolidateColumns}}>
+        <Provider value={{consolidateData, consolidateOperations, removeColumns}}>
             {children}
         </Provider>
     )

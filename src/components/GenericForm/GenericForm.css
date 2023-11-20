@@ -12,6 +12,12 @@
     box-shadow: var(--highlight-box-shadow);
 }
 
+.GenericForm-description {
+    font-weight: 200;
+    font-size: 20px;
+    color: rgba(22, 69, 62, 1);
+}
+
 .GenericForm-container {
     display: flex;
     flex-direction: column;

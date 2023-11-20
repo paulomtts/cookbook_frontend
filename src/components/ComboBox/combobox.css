@@ -20,7 +20,6 @@
 
 .ComboBox-body {
     padding: 0px;
-    max-height: 327px;
 }
 
 .ComboBox-footer {
@@ -175,28 +174,25 @@
 
 
 /* Specific custom rows */
-.ComboBox-table-quantity-header, .ComboBox-table-unit-header {
+.ComboBox-table-quantity-header, .ComboBox-table-id_unit-header {
     width: 10%;
 }
 
-.ComboBox-table-quantity-header, .ComboBox-table-unit-header, .Select {
+.ComboBox-table-quantity-header, .ComboBox-table-id_unit-header, .ComboBox-Select {
     text-align: center;
 }
 
-.Select {
+.ComboBox-Select {
     padding: 0;
-    /* border-left: none !important; */
-    border-radius: 0px !important;
+    box-shadow: none !important;
 }
 
-.ComboBox-quantity-input, .ComboBox-unit-input {
+.ComboBox-quantity-input {
     text-align: center;
     border: none;
-    border-radius: 0px;
 }
 
 .ComboBox-quantity-input:enabled {
     padding: 0;
     border: 1px solid lightgray !important;
-    border-radius: 0px !important;
 }

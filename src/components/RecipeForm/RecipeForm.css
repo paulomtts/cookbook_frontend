@@ -1,0 +1,26 @@
+.RecipeForm-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    margin: var(--spacing-margin);
+}
+
+.RecipeForm-recipe {
+    max-height: 205px !important;
+}
+
+.ImageUploader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+
+    height: 205px;
+    width: 205px;
+
+    margin-left: 1rem;
+
+    background-color: black;
+}

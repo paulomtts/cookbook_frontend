@@ -17,7 +17,7 @@ const { Provider } = ComboBoxContext;
 
 export default function ComboBox (props) {
     const {
-        data, pattern, avoid, selectable = false, single = false, editable = false, footer = false
+        data, pattern, avoid, rename = {} , selectable = false, single = false, editable = false, footer = false
 
         , customComponents = {}
         
@@ -27,7 +27,7 @@ export default function ComboBox (props) {
 
         , onClickRow = () => {} // receives selectedRows, row
         , onClickDelete = () => {} // receives row
-        , onChangeQuantity: onChangeCustomData = () => {} // receives customData, row
+        , onChangeCustomData = () => {} // receives customData, row
     } = props;
 
     const fields = getFields(data, avoid);
@@ -104,9 +104,9 @@ export default function ComboBox (props) {
 
     /* Events */
     const handleLockClick = () => {
-        setDisplay(lock ? "all" : "selected");
+        if (selectable) setDisplay(lock ? "all" : "selected");
         toggleLock();
-        setSearchFor("");
+        if (selectable) setSearchFor("");
     }
 
     const handleSwitchClick = () => {
@@ -136,7 +136,7 @@ export default function ComboBox (props) {
      * Handles the click event on a row in the ComboBox component.
      * 
      * Triggers the onClickRow prop, passing the selected rows and the clicked row as arguments.
-     * Triggers the onChangeQuantity prop, passing the quantities data and the clicked row as arguments.
+     * Triggers the onCustomDataChange prop, passing the new custom data and the clicked row as arguments.
      * @param {Object} row - The row object that was clicked.
      * @returns {void}
      */
@@ -144,14 +144,15 @@ export default function ComboBox (props) {
         if(lock) return;
         if(single && selectedRows.includes(row)) return;
 
-        const quantitiesData = {...customData['quantity']};
-
         let newSelectedRows;
-        let newQuantitiesData
 
+        let newCustomData = {...customData};
+        
         if(!single && selectedRows.map((selRow) => selRow[`id`]).includes(row[`id`])) {
             newSelectedRows = selectedRows.filter((selRow) => selRow[`id`] !== row[`id`]);
-            newQuantitiesData = {...quantitiesData, [row[`id`]]: 0};
+            Object.keys(customComponents).forEach((key) => {
+                newCustomData[key][row['id']] = 0;
+            });
 
         } else {
             if(single) {
@@ -159,16 +160,16 @@ export default function ComboBox (props) {
             } else {
                 newSelectedRows = [...selectedRows, row];
             }
-            
-            newQuantitiesData = {...quantitiesData, [row[`id`]]: 1};
+
+            Object.keys(customComponents).forEach((key) => {
+                newCustomData[key][row['id']] = customComponents[key].defaultValue;
+            });
         }
-        
-        const newCustomData = {...customData, quantity: newQuantitiesData};
+
+        setCustomData(newCustomData);
+        onChangeCustomData(newCustomData, row);
 
         setSelectedRows(newSelectedRows);
-        setCustomData(newCustomData);
-        
-        onChangeCustomData(newCustomData, row);
         onClickRow(newSelectedRows, row);
     }
 
@@ -190,6 +191,8 @@ export default function ComboBox (props) {
      * @param {any} value - The new value for the custom data.
      */
     const handleCustomDataChange = (row, key, value) => {
+        value = JSON.parse(value);
+
         const newCustomData = {...customData, [key]: {...customData[key], [row[`id`]]: value}};
         setCustomData(newCustomData);
 
@@ -207,8 +210,10 @@ export default function ComboBox (props) {
     /* Context */
     const value = {
         data
+        , tableContainerClassName: props.className
         , containerRef
         , fields
+        , rename
         , pattern
         , checkDisplay
         , selectedRowsTrigger

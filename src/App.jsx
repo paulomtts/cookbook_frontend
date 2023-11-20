@@ -21,8 +21,7 @@ export default function App() {
                             title='ingredients' 
                             tableName='ingredients' 
                             customInputs={{
-                                'type': 
-                                <Select tableName='categories' filters={{'and': {'type': ["'ingredient'"]}}}/>
+                                'type': <Select tableName='categories' filters={{'and': {'type': ["'ingredient'"]}}} targetField="name"/>
                             }}
                             imgSrc="./src/assets/ingredients.avif"
                         />
@@ -30,8 +29,8 @@ export default function App() {
                             key={'categories'}
                             title='categories'
                             tableName='categories'
-                            customInputs={{'type':
-                                <Select customOptions={['ingredient', 'period', 'recipe']}/>
+                            customInputs={{
+                                'type':<Select customOptions={['ingredient', 'period', 'recipe', 'presentation']}/>
                             }}
                             imgSrc="./src/assets/categories.jpg"
                         />
@@ -45,7 +44,7 @@ export default function App() {
                 ];
             case 'recipes':
                 return ( 
-                    <RecipeForm />
+                    <RecipeForm imgSrc="./src/assets/recipes.avif"/>
                 );
             case 'dashboard':
                 return (<>
