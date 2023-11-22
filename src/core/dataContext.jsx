@@ -1,5 +1,5 @@
 /* Foreign dependencies */
-import React, { useState, useContext, createContext } from 'react';
+import React, { useState, useContext, createContext, useEffect } from 'react';
 
 /* Local dependencies */
 import { useNotification } from './notificationContext';
@@ -16,6 +16,9 @@ const addresses = {
             delete: 'http://localhost:8000/crud/delete',
             insert_bulk: 'http://localhost:8000/crud/insert_bulk',
         },
+        custom: {
+            insert: 'http://localhost:8000/custom/submit_recipe',
+        }
     }
     // add remote api here
 };
@@ -33,6 +36,14 @@ export function DataProvider({ children }) {
     const [recipeData, setRecipeData] = useState([]);
     const [unitData, setUnitData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
+
+
+    useEffect(() => {
+        /* Certain tables are required to be loaded on application start
+        in order to avoid repetitve querying throught component rendering 
+        (such as Select) */
+        fetchData('units', {}, {}, false, false);
+    }, []);
 
     const getState = (objectName) => {
         switch (objectName) {
@@ -82,7 +93,7 @@ export function DataProvider({ children }) {
         }
     };
 
-    const _makeRequest = async (payload, url, notification, overlay, overlayLength) => {
+    const _makeRequest = async (url, payload, notification, overlay, overlayLength) => {
 
         if (overlay) await overlayContext.show();
 
@@ -90,7 +101,7 @@ export function DataProvider({ children }) {
         let content = { data: [] };
         let message = 'The resource was found but had no data stored.';
 
-        if(response.status === 200) {
+        if(response.status !== 204) {
             content = await response.json();
             message = content.message;
         }
@@ -118,7 +129,7 @@ export function DataProvider({ children }) {
      * @returns {Promise<{ response: any, content: any }>} - The response and content of the request.
      */
     const customRoute = async (url, payload, notification = true, overlay = true, overlayLength = 250) => {
-        const { response, content } = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        const { response, content } = await _makeRequest(url, payload, notification, overlay, overlayLength);
         return { response, content };
     }
 
@@ -135,11 +146,12 @@ export function DataProvider({ children }) {
     const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250, structured = false) => {
         const url = api.crud.select + '?table_name=' + tableName + '&structured=' + structured;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters, lambda_args: lambdaArgs}) });
-        const { response, content } = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        const { response, content } = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         if(response.status === 200 && content.data !== undefined){
             const stateSetter = _getStateSetter(tableName);
             const json = await JSON.parse(content.data);
+            
             if(stateSetter !== null) stateSetter(json); 
 
             return { response, json }
@@ -161,7 +173,7 @@ export function DataProvider({ children }) {
     const updateData = async (tableName, id, data, notification = true, overlay = true, overlayLength = 250) => {        
         const url = api.crud.update + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data, id: id}) }); 
-        const response = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
         
         return response
     };
@@ -178,7 +190,7 @@ export function DataProvider({ children }) {
     const deleteData = async (tableName, filters, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.delete + '?table_name=' + tableName;
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters}) });
-        const response = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response
     }
@@ -200,12 +212,11 @@ export function DataProvider({ children }) {
             api.crud.insert + '?table_name=' + tableName;
 
         const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data}) });
-        const response = await _makeRequest(payload, url, notification, overlay, overlayLength);
+        const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response
     }
 
-    
     return (
         <Provider value={{ getState, customRoute, fetchData, updateData, deleteData, submitData, generatePayload }}>
             {children}

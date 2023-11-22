@@ -23,7 +23,6 @@ export function ConfigsProvider({ children }) {
     }, []);
 
 
-
     return (
         <ConfigsContext.Provider value={{maps}}>
             {children}

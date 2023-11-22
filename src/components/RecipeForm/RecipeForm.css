@@ -6,7 +6,7 @@
     margin: var(--spacing-margin);
 }
 
-.RecipeForm-recipe {
+.RecipeForm-recipe-table {
     max-height: 205px !important;
 }
 

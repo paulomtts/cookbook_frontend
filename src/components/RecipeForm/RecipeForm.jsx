@@ -5,7 +5,7 @@ import { Button, Form, Image } from "react-bootstrap";
 /* Local dependencies */
 import { useNotification } from "../../core/notificationContext";
 import { useForm } from "../../core/formContext";
-import { useData } from "../../core/dataContext";
+import { useData, api } from "../../core/dataContext";
 import { useDataFetcher } from "../../hooks/useDataFetcher";
 import { useTrigger } from "../../hooks/useTrigger";
 import ComboBox from "../ComboBox/ComboBox";
@@ -120,33 +120,42 @@ export default function RecipeForm({imgSrc}) {
             const consolidatedUpdateRows = formContext.removeColumns(updateRows, ['description', 'name', 'unit', 'type']);
             
             // Send changes to API
-            if (consolidatedInsertRows.length > 0) {
-                await dataContext.submitData("recipe_ingredients", consolidatedInsertRows, true);
-            }
+            // if (consolidatedInsertRows.length > 0) {
+            //     await dataContext.submitData("recipe_ingredients", consolidatedInsertRows, true);
+            // }
 
-            consolidatedUpdateRows.forEach(async (row) => {
-                row['id'] = row['id_recipe_ingredient'];
-                delete row['id_recipe_ingredient'];
+            // consolidatedUpdateRows.forEach(async (row) => {
+            //     row['id'] = row['id_recipe_ingredient'];
+            //     delete row['id_recipe_ingredient'];
 
-                await dataContext.updateData("recipe_ingredients", row['id'], row);
-            });
+            //     await dataContext.updateData("recipe_ingredients", row['id'], row);
+            // });
 
-            deleteRows.forEach(async (row) => {
-                await dataContext.deleteData("recipe_ingredients", {"id_ingredient": [row['id']]});
-            });
+            // deleteRows.forEach(async (row) => {
+            //     await dataContext.deleteData("recipe_ingredients", {"id_ingredient": [row['id']]});
+            // });
             
-            if (Object.keys(formData).includes('id')) {
-                await dataContext.updateData("recipes", formData['id'], formData);
-            } else {
-                await dataContext.submitData("recipes", formData);
-            }
+            // if (Object.keys(formData).includes('id')) {
+            //     await dataContext.updateData("recipes", formData['id'], formData);
+            // } else {
+            //     await dataContext.submitData("recipes", formData);
+            // }
 
+            // console.log(consolidatedInsertRows);
+            // console.log(consolidatedUpdateRows);
+            // console.log(deleteRows);
 
-            console.log(consolidatedInsertRows);
-            console.log(consolidatedUpdateRows);
-            console.log(deleteRows);
+            // console.log(formData);
 
-            console.log(formData);
+            const url = api.custom.insert;
+            const payload = dataContext.generatePayload({method: 'POST', body: JSON.stringify({
+                form_data: formData
+                , insert_rows: consolidatedInsertRows
+                , update_rows: consolidatedUpdateRows
+                , delete_rows: deleteRows
+            })});
+            
+            await dataContext.customRoute(url, payload, true);
         } 
         else {
             notificationContext.spawnToast({
@@ -176,7 +185,7 @@ export default function RecipeForm({imgSrc}) {
 
                 <div style={{display: 'flex'}}>
                     <ComboBox
-                        className={`RecipeForm-recipe`}
+                        tableContainerClassName={`RecipeForm-recipe-table`}
                         pattern='^([a-zA-Z0-9]{1,})$'
                         avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
                         selectable

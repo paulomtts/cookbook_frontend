@@ -210,7 +210,7 @@ export default function ComboBox (props) {
     /* Context */
     const value = {
         data
-        , tableContainerClassName: props.className
+        , tableContainerClassName: props.tableContainerClassName
         , containerRef
         , fields
         , rename

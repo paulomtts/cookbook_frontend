@@ -35,6 +35,11 @@ export default function Select({
    
     async function retrieveData() {
         if(customOptions.length === 0) {
+            if (dataContext.getState(tableName).length > 0){
+                setOptions(dataContext.getState(tableName));
+                return;
+            }
+
             const { response, json } = await dataContext.fetchData(tableName, filters, {}, false, false);
 
             if(response.status === 200) {

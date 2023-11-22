@@ -25,8 +25,9 @@ export function NotificationProvider({ children }) {
         setNotification(notification.slice(1))
     }
 
-    function spawnToast({title, message, variant, Component = null, delay = 2000}) {
+    function spawnToast({title, message, variant, Component = null}) {
         const id = uuidv4();
+
 
         setNotification([
             ...notification,
@@ -35,6 +36,7 @@ export function NotificationProvider({ children }) {
                     id={id}
                     show={true}
                     bg={variant}
+                    onClose={removeNotification}
                 >
                     <Toast.Header 
                         style={{
