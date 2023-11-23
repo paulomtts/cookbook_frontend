@@ -1,5 +1,5 @@
 /* Foreign dependencies */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Form, Image } from "react-bootstrap";
 
 /* Local dependencies */
@@ -11,6 +11,7 @@ import { useTrigger } from "../../hooks/useTrigger";
 import ComboBox from "../ComboBox/ComboBox";
 import Select from "../Select";
 import FormFields from "../FormFields/FormFields";
+import Overlay from "../TutorialOverlay/TutorialOverlay";
 
 import "./RecipeForm.css";
 
@@ -183,26 +184,31 @@ export default function RecipeForm({imgSrc}) {
                     Recipes
                 </h2>
 
-                <div style={{display: 'flex'}}>
-                    <ComboBox
-                        tableContainerClassName={`RecipeForm-recipe-table`}
-                        pattern='^([a-zA-Z0-9]{1,})$'
-                        avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
-                        selectable
-                        single
-                        footer
-                        
-                        data={recipeData}
-                        
-                        onClickRow={onClickRecipeRow}
-                        
-                        lockTrigger={triggerRecipeLock}
-                        displayTrigger={triggerRecipeDisplay}
-                    />
-                    <div className="ImageUploader">
-                        <span>Image goes here</span>
+                <Overlay 
+                    text={'Click a recipe from the list to load its contents onto the form!'} 
+                    placement={'bottom'}
+                >
+                    <div style={{display: 'flex'}}>
+                            <ComboBox
+                                tableContainerClassName={`RecipeForm-recipe-table`}
+                                pattern='^([a-zA-Z0-9]{1,})$'
+                                avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+                                selectable
+                                single
+                                footer
+                                
+                                data={recipeData}
+                                
+                                onClickRow={onClickRecipeRow}
+                                
+                                lockTrigger={triggerRecipeLock}
+                                displayTrigger={triggerRecipeDisplay}
+                                />
+                        <div className="ImageUploader">
+                            <span>Image goes here</span>
+                        </div>
                     </div>
-                </div>
+                </Overlay>
 
                 <FormFields
                     tableName="recipes"
@@ -236,33 +242,38 @@ export default function RecipeForm({imgSrc}) {
                     onInputChange={(e, key) => handleSelectChange(e, key)}
                 />
 
-                <ComboBox
-                    pattern='^([a-zA-Z0-9]{1,})$'
-                    avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'unit', 'created_at', 'updated_at']}
-                    rename={{'id_unit': 'unit'}}
-                    selectable
-                    footer
-                    
-                    data={recipeIngredientData}
-                    customComponents={{
-                        'quantity': {
-                            "component": 
-                                <Form.Control as="input" type="number" min={0} />
-                            , "defaultValue": 100
-                        }
-                        , 'id_unit': {
-                            "component": <Select tableName="units" />
-                            , "defaultValue": 2
-                        }
-                    }}
-                    
-                    onClickRow={onClickIngredientRow}
-                    onChangeCustomData={onChangeRecipeIngredientCustomData}
-                    
-                    lockTrigger={triggerIngredientLock}
-                    displayTrigger={triggerIngredientDisplay}
-                    selectedRowsTrigger={triggerIngredientSelectedRows}
-                />
+                <Overlay
+                    text={"Click an ingredient to add or remove it from the recipe."}
+                    placement={'top'}
+                >
+                    <ComboBox
+                        pattern='^([a-zA-Z0-9]{1,})$'
+                        avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'unit', 'created_at', 'updated_at']}
+                        rename={{'id_unit': 'unit'}}
+                        selectable
+                        footer
+                        
+                        data={recipeIngredientData}
+                        customComponents={{
+                            'quantity': {
+                                "component": 
+                                    <Form.Control as="input" type="number" min={0} />
+                                , "defaultValue": 100
+                            }
+                            , 'id_unit': {
+                                "component": <Select tableName="units" />
+                                , "defaultValue": 2
+                            }
+                        }}
+                        
+                        onClickRow={onClickIngredientRow}
+                        onChangeCustomData={onChangeRecipeIngredientCustomData}
+                        
+                        lockTrigger={triggerIngredientLock}
+                        displayTrigger={triggerIngredientDisplay}
+                        selectedRowsTrigger={triggerIngredientSelectedRows}
+                    />
+                </Overlay>
             </div>
             <Button 
                 variant="primary"

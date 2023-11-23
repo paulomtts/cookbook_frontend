@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Image, Col, Row } from "react-bootstrap";
 
 import NavbarItem from "./NavbarItem";
 import "./Navbar.css";
@@ -25,18 +26,17 @@ export default function Navbar(props) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [prevScrollPos]);
 
-    return (
-        <>
-            <div className={`Navbar ${scrollDirection === "down" ? "slide-out" : "slide-in"}`}>
-                <NavbarItem
-                    text="Recipes"
-                    onClick={() => props.onClickItem("recipes")}
+    return (<>
+        <div className={`Navbar ${scrollDirection === "down" ? "slide-out" : "slide-in"}`}>
+            <NavbarItem
+                text="Recipes"
+                onClick={() => props.onClickItem("recipes")}
                 />
-                <NavbarItem
-                    text="Ledger"
-                    onClick={() => props.onClickItem("registry")}
+            <NavbarItem
+                text="Ledger"
+                onClick={() => props.onClickItem("registry")}
                 />
-            </div>
-        </>
-    );
+            <Image roundedCircle fluid src={`${props.imgSrc}`} style={{height: '100px', width: '100px'}}/>
+        </div>
+    </>);
 }

@@ -63,7 +63,7 @@ export default function App() {
 
     return (<>
         <div className="main-container">
-            <Navbar onClickItem={handleNavigationComponentClick}/>
+            <Navbar onClickItem={handleNavigationComponentClick} imgSrc="./src/assets/recipes.avif"/>
             <div className={`content-container fade-in-long`}>
                 {content}
             </div>
