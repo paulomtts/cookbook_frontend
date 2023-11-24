@@ -58,17 +58,17 @@ export default function ComboBox (props) {
     }, [data]); // reason: setup customData
 
     useEffect(() => {
-        if(!lockTrigger) return;
+        if(lockTrigger === null) return;
         setLock(lockTrigger);
     }, [lockTrigger]);
 
     useEffect(() => {
-        if(!displayTrigger) return;
+        if(displayTrigger === null) return;
         setDisplay(displayTrigger);
     }, [displayTrigger]);
 
     useEffect(() => {
-        if(!selectedRowsTrigger) return;
+        if(selectedRowsTrigger === null) return;
         setSelectedRows(selectedRowsTrigger??[]);
     }, [selectedRowsTrigger]);
 

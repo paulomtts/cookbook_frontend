@@ -66,7 +66,6 @@ export default function TableRow({
                             , disabled: lock
                             , value: customData[key][row['id']]
                             , onChange: (e) => handleCustomDataChange(row, key, e.target.value)
-                            , style: { boxShadow: 'none'}
                         })}
                     </td>  
                 }

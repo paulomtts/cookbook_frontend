@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 
 
-export default function Overlay({ children, text, placement }) {
+export default function TooltipOverlay({ children, content, placement }) {
     
     useEffect(() => {
         if (localStorage.getItem('tutorial-mode') === null) {
@@ -18,12 +18,13 @@ export default function Overlay({ children, text, placement }) {
 
     return (
         <OverlayTrigger
+            // show={false}
             placement={placement}
             defaultShow={tutorialMode}
+            trigger={tutorialMode ? ['hover', 'focus'] : []}
             overlay={
                 <Tooltip id={`tooltip-${placement}`}
                     style={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.5) !important',
                         transition: 'opacity 0.125s ease-in-out'
                     }}
                     onClick={() => {
@@ -31,10 +32,9 @@ export default function Overlay({ children, text, placement }) {
                         setTutorialMode(false);
                     }}
                 >
-                    {text}
+                    {content}
                 </Tooltip>
             }
-            trigger={tutorialMode ? ['hover', 'focus'] : []}
         >
             <div>
                 {children}

@@ -27,7 +27,8 @@ export default function Navbar(props) {
     }, [prevScrollPos]);
 
     return (<>
-        <div className={`Navbar ${scrollDirection === "down" ? "slide-out" : "slide-in"}`}>
+        {/* <div className={`Navbar ${scrollDirection === "down" ? "slide-out" : "slide-in"}`}> */}
+        <div className={`Navbar`}>
             <NavbarItem
                 text="Recipes"
                 onClick={() => props.onClickItem("recipes")}

@@ -1,0 +1,50 @@
+.ConfirmationPopover-header{
+    background-color: var(--lightgreen);
+    color: var(--darkgreen);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.ConfirmationPopover-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ConfirmationPopover-text-container {
+    max-width: 12rem;
+    text-align: center;
+    color: var(--darkgreen);
+}
+
+.ConfirmationPopover-button-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.ConfirmationPopover-FormButton-outlined {
+    color: var(--darkgreen);
+    background-color: transparent;
+    border-color: var(--darkgreen);
+    box-shadow: var(--smooth-box-shadow);
+    transition: all 0.1s ease-in-out;
+}
+
+.ConfirmationPopover-FormButton-outlined:hover {
+    color: white;
+    background-color: var(--darkgreen);
+    border-color: var(--darkgreen);
+}
+
+.ConfirmationPopover-FormButton-outlined:focus {
+    color: white;
+    background-color: var(--darkgreen-opaque-60);
+    border-color: var(--darkgreen);
+}
+
+.ConfirmationPopover-FormButton-outlined:active {
+    background-color: var(--darkgreen-fill) !important;
+    border-color: var(--darkgreen) !important;
+    box-shadow: none;
+}

@@ -175,24 +175,15 @@
 
 /* Specific custom rows */
 .ComboBox-table-quantity-header, .ComboBox-table-id_unit-header {
+    text-align: center;
     width: 10%;
 }
 
-.ComboBox-table-quantity-header, .ComboBox-table-id_unit-header, .ComboBox-Select {
-    text-align: center;
-}
-
 .ComboBox-Select {
+    text-align: center;
     padding: 0;
-    box-shadow: none !important;
 }
 
 .ComboBox-quantity-input {
     text-align: center;
-    border: none;
-}
-
-.ComboBox-quantity-input:enabled {
-    padding: 0;
-    border: 1px solid lightgray !important;
 }
