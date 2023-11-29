@@ -21,7 +21,7 @@ export default function App() {
                             title='ingredients' 
                             tableName='ingredients' 
                             customInputs={{
-                                'type': <Select tableName='categories' filters={{'and': {'type': ["'ingredient'"]}}} targetField="name"/>
+                                'type': <Select tableName='categories' filters={{'and': {'type': ["ingredient"]}}} targetField="name"/>
                             }}
                             imgSrc="./src/assets/ingredients.avif"
                         />
@@ -55,7 +55,7 @@ export default function App() {
         }
     }
 
-    const [content, setContent] = useState(getComponents('recipes'));
+    const [content, setContent] = useState(getComponents('registry'));
 
     const handleNavigationComponentClick = (key) => {
         setContent(getComponents(key));

@@ -5,7 +5,6 @@ import { Form, Image } from "react-bootstrap";
 /* Local dependencies */
 import FormFields from "../FormFields/FormFields";
 import ComboBox from "../ComboBox/ComboBox";
-import Select from "../Select";
 import FormAccordion from "../FormAccordion/FormAccordion";
 import { useNotification } from "../../core/notificationContext";
 import { useData } from "../../core/dataContext";
@@ -23,23 +22,31 @@ export default function GenericForm({
     , customInputs = {}
 }) {
 
-
     const notificationContext = useNotification();
     const dataContext = useData();
     const configsContext = useConfigs();
 
-    const fields = configsContext.maps.current.forms.fields[tableName];
+    const [fields, setFields] = useState([]);
     const [formData, setFormData] = useState({});
     const [data, setData] = useState({current: []});
     
 
     useEffect(() => {   
-        setupFields();
+        setupFormData();
         retrieveData();
     }, []);
 
+    useEffect(() => {
+        console.log('configsContext.maps.current', configsContext.maps.current);
+        if (!configsContext.maps.current.forms) return;
 
-    const setupFields = () => {
+        const newFields = configsContext.maps.current.forms.fields[tableName];
+        setFields(newFields);
+    }, [configsContext.maps.current]);
+
+
+    /* Setup */
+    const setupFormData = () => {
         const newFormData = fields.reduce((acc, key) => {
             return {...acc, [key]: ''};
         }, {});
@@ -90,6 +97,7 @@ export default function GenericForm({
         setFormData(newFormData);
     }
 
+    
     return (<>
         <Form className='GenericForm'>
     
@@ -107,7 +115,6 @@ export default function GenericForm({
                         formData={formData}
                         fields={fields}
                         customInputs={customInputs}
-                        avoid={avoid}
                         onInputChange={onInputChange}
                     />
                 </div>

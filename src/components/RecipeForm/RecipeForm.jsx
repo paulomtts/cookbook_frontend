@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /* Local dependencies */
 import { useNotification } from "../../core/notificationContext";
 import { useData, api } from "../../core/dataContext";
+import { useConfigs } from "../../core/configsContext";
 import { useDataFetcher } from "../../hooks/useDataFetcher";
 import { useTrigger } from "../../hooks/useTrigger";
 import { useForm } from "../../core/formContext";
@@ -23,6 +24,7 @@ import "./RecipeForm.css";
 export default function RecipeForm({imgSrc}) {
 
     /* Contexts */
+    const configsContext = useConfigs();
     const formContext = useForm();
     const dataContext = useData();
     const notificationContext = useNotification();
@@ -50,6 +52,7 @@ export default function RecipeForm({imgSrc}) {
     const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]); // reason: for ComboBox use
 
     /* Other data */
+    const fields = configsContext.maps.current.forms.fields['recipes'];
     const unitData = dataContext.getState('units');
 
     /* Triggers */
@@ -254,8 +257,9 @@ export default function RecipeForm({imgSrc}) {
 
                 <FormFields
                     tableName="recipes"
-                    fields={Object.keys(formData)}
-                    avoid={['id', 'created_at', 'updated_at']}
+                    // fields={Object.keys(formData)}
+                    fields={fields}
+                    // avoid={['id', 'created_at', 'updated_at']}
                     formData={formData}
                     customInputs={{ 
                         'description': <Form.Control as="textarea" rows={3} />

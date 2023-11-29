@@ -7,15 +7,13 @@ import "./FormFields.css";
 export default function FormFields({
     tableName
     , fields = []
-    , avoid = []
     , formData
     , customInputs = {}
     , onInputChange = () => {}
 }) {
 
     return (<div className="FormFields-container">
-        {Object.keys(formData).length > 0 && fields.map((key, index) => {
-            if(avoid.includes(key)) return null;
+        {fields && Object.keys(formData).length > 0 && fields.map((key, index) => {
 
             return (<Form.Group key={index}>
 
