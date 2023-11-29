@@ -20,7 +20,6 @@ import FormButton from "../FormButton/FormButton";
 import "./RecipeForm.css";
 
 
-
 export default function RecipeForm({imgSrc}) {
 
     /* Contexts */
@@ -30,29 +29,32 @@ export default function RecipeForm({imgSrc}) {
 
     /* Outgoing Data */
     const [formData, setFormData] = useState({
-        name: ""
+        id: ""
+        , name: ""
         , type: ""
         , period: ""
         , presentation: ""
         , description: ""
+        , created_at: ""
+        , updated_at: ""
     }); // initial state
   
     /* Incoming Data */
     const [recipeData, setRecipeData] = useDataFetcher("recipes");
     
     const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
-    const [snapshotRecipeIngredientData, setSnapshotRecipeIngredientData] = useState([]); // snapshot of recipe_ingredient
+    const [recipeIngredientSnapshot, setRecipeIngredientSnapshot] = useState([]); // snapshot of recipe_ingredient
 
     /* CustomData & Selected Rows */
-    const [recipeSelectedRow, setRecipeSelectedRow] = useState([]);
+    const [recipeIngredientCustomData, setRecipeIngredientCustomData] = useState({}); // reason: for ComboBox use
+    const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]); // reason: for ComboBox use
 
-    const [recipeIngredientCustomData, setRecipeIngredientCustomData] = useState({});
-    const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]);
+    /* Other data */
+    const unitData = dataContext.getState('units');
 
     /* Triggers */
     const [triggerRecipeLock, setTriggerRecipeLock] = useTrigger();
     const [triggerRecipeDisplay, setTriggerRecipeDisplay] = useTrigger();
-    const [triggerRecipeSelectedRow, setTriggerRecipeSelectedRow] = useTrigger();
     
     const [triggerIngredientLock, setTriggerIngredientLock] = useTrigger();
     const [triggerIngredientDisplay, setTriggerIngredientDisplay] = useTrigger();
@@ -60,26 +62,18 @@ export default function RecipeForm({imgSrc}) {
 
 
     /* Events */
-    const onClickRecipeRow = async (selectedRow, row) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
-        
-        setRecipeSelectedRow(selectedRow);
+    const onClickRecipeRow = async (_, row) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
         
         const newFormData = {...formData, ...row};
-        delete newFormData['updated_at'];
-        
-        setFormData(newFormData);
-
-
-        const { json: snapshotData } = await dataContext.fetchData("recipe_composition_snapshot", {}, {"id_recipe": row[`id`]});
-        setSnapshotRecipeIngredientData(snapshotData);
         
         const { json: loadedData } = await dataContext.fetchData("recipe_composition_loaded", {}, {"id_recipe": row[`id`]});       
-        setRecipeIngredientData(loadedData);
+        const { json: snapshotData } = await dataContext.fetchData("recipe_composition_snapshot", {}, {"id_recipe": row[`id`]});
         
-        setRecipeIngredientSelectedRows(snapshotData);
+        setFormData(newFormData);
+        setRecipeIngredientData(loadedData);
+        setRecipeIngredientSnapshot(snapshotData.length === 0 ? loadedData : snapshotData);
 
-        // Cleanup
-        setRecipeIngredientCustomData({});
+        setRecipeIngredientSelectedRows(snapshotData);
 
         // Triggers
         setTriggerRecipeLock(true);
@@ -94,7 +88,7 @@ export default function RecipeForm({imgSrc}) {
         setRecipeIngredientSelectedRows(selectedRows);
     }
 
-    const onChangeRecipeIngredientCustomData = (newCustomData, _) => { // reason: ComboBox's onChangeCustomData sends (quantitiesData, row)
+    const onChangeRecipeIngredientCustomData = (newCustomData) => { // reason: ComboBox's onChangeCustomData sends customData
         setRecipeIngredientCustomData(newCustomData);
     }
 
@@ -106,45 +100,64 @@ export default function RecipeForm({imgSrc}) {
         setFormData(newFormData);
     }
 
-    const handleSaveClick = async (e) => {
-        e.preventDefault();
+    const handleSaveClick = async () => {
         let consolidatedData = [];
 
         if ('quantity' in recipeIngredientCustomData) {
             consolidatedData = formContext.consolidateData(recipeIngredientSelectedRows, recipeIngredientCustomData['quantity'], 'id', 'quantity');
-            
         }
+
         if ('id_unit' in recipeIngredientCustomData) {
             consolidatedData = formContext.consolidateData(consolidatedData, recipeIngredientCustomData['id_unit'], 'id', 'id_unit');
         }
 
-        if (consolidatedData.length > 0) {
-            const consolidatedOperations = formContext.consolidateOperations(snapshotRecipeIngredientData, consolidatedData, 'id');
-            const { insertRows, updateRows, deleteRows } = consolidatedOperations;
-           
-            const consolidatedInsertRows = formContext.removeColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type']);
-            const consolidatedUpdateRows = formContext.removeColumns(updateRows, ['description', 'name', 'unit', 'type']);
-            
-            const url = api.custom.insert;
-            const payload = dataContext.generatePayload({method: 'POST', body: JSON.stringify({
-                form_data: formData
-                , insert_rows: consolidatedInsertRows
-                , update_rows: consolidatedUpdateRows
-                , delete_rows: deleteRows
-            })});
-            
-            await dataContext.customRoute(url, payload, true);
-        } 
-        else {
-            notificationContext.spawnToast({
-                title: "No changes"
-                , message: "No data was submitted."
-                , variant: "info"
-            });
-            return;
-        }
+        const consolidatedOperations = formContext.consolidateOperations(recipeIngredientSnapshot, consolidatedData, 'id');
+        const { insertRows, updateRows, deleteRows } = consolidatedOperations;
+        
+        const consolidatedInsertRows = formContext.removeColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
+        const consolidatedUpdateRows = formContext.removeColumns(updateRows, ['id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
+        
+        const url = api.custom.insert;
+        const payload = dataContext.generatePayload({method: 'POST', body: JSON.stringify({
+            form_data: formData
+            , insert_rows: consolidatedInsertRows
+            , update_rows: consolidatedUpdateRows
+            , delete_rows: deleteRows
+        })});
+        
+        const { response, content } = await dataContext.customRoute(url, payload, true);
 
-        // need to retrieve data afterwards
+        if (response.status === 200) {
+            const contentFormData = JSON.parse(content.data['form_data']);
+            const newRecipeData = JSON.parse(content.data['recipe_data']);
+            const newRecipeIngredientLoadedData = JSON.parse(content.data['recipe_ingredient_loaded_data']);
+            const newRecipeIngredientSnapshotData = JSON.parse(content.data['recipe_ingredient_snapshot_data']);
+
+            const newFormData = {...formData};
+            Object.keys(contentFormData).forEach((key) => {
+                newFormData[key] = contentFormData[key];
+            });
+
+            // Update
+            setFormData(newFormData);
+            setRecipeData(newRecipeData);
+            setRecipeIngredientData(newRecipeIngredientLoadedData);
+            setRecipeIngredientSnapshot(newRecipeIngredientSnapshotData);
+
+            setRecipeIngredientSelectedRows(newRecipeIngredientSnapshotData);
+            
+            // Triggers
+            setTriggerIngredientLock(true);
+            setTriggerIngredientDisplay("selected");
+            setTriggerIngredientSelectedRows(newRecipeIngredientSnapshotData);
+        } 
+
+        notificationContext.spawnToast({
+            title: response.status === 200 ? "Success!" : "Error!"
+            , message: response.status === 200 ? "The recipe was saved successfully." : "There was an error while saving the recipe."
+            , variant: response.status === 200 ? "success" : "danger"
+        });
+
     }
 
     return(<>
@@ -186,7 +199,7 @@ export default function RecipeForm({imgSrc}) {
                     >
                         <TooltipOverlay
                             content={"Submit a recipe or update an existing one."}
-                            placement={'top'}
+                            placement={'left'}
                         >
                             <FormButton onClick={(e) => {e.preventDefault()}}>
                                 <FontAwesomeIcon icon={faSave} />
@@ -200,8 +213,8 @@ export default function RecipeForm({imgSrc}) {
                         onYes={() => {}}
                     >
                         <TooltipOverlay
-                            content={"Submit a recipe or update an existing one."}
-                            placement={'bottom'}
+                            content={"Delete the currently selected recipe."}
+                            placement={'left'}
                         >
                             <FormButton onClick={(e) => {e.preventDefault()}}>
                                 <FontAwesomeIcon icon={faTrash} />
@@ -215,6 +228,7 @@ export default function RecipeForm({imgSrc}) {
                 <TooltipOverlay 
                     content={'Click a recipe from the list to load its contents onto the form!'} 
                     placement={'bottom'}
+                    defaultShow
                 >
                     <div style={{display: 'flex'}}>
                             <ComboBox
@@ -231,8 +245,7 @@ export default function RecipeForm({imgSrc}) {
                                 
                                 lockTrigger={triggerRecipeLock}
                                 displayTrigger={triggerRecipeDisplay}
-                                selectedRowsTrigger={triggerRecipeSelectedRow}
-                                />
+                            />
                         <div className="ImageUploader">
                             <span>Placeholder for image</span>
                         </div>
@@ -274,6 +287,7 @@ export default function RecipeForm({imgSrc}) {
                 <TooltipOverlay
                     content={"Click an ingredient to add or remove it from the recipe."}
                     placement={'top'}
+                    defaultShow
                 >
                     <ComboBox
                         pattern='^([a-zA-Z0-9]{1,})$'
@@ -290,7 +304,11 @@ export default function RecipeForm({imgSrc}) {
                                 , "defaultValue": 100
                             }
                             , 'id_unit': {
-                                "component": <Select tableName="units" />
+                                "component": <Select tableName="units" customOptions={() => {
+                                    return unitData.map((unit) => {
+                                        return unit['name'];
+                                    });
+                                }} />
                                 , "defaultValue": 2
                             }
                         }}

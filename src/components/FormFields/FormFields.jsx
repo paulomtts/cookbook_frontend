@@ -19,7 +19,7 @@ export default function FormFields({
 
             return (<Form.Group key={index}>
 
-                    <Form.Label>
+                    <Form.Label style={{marginLeft: '0.80rem'}}>
                         {key.charAt(0).toUpperCase() + key.slice(1)}
                     </Form.Label>
 

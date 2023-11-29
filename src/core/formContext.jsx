@@ -96,6 +96,13 @@ export function FormProvider({ children }) {
     }
 
 
+    /**
+     * Removes specified columns from the data object.
+     * 
+     * @param {Array<Object>} data - The data object containing rows and columns.
+     * @param {Array<string>} avoid - The columns to be avoided and removed.
+     * @returns {Array<Object>} - The new data object with removed columns.
+     */
     const removeColumns = (data, avoid) => {
         const newData = data.map(row => {
             const newRow = { ...row };
@@ -108,7 +115,7 @@ export function FormProvider({ children }) {
 
             return newRow;
         });
-    
+
         return newData;   
     }
         

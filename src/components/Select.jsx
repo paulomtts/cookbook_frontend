@@ -29,7 +29,9 @@ export default function Select({
     }, [customOptions]);
 
     useEffect(() => {
-        retrieveData();
+        if(customOptions.length === 0) {
+            retrieveData();
+        }
     }, []);
 
    

@@ -55,6 +55,7 @@ export default function ComboBox (props) {
         });
 
         setCustomData(newCustomData);
+        onChangeCustomData(newCustomData);
     }, [data]); // reason: setup customData
 
     useEffect(() => {
