@@ -7,15 +7,17 @@ export default function TooltipOverlay({
     children
     , content
     , placement 
-    , defaultShow
+    , defaultShow = false
 }) {
     
     useEffect(() => {
         if (localStorage.getItem('tutorial-mode') === null) {
             localStorage.setItem('tutorial-mode', true);
             setTutorialMode(true);
-        } else {
+        } else if (localStorage.getItem('tutorial-mode') === 'true') {
             setTutorialMode(localStorage.getItem('tutorial-mode') === 'true');
+        } else {
+            setTutorialMode(false);
         }
     }, []);
  
@@ -23,9 +25,8 @@ export default function TooltipOverlay({
 
     return (
         <OverlayTrigger
-            // show={false}
             placement={placement}
-            defaultShow={defaultShow ? tutorialMode: false}
+            defaultShow={defaultShow}
             trigger={tutorialMode ? ['hover', 'focus'] : []}
             overlay={
                 <Tooltip id={`tooltip-${placement}`}

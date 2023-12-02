@@ -70,7 +70,7 @@ export default function ComboBox (props) {
 
     useEffect(() => {
         if(selectedRowsTrigger === null) return;
-        setSelectedRows(selectedRowsTrigger??[]);
+        setSelectedRows(selectedRowsTrigger);
     }, [selectedRowsTrigger]);
 
 
@@ -192,8 +192,6 @@ export default function ComboBox (props) {
      * @param {any} value - The new value for the custom data.
      */
     const handleCustomDataChange = (row, key, value) => {
-        value = JSON.parse(value);
-
         const newCustomData = {...customData, [key]: {...customData[key], [row[`id`]]: value}};
         setCustomData(newCustomData);
 

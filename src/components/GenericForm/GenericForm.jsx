@@ -8,44 +8,44 @@ import ComboBox from "../ComboBox/ComboBox";
 import FormAccordion from "../FormAccordion/FormAccordion";
 import { useNotification } from "../../core/notificationContext";
 import { useData } from "../../core/dataContext";
-import { useConfigs } from "../../core/configsContext";
 import './GenericForm.css';
 
 export default function GenericForm({
-    title = ''
-    , imgSrc = ''
-
-    , tableName
+    tableName
+    , fields = []
     , avoid = ['id', 'created_at', 'updated_at']
     , pattern = '^([a-zA-Z0-9]{1,})$'
-    
+        
+    , title = ''
+    , imgSrc = ''
+
     , customInputs = {}
 }) {
 
     const notificationContext = useNotification();
     const dataContext = useData();
-    const configsContext = useConfigs();
 
-    const [fields, setFields] = useState([]);
+    const [data, setData] = useState([]);
     const [formData, setFormData] = useState({});
-    const [data, setData] = useState({current: []});
     
-
+    
+    /* Effects */
     useEffect(() => {   
-        setupFormData();
         retrieveData();
     }, []);
 
     useEffect(() => {
-        console.log('configsContext.maps.current', configsContext.maps.current);
-        if (!configsContext.maps.current.forms) return;
-
-        const newFields = configsContext.maps.current.forms.fields[tableName];
-        setFields(newFields);
-    }, [configsContext.maps.current]);
+        if (fields.length === 0) return;
+        setupFormData();
+    }, [fields]);
 
 
     /* Setup */
+    const retrieveData = async () => {
+        const { json } = await dataContext.fetchData(tableName, {}, {}, false, true);
+        setData(json);
+    }
+
     const setupFormData = () => {
         const newFormData = fields.reduce((acc, key) => {
             return {...acc, [key]: ''};
@@ -53,14 +53,6 @@ export default function GenericForm({
         setFormData(newFormData);
     }
     
-    const retrieveData = async () => {
-        const { response, json } = await dataContext.fetchData(tableName, {}, {}, false, true);
-        
-        if(response.status === 200) {
-            setData(json);
-        }
-    }
-
 
     /* Handlers */
     const handleSubmit = async (e) => {
@@ -78,7 +70,8 @@ export default function GenericForm({
         await dataContext.submitData(tableName, formData);
         retrieveData();
 
-        const firstInput = document.getElementById(`${tableName}-form-input-${fields[0]}`);
+        const fieldName = fields[0];
+        const firstInput = document.getElementById(`${tableName}-form-input-${fieldName}`);
         firstInput.focus();
     }
 
@@ -113,7 +106,6 @@ export default function GenericForm({
                     <FormFields
                         tableName={tableName}
                         formData={formData}
-                        fields={fields}
                         customInputs={customInputs}
                         onInputChange={onInputChange}
                     />

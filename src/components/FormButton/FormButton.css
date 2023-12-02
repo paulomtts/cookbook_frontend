@@ -27,3 +27,11 @@
     border-color: var(--darkgreen) !important;
     box-shadow: none;
 }
+
+.FormButton:disabled {
+    color: var(--darkgreen-opaque-35);
+    background-color: var(--darkgreen-opaque-20);
+    border-color: var(--darkgreen-opaque-20);
+    box-shadow: none;
+    pointer-events: none;
+}

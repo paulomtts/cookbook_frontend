@@ -9,12 +9,14 @@ export default function FormButton({
     , inputFields = []
     , type = 'submit'
     , className = 'FormButton'
+    , disabled = false
     , onClick = () => {}
     , children
 }) {
 
     return (<>
         <Button
+            disabled={disabled}
             type={type}
             className={className}
             onClick={onClick}

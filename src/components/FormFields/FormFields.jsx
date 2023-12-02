@@ -7,14 +7,13 @@ import "./FormFields.css";
 export default function FormFields({
     tableName
     , fields = []
-    , formData
+    , formData = {}
     , customInputs = {}
     , onInputChange = () => {}
 }) {
 
-    return (<div className="FormFields-container">
-        {fields && Object.keys(formData).length > 0 && fields.map((key, index) => {
-
+return (<div className="FormFields-container">
+        {fields.map((key, index) => {
             return (<Form.Group key={index}>
 
                     <Form.Label style={{marginLeft: '0.80rem'}}>
@@ -22,14 +21,11 @@ export default function FormFields({
                     </Form.Label>
 
                     {customInputs[key] ? 
-                        React.cloneElement(
-                            customInputs[key]
-                            , { 
-                                value: formData[key]
-                                , onChange: (e) => {
-                                    onInputChange(e, key)
-                                }
-                            }
+                        React.cloneElement(customInputs[key], { 
+                            value: formData[key]
+                            , onChange: (e) => {
+                                onInputChange(e, key)
+                            }}
                         )
                         :
                         <Form.Control 

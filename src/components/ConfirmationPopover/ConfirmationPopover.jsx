@@ -8,10 +8,20 @@ import FormButton from '../FormButton/FormButton';
 import './ConfirmationPopover.css';
 
 
-export default function ConfirmationPopover({ children, text, placement, onYes = () => {}, onNo = () => {} }) {
+export default function ConfirmationPopover({ 
+    children
+    , title = 'Are you sure?'
+    , text
+    , placement
+    , disabled = false
+    , onYes = () => {}
+    , onNo = () => {} 
+}) {
     const uuid = uuidv4();
 
-    return (
+    if (disabled) return (<>{children}</>);
+
+    return (<>
         <OverlayTrigger
             container={this}
             placement={placement}
@@ -20,7 +30,7 @@ export default function ConfirmationPopover({ children, text, placement, onYes =
             overlay={
                 <Popover id={`popover-${placement}-${uuid}`}>
                     <Popover.Header as="h3" className='ConfirmationPopover-header'>
-                        Are you sure?
+                        {title}
                     </Popover.Header>
                     <Popover.Body className='ConfirmationPopover-body'>
                         <div className='ConfirmationPopover-text-container'>
@@ -55,5 +65,5 @@ export default function ConfirmationPopover({ children, text, placement, onYes =
                 {children}
             </div>
         </OverlayTrigger>
-    );
+    </>);
 }

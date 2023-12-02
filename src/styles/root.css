@@ -15,8 +15,9 @@
     --lightgreen: rgb(236, 243, 241);
     --darkgreen: rgb(22, 69, 62);
     --darkgreen-fill: rgb(57, 83, 79);
-    --darkgreen-opaque-35: rgba(22, 69, 62, 0.35);
     --darkgreen-opaque-60: rgba(22, 69, 62, 0.60);
+    --darkgreen-opaque-35: rgba(22, 69, 62, 0.35);
+    --darkgreen-opaque-20: rgba(22, 69, 62, 0.20);
 
     /* Box-Shadows */
     --smooth-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.8);

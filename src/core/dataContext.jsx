@@ -9,7 +9,6 @@ import { useOverlay } from './overlayContext';
 const addresses = {
     local: {
         crud: {
-            maps: 'http://localhost:8000/crud/maps',
             select: 'http://localhost:8000/crud/select',
             insert: 'http://localhost:8000/crud/insert',
             update: 'http://localhost:8000/crud/update',
@@ -17,6 +16,7 @@ const addresses = {
             insert_bulk: 'http://localhost:8000/crud/insert_bulk',
         },
         custom: {
+            maps: 'http://localhost:8000/custom/maps',
             insert: 'http://localhost:8000/custom/submit_recipe',
         }
     }
@@ -42,7 +42,11 @@ export function DataProvider({ children }) {
         /* Certain tables are required to be loaded on application start
         in order to avoid repetitve querying throught component rendering 
         (such as Select) */
-        fetchData('units', {}, {}, false, false);
+        const get_units = async () => {
+            await fetchData('units', {}, {}, false, false);
+        }
+
+        get_units();
     }, []);
 
     const getState = (objectName) => {
@@ -189,7 +193,7 @@ export function DataProvider({ children }) {
      */
     const deleteData = async (tableName, filters, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.delete + '?table_name=' + tableName;
-        const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters}) });
+        const payload = generatePayload({ method: 'DELETE', body: JSON.stringify({filters: filters}) });
         const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response

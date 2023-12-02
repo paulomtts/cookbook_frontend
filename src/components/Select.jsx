@@ -1,59 +1,25 @@
 /* Foreign dependencies */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Form } from "react-bootstrap";
-
-/* Local dependencies */
-import { useData } from "../core/dataContext";
 
 
 export default function Select({
-    tableName
-    , filters = {}
-    , customOptions = []
+    data = []
     , targetField = 'id'
-    , value
+    , value // value is the id of the selected option, keep this name for compatibility with ComboBox
     , required
     , disabled
     , className = ''
     , onChange = () => {}
 }) {
-    const dataContext = useData();
-
-    const [options, setOptions] = useState([]);
-
-    useEffect(() => {
-        if(customOptions.length > 0) {
-            setOptions(customOptions);
-            return;
-        }
-    }, [customOptions]);
-
-    useEffect(() => {
-        if(customOptions.length === 0) {
-            retrieveData();
-        }
-    }, []);
-
-   
-    async function retrieveData() {
-        if(customOptions.length === 0) {
-            if (dataContext.getState(tableName).length > 0){
-                setOptions(dataContext.getState(tableName));
-                return;
-            }
-
-            const { response, json } = await dataContext.fetchData(tableName, filters, {}, false, false);
-
-            if(response.status === 200) {
-                setOptions(json);
-            }
-        }
-    }
-
+ 
     const handleSelectChange = (e) => {
         onChange(e);
     }
-    
+        
+    const row = data.filter((row) => row['id'] === value)[0];
+    if(row) value = row[targetField];
+
     return (<>
         <Form.Group>
             <Form.Control 
@@ -66,10 +32,10 @@ export default function Select({
                 style={{border: (disabled ? 'none': '1px solid lightgray'), cursor: (disabled ? 'auto' : 'pointer')}}
             >
                 <option key='blankChoice' value={null} hidden>Select...</option>
-                {options.map((option, index) => {
-                    const exhibitedOption = customOptions.length > 0 ? option : option.name;
+                {data.map((option, index) => {
+                    const exhibitedOption = option[targetField];
 
-                    return (<option key={index} value={customOptions.length > 0 ? exhibitedOption : option[targetField]}>{exhibitedOption.charAt(0).toUpperCase() + exhibitedOption.slice(1)}</option>)
+                    return (<option key={index} value={option[targetField]}>{exhibitedOption.charAt(0).toUpperCase() + exhibitedOption.slice(1)}</option>)
                 })}
             </Form.Control>
         </Form.Group>

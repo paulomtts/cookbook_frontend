@@ -7,24 +7,24 @@ import "./Navbar.css";
 
 
 export default function Navbar(props) {
-    const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
-    const [scrollDirection, setScrollDirection] = useState("down"); 
+    // const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
+    // const [scrollDirection, setScrollDirection] = useState("down"); 
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScrollPos = window.scrollY;
-            if (prevScrollPos > currentScrollPos) {
-                setScrollDirection("up");
-            } else if (prevScrollPos < currentScrollPos) {
-                setScrollDirection("down");
-            }
-            setPrevScrollPos(currentScrollPos);
-        };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         const currentScrollPos = window.scrollY;
+    //         if (prevScrollPos > currentScrollPos) {
+    //             setScrollDirection("up");
+    //         } else if (prevScrollPos < currentScrollPos) {
+    //             setScrollDirection("down");
+    //         }
+    //         setPrevScrollPos(currentScrollPos);
+    //     };
 
-        window.addEventListener("scroll", handleScroll);
+    //     window.addEventListener("scroll", handleScroll);
 
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [prevScrollPos]);
+    //     return () => window.removeEventListener("scroll", handleScroll);
+    // }, [prevScrollPos]);
 
     return (<>
         {/* <div className={`Navbar ${scrollDirection === "down" ? "slide-out" : "slide-in"}`}> */}
@@ -37,7 +37,7 @@ export default function Navbar(props) {
                 text="Ledger"
                 onClick={() => props.onClickItem("registry")}
                 />
-            <Image roundedCircle fluid src={`${props.imgSrc}`} style={{height: '100px', width: '100px'}}/>
+            {/* <Image roundedCircle fluid src={`${props.imgSrc}`} style={{height: '100px', width: '100px'}}/> */}
         </div>
     </>);
 }

@@ -1,22 +1,24 @@
 /* Foreign dependencies */
-import React, { useRef, useContext, createContext, useEffect } from 'react';
+import React, { useState, useContext, createContext, useEffect } from 'react';
 
 /* Local dependencies */
 import { useData, api } from './dataContext';
 
 const ConfigsContext = createContext();
+const { Provider } = ConfigsContext;
 
 export function ConfigsProvider({ children }) {
 
     const dataContext = useData();
-    const maps = useRef({});
+    const [maps, setMaps] = useState({});
 
     useEffect(() => {
         const retrieveMaps = async () => {
             const mapsPayload = dataContext.generatePayload('GET');
-            await dataContext.customRoute(api.crud.maps, mapsPayload, false).then(({response, content}) => {
+            await dataContext.customRoute(api.custom.maps, mapsPayload, false).then(({response, content}) => {
+                const json = JSON.parse(content.data);  
                 if (response.status === 200) {
-                    maps.current = content;
+                    setMaps(json);
                 } else {
                     // navigate back to entry page
                 }
@@ -28,9 +30,9 @@ export function ConfigsProvider({ children }) {
 
 
     return (
-        <ConfigsContext.Provider value={{maps}}>
+        <Provider value={{maps}}>
             {children}
-        </ConfigsContext.Provider>
+        </Provider>
     );
 }
 

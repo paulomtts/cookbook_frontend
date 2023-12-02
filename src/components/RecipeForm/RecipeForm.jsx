@@ -1,5 +1,5 @@
 /* Foreign dependencies */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Image } from "react-bootstrap";
 import { faSave, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,30 +20,32 @@ import FormButton from "../FormButton/FormButton";
 
 import "./RecipeForm.css";
 
+const formModel = {
+    id: ""
+    , name: ""
+    , type: ""
+    , period: ""
+    , presentation: ""
+    , description: ""
+    , created_at: ""
+    , updated_at: ""
+}
+
 
 export default function RecipeForm({imgSrc}) {
 
     /* Contexts */
-    const configsContext = useConfigs();
-    const formContext = useForm();
+    const { maps } = useConfigs();
+    const { consolidateData, consolidateOperations, removeColumns } = useForm();
     const dataContext = useData();
-    const notificationContext = useNotification();
+    const { spawnToast } = useNotification();
 
     /* Outgoing Data */
-    const [formData, setFormData] = useState({
-        id: ""
-        , name: ""
-        , type: ""
-        , period: ""
-        , presentation: ""
-        , description: ""
-        , created_at: ""
-        , updated_at: ""
-    }); // initial state
+    const [formData, setFormData] = useState({...formModel}); // initial state
   
     /* Incoming Data */
     const [recipeData, setRecipeData] = useDataFetcher("recipes");
-    
+
     const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
     const [recipeIngredientSnapshot, setRecipeIngredientSnapshot] = useState([]); // snapshot of recipe_ingredient
 
@@ -51,8 +53,12 @@ export default function RecipeForm({imgSrc}) {
     const [recipeIngredientCustomData, setRecipeIngredientCustomData] = useState({}); // reason: for ComboBox use
     const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]); // reason: for ComboBox use
 
+
     /* Other data */
-    const fields = configsContext.maps.current.forms.fields['recipes'];
+    const [fields, setFields] = useState([]);
+    const [ selectCategoriesData ] = useDataFetcher("categories", {"and": {"type": ["recipe"]}});
+    const [ selectPeriodsData ] = useDataFetcher("categories", {"and": {"type": ["period"]}});
+    const [ selectPresentationsData ] = useDataFetcher("categories", {"and": {"type": ["presentation"]}});
     const unitData = dataContext.getState('units');
 
     /* Triggers */
@@ -64,10 +70,18 @@ export default function RecipeForm({imgSrc}) {
     const [triggerIngredientSelectedRows, setTriggerIngredientSelectedRows] = useTrigger();
 
 
+    /* Effects */
+    useEffect(() => {
+        if (Object.keys(maps).length === 0) return;
+        setFields(maps.forms.fields['recipes']);
+    }, [maps]);
+
+
     /* Events */
     const onClickRecipeRow = async (_, row) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
         
         const newFormData = {...formData, ...row};
+        console.log(newFormData)
         
         const { json: loadedData } = await dataContext.fetchData("recipe_composition_loaded", {}, {"id_recipe": row[`id`]});       
         const { json: snapshotData } = await dataContext.fetchData("recipe_composition_snapshot", {}, {"id_recipe": row[`id`]});
@@ -97,30 +111,40 @@ export default function RecipeForm({imgSrc}) {
 
 
     /* Handlers */
-    const handleSelectChange = (e, key) => {
+    const handleInputChange = (e, key) => {
         const newFormData = {...formData};
         newFormData[key] = e.target.value;
         setFormData(newFormData);
     }
 
     const handleSaveClick = async () => {
+        if (recipeIngredientSelectedRows.length === 0) {
+            spawnToast({
+                title: "Warning"
+                , message: "You must select at least one ingredient."
+                , variant: "warning"
+            });
+            return;
+        }
+
         let consolidatedData = [];
 
         if ('quantity' in recipeIngredientCustomData) {
-            consolidatedData = formContext.consolidateData(recipeIngredientSelectedRows, recipeIngredientCustomData['quantity'], 'id', 'quantity');
+            consolidatedData = consolidateData(recipeIngredientSelectedRows, recipeIngredientCustomData['quantity'], 'id', 'quantity');
         }
 
         if ('id_unit' in recipeIngredientCustomData) {
-            consolidatedData = formContext.consolidateData(consolidatedData, recipeIngredientCustomData['id_unit'], 'id', 'id_unit');
+            consolidatedData = consolidateData(consolidatedData, recipeIngredientCustomData['id_unit'], 'id', 'id_unit');
         }
 
-        const consolidatedOperations = formContext.consolidateOperations(recipeIngredientSnapshot, consolidatedData, 'id');
+        const consolidatedOperations = consolidateOperations(recipeIngredientSnapshot, consolidatedData, 'id');
         const { insertRows, updateRows, deleteRows } = consolidatedOperations;
         
-        const consolidatedInsertRows = formContext.removeColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
-        const consolidatedUpdateRows = formContext.removeColumns(updateRows, ['id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
+        const consolidatedInsertRows = removeColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
+        const consolidatedUpdateRows = removeColumns(updateRows, ['id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
         
         const url = api.custom.insert;
+
         const payload = dataContext.generatePayload({method: 'POST', body: JSON.stringify({
             form_data: formData
             , insert_rows: consolidatedInsertRows
@@ -131,15 +155,10 @@ export default function RecipeForm({imgSrc}) {
         const { response, content } = await dataContext.customRoute(url, payload, true);
 
         if (response.status === 200) {
-            const contentFormData = JSON.parse(content.data['form_data']);
+            const newFormData = JSON.parse(content.data['form_data']);
             const newRecipeData = JSON.parse(content.data['recipe_data']);
             const newRecipeIngredientLoadedData = JSON.parse(content.data['recipe_ingredient_loaded_data']);
             const newRecipeIngredientSnapshotData = JSON.parse(content.data['recipe_ingredient_snapshot_data']);
-
-            const newFormData = {...formData};
-            Object.keys(contentFormData).forEach((key) => {
-                newFormData[key] = contentFormData[key];
-            });
 
             // Update
             setFormData(newFormData);
@@ -155,13 +174,44 @@ export default function RecipeForm({imgSrc}) {
             setTriggerIngredientSelectedRows(newRecipeIngredientSnapshotData);
         } 
 
-        notificationContext.spawnToast({
+        spawnToast({
             title: response.status === 200 ? "Success!" : "Error!"
             , message: response.status === 200 ? "The recipe was saved successfully." : "There was an error while saving the recipe."
             , variant: response.status === 200 ? "success" : "danger"
         });
 
     }
+
+    const handleDeleteClick = async () => {
+        // We need to create a custom route for this, where it will delete the recipe and its composition
+        // and return the new recipe list, and the new composition list
+    }
+
+
+    /* Methods */
+    const checkDisableConditions = (type) => {
+        let disabled = false;
+        switch (type) {
+            case 'save':
+                if (recipeIngredientSelectedRows.length === 0) {
+                    disabled = true;
+                }
+                fields.forEach((field) => {
+                    if (formData[field] === "") {
+                        disabled = true;
+                    }
+                });
+
+                break;
+            case 'delete':
+                formData['id'] ? disabled = false : disabled = true;
+                break;
+            default:
+                return false;
+        }
+        return disabled;
+    }
+
 
     return(<>
         <Form className="GenericForm">
@@ -177,9 +227,7 @@ export default function RecipeForm({imgSrc}) {
                     You can use this form to create new recipes or update existing ones. Follow the tooltips!
                 </span>
 
-                <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem'}}>
-                        
-
+                <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem'}}>    
                     <ConfirmationPopover 
                         text="Unsaved changes will be lost." 
                         placement={'bottom'}
@@ -199,12 +247,13 @@ export default function RecipeForm({imgSrc}) {
                         text="This will save changes to the current recipe."
                         placement={'bottom'}
                         onYes={handleSaveClick}
+                        disabled={checkDisableConditions('save')}
                     >
                         <TooltipOverlay
                             content={"Submit a recipe or update an existing one."}
                             placement={'left'}
                         >
-                            <FormButton onClick={(e) => {e.preventDefault()}}>
+                            <FormButton onClick={(e) => {e.preventDefault()}} disabled={checkDisableConditions('save')}>
                                 <FontAwesomeIcon icon={faSave} />
                             </FormButton>
                         </TooltipOverlay>
@@ -214,84 +263,77 @@ export default function RecipeForm({imgSrc}) {
                         text="This will delete the current recipe."
                         placement={'bottom'}
                         onYes={() => {}}
+                        disabled={checkDisableConditions('delete')}
                     >
                         <TooltipOverlay
                             content={"Delete the currently selected recipe."}
                             placement={'left'}
                         >
-                            <FormButton onClick={(e) => {e.preventDefault()}}>
+                            <FormButton onClick={(e) => {e.preventDefault()}} disabled={checkDisableConditions('delete')}>
                                 <FontAwesomeIcon icon={faTrash} />
                             </FormButton>
                         </TooltipOverlay>
                     </ConfirmationPopover>
-
-
                 </div>
-                
+
                 <TooltipOverlay 
                     content={'Click a recipe from the list to load its contents onto the form!'} 
                     placement={'bottom'}
-                    defaultShow
                 >
-                    <div style={{display: 'flex'}}>
-                            <ComboBox
-                                tableContainerClassName={`RecipeForm-recipe-table`}
-                                pattern='^([a-zA-Z0-9]{1,})$'
-                                avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
-                                selectable
-                                single
-                                footer
-                                
-                                data={recipeData}
-                                
-                                onClickRow={onClickRecipeRow}
-                                
-                                lockTrigger={triggerRecipeLock}
-                                displayTrigger={triggerRecipeDisplay}
-                            />
-                        <div className="ImageUploader">
-                            <span>Placeholder for image</span>
-                        </div>
+                <div style={{display: 'flex'}}>
+                        <ComboBox
+                            tableContainerClassName={`RecipeForm-recipe-table`}
+                            pattern='^([a-zA-Z0-9]{1,})$'
+                            avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+                            selectable
+                            single
+                            footer
+                            
+                            data={recipeData}
+                            
+                            onClickRow={onClickRecipeRow}
+                            
+                            lockTrigger={triggerRecipeLock}
+                            displayTrigger={triggerRecipeDisplay}
+                        />
+
+                    <div className="ImageUploader">
+                        <span>Placeholder for image</span>
                     </div>
+                </div>
                 </TooltipOverlay>
 
                 <FormFields
                     tableName="recipes"
-                    // fields={Object.keys(formData)}
                     fields={fields}
-                    // avoid={['id', 'created_at', 'updated_at']}
                     formData={formData}
                     customInputs={{ 
                         'description': <Form.Control as="textarea" rows={3} />
                         , 'type': 
-                            <Select 
-                                tableName="categories"
-                                filters={{'and': {'type':  ["'recipe'"]}}}
+                            <Select
+                                data={selectCategoriesData}
                                 targetField='name'
                                 value={formData['type']}
                             />
                         , 'period':
-                            <Select 
-                                tableName="categories" 
-                                filters={{'and': {'type':  ["'period'"]}}}
+                            <Select
+                                data={selectPeriodsData}
                                 targetField='name'
                                 value={formData['period']}
                             />
                         , 'presentation':
-                            <Select 
-                                tableName="categories" 
-                                filters={{'and': {'type':  ["'presentation'"]}}}
+                            <Select
+                                data={selectPresentationsData}
                                 targetField='name'
                                 value={formData['presentation']}
                             />
                     }}
-                    onInputChange={(e, key) => handleSelectChange(e, key)}
+                    onInputChange={(e, key) => handleInputChange(e, key)}
                 />
 
                 <TooltipOverlay
                     content={"Click an ingredient to add or remove it from the recipe."}
                     placement={'top'}
-                    defaultShow
                 >
                     <ComboBox
                         pattern='^([a-zA-Z0-9]{1,})$'
@@ -308,11 +350,12 @@ export default function RecipeForm({imgSrc}) {
                                 , "defaultValue": 100
                             }
                             , 'id_unit': {
-                                "component": <Select tableName="units" customOptions={() => {
-                                    return unitData.map((unit) => {
-                                        return unit['name'];
-                                    });
-                                }} />
+                                "component": 
+                                    <Select 
+                                        data={unitData}
+                                        targetField="name"
+                                        value={recipeIngredientCustomData['id_unit']}
+                                    />
                                 , "defaultValue": 2
                             }
                         }}
