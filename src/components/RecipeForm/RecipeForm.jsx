@@ -34,36 +34,34 @@ const formModel = {
 
 export default function RecipeForm({imgSrc}) {
 
-    /* Contexts */
-    const { maps } = useConfigs();
-    const { consolidateData, consolidateOperations, removeColumns } = useForm();
+    /* Contexts & Methods */
     const dataContext = useData();
+    const { maps } = useConfigs();
+    const { consolidateData } = useForm();
     const { spawnToast } = useNotification();
 
-    /* Outgoing Data */
-    const [formData, setFormData] = useState({...formModel}); // initial state
-  
-    /* Incoming Data */
+    /* Data */
     const [recipeData, setRecipeData] = useDataFetcher("recipes");
 
-    const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty"); // initial state
-    const [recipeIngredientSnapshot, setRecipeIngredientSnapshot] = useState([]); // snapshot of recipe_ingredient
+    const [recipeIngredientData, setRecipeIngredientData] = useDataFetcher("recipe_composition_empty");
+    const unitData = dataContext.getState('units');
+    
+    const [formData, setFormData] = useState({...formModel});
+    const [ selectCategoriesData ] = useDataFetcher("categories", {"and_": {"type": ["recipe"]}});
+    const [ selectPeriodsData ] = useDataFetcher("categories", {"and_": {"type": ["period"]}});
+    const [ selectPresentationsData ] = useDataFetcher("categories", {"and_": {"type": ["presentation"]}});
 
     /* CustomData & Selected Rows */
     const [recipeIngredientCustomData, setRecipeIngredientCustomData] = useState({}); // reason: for ComboBox use
     const [recipeIngredientSelectedRows, setRecipeIngredientSelectedRows] = useState([]); // reason: for ComboBox use
 
-
-    /* Other data */
+    /* Others */
     const [fields, setFields] = useState([]);
-    const [ selectCategoriesData ] = useDataFetcher("categories", {"and": {"type": ["recipe"]}});
-    const [ selectPeriodsData ] = useDataFetcher("categories", {"and": {"type": ["period"]}});
-    const [ selectPresentationsData ] = useDataFetcher("categories", {"and": {"type": ["presentation"]}});
-    const unitData = dataContext.getState('units');
 
     /* Triggers */
     const [triggerRecipeLock, setTriggerRecipeLock] = useTrigger();
     const [triggerRecipeDisplay, setTriggerRecipeDisplay] = useTrigger();
+    const [triggerRecipeSelectedRows, setTriggerRecipeSelectedRows] = useTrigger();
     
     const [triggerIngredientLock, setTriggerIngredientLock] = useTrigger();
     const [triggerIngredientDisplay, setTriggerIngredientDisplay] = useTrigger();
@@ -79,23 +77,17 @@ export default function RecipeForm({imgSrc}) {
 
     /* Events */
     const onClickRecipeRow = async (_, row) => { // reason: ComboBox's onClickRow sends (selectedRows, row)
-        
         const newFormData = {...formData, ...row};
-        console.log(newFormData)
         
         const { json: loadedData } = await dataContext.fetchData("recipe_composition_loaded", {}, {"id_recipe": row[`id`]});       
         const { json: snapshotData } = await dataContext.fetchData("recipe_composition_snapshot", {}, {"id_recipe": row[`id`]});
         
         setFormData(newFormData);
         setRecipeIngredientData(loadedData);
-        setRecipeIngredientSnapshot(snapshotData.length === 0 ? loadedData : snapshotData);
 
         setRecipeIngredientSelectedRows(snapshotData);
 
-        // Triggers
-        setTriggerRecipeLock(true);
-        setTriggerRecipeDisplay("selected");
-        
+        // Triggers       
         setTriggerIngredientLock(true);
         setTriggerIngredientDisplay("selected");
         setTriggerIngredientSelectedRows(snapshotData);
@@ -118,6 +110,7 @@ export default function RecipeForm({imgSrc}) {
     }
 
     const handleSaveClick = async () => {
+        
         if (recipeIngredientSelectedRows.length === 0) {
             spawnToast({
                 title: "Warning"
@@ -126,65 +119,89 @@ export default function RecipeForm({imgSrc}) {
             });
             return;
         }
-
+        
         let consolidatedData = [];
 
         if ('quantity' in recipeIngredientCustomData) {
             consolidatedData = consolidateData(recipeIngredientSelectedRows, recipeIngredientCustomData['quantity'], 'id', 'quantity');
         }
-
+        
         if ('id_unit' in recipeIngredientCustomData) {
             consolidatedData = consolidateData(consolidatedData, recipeIngredientCustomData['id_unit'], 'id', 'id_unit');
         }
 
-        const consolidatedOperations = consolidateOperations(recipeIngredientSnapshot, consolidatedData, 'id');
-        const { insertRows, updateRows, deleteRows } = consolidatedOperations;
-        
-        const consolidatedInsertRows = removeColumns(insertRows, ['id', 'id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
-        const consolidatedUpdateRows = removeColumns(updateRows, ['id_recipe_ingredient', 'description', 'name', 'unit', 'type', 'created_at']);
-        
-        const url = api.custom.insert;
-
+        const now = new Date(); // for tests only, get datetime from server
+        const url = api.custom.recipes.upsert;
         const payload = dataContext.generatePayload({method: 'POST', body: JSON.stringify({
             form_data: formData
-            , insert_rows: consolidatedInsertRows
-            , update_rows: consolidatedUpdateRows
-            , delete_rows: deleteRows
+            , reference: now.toISOString()
+            , recipe_ingredients_rows: consolidatedData
+        })});
+        
+        const { response, content } = await dataContext.customRoute(url, payload, true);
+        
+        if (!response.status_code == 200) return;
+
+        const newFormData = JSON.parse(content.data.form_data);
+        const newRecipeData = JSON.parse(content.data.recipes_data);
+        const newRecipeIngredientData = JSON.parse(content.data.recipe_ingredients_loaded);
+        const newRecipeIngredientsSelectedRows = JSON.parse(content.data.recipe_ingredients_snapshot);
+
+        // Display new data
+        setFormData(newFormData);
+        setRecipeData(newRecipeData);
+        setRecipeIngredientData(newRecipeIngredientData);
+        setRecipeIngredientSelectedRows(newRecipeIngredientsSelectedRows);
+
+        // Triggers
+        setTriggerRecipeLock(true);
+        setTriggerRecipeDisplay("selected");
+
+        const newRecipeRow = newRecipeData.find((row) => row['id'] === newFormData['id']);
+        setTriggerRecipeSelectedRows([newRecipeRow]);
+
+        
+        setTriggerIngredientLock(true);
+        setTriggerIngredientDisplay("selected");
+        setTriggerIngredientSelectedRows(newRecipeIngredientsSelectedRows);
+
+        
+    }
+
+    const handleDeleteClick = async () => {
+        const url = api.custom.recipes.delete;
+        const payload = dataContext.generatePayload({method: 'DELETE', body: JSON.stringify({
+            recipe: {
+                field: 'id'
+                , values: [formData['id']]
+            }
+            , composition: {
+                field: 'id_recipe'
+                , values: [formData['id']]
+            }
         })});
         
         const { response, content } = await dataContext.customRoute(url, payload, true);
 
-        if (response.status === 200) {
-            const newFormData = JSON.parse(content.data['form_data']);
-            const newRecipeData = JSON.parse(content.data['recipe_data']);
-            const newRecipeIngredientLoadedData = JSON.parse(content.data['recipe_ingredient_loaded_data']);
-            const newRecipeIngredientSnapshotData = JSON.parse(content.data['recipe_ingredient_snapshot_data']);
+        if (!response.status_code == 200) return;
+        
+        const newRecipeData = JSON.parse(content.data.recipes_data);
+        const newRecipeIngredientData = JSON.parse(content.data.recipe_ingredients_data);
 
-            // Update
-            setFormData(newFormData);
-            setRecipeData(newRecipeData);
-            setRecipeIngredientData(newRecipeIngredientLoadedData);
-            setRecipeIngredientSnapshot(newRecipeIngredientSnapshotData);
+        // Cleanup
+        setFormData({...formModel});
+        setRecipeData(newRecipeData);
+        setRecipeIngredientData(newRecipeIngredientData);
+        setRecipeIngredientSelectedRows([]);
 
-            setRecipeIngredientSelectedRows(newRecipeIngredientSnapshotData);
-            
-            // Triggers
-            setTriggerIngredientLock(true);
-            setTriggerIngredientDisplay("selected");
-            setTriggerIngredientSelectedRows(newRecipeIngredientSnapshotData);
-        } 
+        // Triggers
+        setTriggerRecipeLock(false);
+        setTriggerRecipeDisplay("all");
+        setTriggerRecipeSelectedRows([]);
 
-        spawnToast({
-            title: response.status === 200 ? "Success!" : "Error!"
-            , message: response.status === 200 ? "The recipe was saved successfully." : "There was an error while saving the recipe."
-            , variant: response.status === 200 ? "success" : "danger"
-        });
-
-    }
-
-    const handleDeleteClick = async () => {
-        // We need to create a custom route for this, where it will delete the recipe and its composition
-        // and return the new recipe list, and the new composition list
+        setTriggerIngredientLock(false);
+        setTriggerIngredientDisplay("all");
+        setTriggerIngredientSelectedRows([]);
     }
 
 
@@ -262,7 +279,7 @@ export default function RecipeForm({imgSrc}) {
                     <ConfirmationPopover
                         text="This will delete the current recipe."
                         placement={'bottom'}
-                        onYes={() => {}}
+                        onYes={handleDeleteClick}
                         disabled={checkDisableConditions('delete')}
                     >
                         <TooltipOverlay
@@ -295,6 +312,7 @@ export default function RecipeForm({imgSrc}) {
                             
                             lockTrigger={triggerRecipeLock}
                             displayTrigger={triggerRecipeDisplay}
+                            selectedRowsTrigger={triggerRecipeSelectedRows}
                         />
 
                     <div className="ImageUploader">

@@ -13,13 +13,13 @@ export function useDataFetcher(name, filters = {}) {
     const dataContext = useData();
 
     const [data, setData] = useState([]);
+    
+    const fetchData = async () => {
+        const { json } = await dataContext.fetchData(name, filters, {}, false);
+        setData(json);
+    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            const { json } = await dataContext.fetchData(name, filters, {}, false);
-            setData(json);
-        }
-
         fetchData();
     }, [name]);
 

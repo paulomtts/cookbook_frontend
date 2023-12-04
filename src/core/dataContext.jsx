@@ -17,7 +17,10 @@ const addresses = {
         },
         custom: {
             maps: 'http://localhost:8000/custom/maps',
-            insert: 'http://localhost:8000/custom/submit_recipe',
+            recipes: {
+                upsert: 'http://localhost:8000/custom/upsert_recipe',
+                delete: 'http://localhost:8000/custom/delete_recipe',
+            }
         }
     }
     // add remote api here
@@ -103,18 +106,36 @@ export function DataProvider({ children }) {
 
         const response = await fetch(url, payload).catch(error => error);
         let content = { data: [] };
-        let message = 'The resource was found but had no data stored.';
+        let title;
+        let message;
+        let variant;
 
-        if(response.status !== 204) {
+        if(response.status === 204) {
+            title = 'No Content';
+            message = 'The resource was found but had no data stored.';
+            variant = 'warning';
+        }
+
+        if(response.status === 304) {
+            title = 'Not Modified';
+            message = 'You made no changes to the resource.';
+            variant = 'info';
+        }
+
+        if(response.status === 200) {
             content = await response.json();
+
+            title = 'Success';
             message = content.message;
+            variant = 'success';
+
         }
 
         if(notification) {
             notificationContext.spawnToast({
-                title: response.status === 200 ? "Success" : "Error",
+                title: title,
                 message: message,
-                variant: response.status === 200 ? "success" : "danger",
+                variant: variant,
             });
         }
 
@@ -147,9 +168,17 @@ export function DataProvider({ children }) {
      * @param {number} overlayLength - The length of time to show the overlay for.
      * @returns {Promise<{response: Response, json: {data: []}}>} The response and JSON data from the API.
      */
-    const fetchData = async (tableName, filters = {}, lambdaArgs = {}, notification = true, overlay = true, overlayLength = 250, structured = false) => {
+    const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true, overlayLength = 250, structured = false) => {
         const url = api.crud.select + '?table_name=' + tableName + '&structured=' + structured;
-        const payload = generatePayload({ method: 'POST', body: JSON.stringify({filters: filters, lambda_args: lambdaArgs}) });
+        const payload = generatePayload({ 
+            method: 'POST'
+            , body: JSON.stringify({
+                table_name: tableName
+                , filters: filters
+                , lambda_kwargs: lambdaKwargs
+            }) 
+        });
+            
         const { response, content } = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         if(response.status === 200 && content.data !== undefined){
@@ -193,7 +222,12 @@ export function DataProvider({ children }) {
      */
     const deleteData = async (tableName, filters, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.delete + '?table_name=' + tableName;
-        const payload = generatePayload({ method: 'DELETE', body: JSON.stringify({filters: filters}) });
+        const payload = generatePayload({ 
+            method: 'DELETE'
+            , body: JSON.stringify({
+                filters: filters
+            }) 
+        });
         const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response
