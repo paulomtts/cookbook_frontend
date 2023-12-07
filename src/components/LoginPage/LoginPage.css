@@ -1,0 +1,82 @@
+.LoginPage {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+
+    height: 100vh;
+}
+
+.LoginPage .image {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    z-index: 1;
+}
+
+.LoginPage .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--darkgreen-opaque-60);
+    
+    z-index: 2;
+}
+
+.LoginPage .content {
+    position: fixed;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 3rem;
+    z-index: 3;
+}
+
+.LoginPage .title {
+    color: white;
+
+    font-family: 'Bestie';
+    font-size: 6rem;
+    
+    text-shadow: var(--title-text-shadow);
+
+    user-select: none;
+}
+
+.LoginPage .text {
+    color: white;
+    
+    font-size: 1.25rem;
+    font-weight: 200;
+
+    text-shadow: var(--title-text-shadow);
+
+    user-select: none;
+}
+
+.LoginPage .logo {
+    width: 3rem;
+    height: 3rem;
+
+    bottom: 20%;
+
+    z-index: 3;
+}
+
+.GoogleButton {
+    box-shadow: 0px 10px 10px 0px rgba(120, 120, 120, 0.7);
+    transition: all 0.1s ease-in-out;
+    
+    cursor: pointer;
+}
+
+.GoogleButton:active {
+    box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.7);
+}

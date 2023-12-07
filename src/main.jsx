@@ -5,10 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 /* Local dependencies */
 import App from './App';
-import { ConfigsProvider } from './core/configsContext';
 import { NotificationProvider } from './core/notificationContext';
 import { OverlayProvider } from './core/overlayContext';
 import { DataProvider } from './core/dataContext';
+import { ConfigsProvider } from './core/configsContext';
+import { AuthProvider } from './core/authContext';
 import { FormProvider } from './core/formContext';
 import './styles/root.css'
 import './styles/fonts.css'
@@ -18,13 +19,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
     <NotificationProvider>
       <OverlayProvider>
-        <DataProvider>
-          <ConfigsProvider>
-            <FormProvider>
-              <App />
-            </FormProvider>
-          </ConfigsProvider>
-        </DataProvider>
+          <DataProvider>
+            <AuthProvider>
+              <ConfigsProvider>
+                <FormProvider>
+                  <App />
+                </FormProvider>
+              </ConfigsProvider>
+            </AuthProvider>
+          </DataProvider>
       </OverlayProvider>
     </NotificationProvider>
   // </React.StrictMode>

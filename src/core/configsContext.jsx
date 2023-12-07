@@ -14,15 +14,10 @@ export function ConfigsProvider({ children }) {
 
     useEffect(() => {
         const retrieveMaps = async () => {
-            const mapsPayload = dataContext.generatePayload('GET');
-            await dataContext.customRoute(api.custom.maps, mapsPayload, false).then(({response, content}) => {
-                const json = JSON.parse(content.data);  
-                if (response.status === 200) {
-                    setMaps(json);
-                } else {
-                    // navigate back to entry page
-                }
-            });
+            const response = await fetch(api.custom.maps);
+            const content = await response.json();
+            const newMaps = JSON.parse(content.data);
+            setMaps(newMaps);
         }
         
         retrieveMaps();

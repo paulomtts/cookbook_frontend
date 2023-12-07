@@ -1,43 +1,53 @@
-import React, { useState, useEffect } from "react";
-import { Image, Col, Row } from "react-bootstrap";
+import React from "react";
+import { Button } from "react-bootstrap";
 
+import { api } from "../../core/dataContext";
 import NavbarItem from "./NavbarItem";
+import ConfirmationPopover from "../ConfirmationPopover/ConfirmationPopover";
 import "./Navbar.css";
 
 
 
 export default function Navbar(props) {
-    // const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
-    // const [scrollDirection, setScrollDirection] = useState("down"); 
-
-    // useEffect(() => {
-    //     const handleScroll = () => {
-    //         const currentScrollPos = window.scrollY;
-    //         if (prevScrollPos > currentScrollPos) {
-    //             setScrollDirection("up");
-    //         } else if (prevScrollPos < currentScrollPos) {
-    //             setScrollDirection("down");
-    //         }
-    //         setPrevScrollPos(currentScrollPos);
-    //     };
-
-    //     window.addEventListener("scroll", handleScroll);
-
-    //     return () => window.removeEventListener("scroll", handleScroll);
-    // }, [prevScrollPos]);
+    
+    const logout = async () => {
+        await fetch(api.auth.logout, {
+            method: "GET",
+            credentials: "include",
+        })
+        .then((response) => {
+            console.log(response)
+            if (response.status === 200) {
+                window.location.reload();
+            }
+        });
+    }
 
     return (<>
-        {/* <div className={`Navbar ${scrollDirection === "down" ? "slide-out" : "slide-in"}`}> */}
         <div className={`Navbar`}>
             <NavbarItem
                 text="Recipes"
                 onClick={() => props.onClickItem("recipes")}
-                />
+            />
             <NavbarItem
                 text="Ledger"
                 onClick={() => props.onClickItem("registry")}
-                />
-            {/* <Image roundedCircle fluid src={`${props.imgSrc}`} style={{height: '100px', width: '100px'}}/> */}
+            />
+
+            <ConfirmationPopover 
+                title="Logout"
+                text="Are you sure you want to logout?" 
+                placement={'bottom'}
+                onYes={logout}
+                style={{ marginLeft: "auto", zIndex: '9999' }}
+            >
+                <Button
+                    className="NavbarButton"
+                    variant="outline-light"
+                >
+                    Logout
+                </Button>
+            </ConfirmationPopover>
         </div>
     </>);
 }

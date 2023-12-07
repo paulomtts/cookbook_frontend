@@ -45,30 +45,3 @@
     border-radius: 0.75rem;
     box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.65);
 }
-
-
-.slide-out {
-    animation: slideOut 0.2s ease-in-out;
-}
-@keyframes slideOut {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(-100%);
-        /* display: none !important; */
-    }
-}
-
-.slide-in {
-    animation: slideIn 0.2s ease-in-out;
-}
-@keyframes slideIn {
-    0% {
-        transform: translateY(-100%);
-        /* display: none !important; */
-    }
-    100% {
-        transform: translateY(0);
-    }
-}

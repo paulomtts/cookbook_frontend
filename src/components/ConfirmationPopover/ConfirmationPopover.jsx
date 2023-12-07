@@ -22,13 +22,14 @@ export default function ConfirmationPopover({
     if (disabled) return (<>{children}</>);
 
     return (<>
+    <div style={{ zIndex: '9999', marginLeft: 'auto' }}>
         <OverlayTrigger
             container={this}
             placement={placement}
             trigger='click'
             rootClose
             overlay={
-                <Popover id={`popover-${placement}-${uuid}`}>
+                <Popover id={`popover-${placement}-${uuid}`} style={{ zIndex: '9999' }}>
                     <Popover.Header as="h3" className='ConfirmationPopover-header'>
                         {title}
                     </Popover.Header>
@@ -65,5 +66,6 @@ export default function ConfirmationPopover({
                 {children}
             </div>
         </OverlayTrigger>
+    </div>
     </>);
 }

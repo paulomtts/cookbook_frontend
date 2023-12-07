@@ -8,6 +8,12 @@ import { useOverlay } from './overlayContext';
 
 const addresses = {
     local: {
+        health: 'http://localhost:8000/health',
+        auth: {
+            login: 'http://localhost:8000/auth/login',
+            validate: 'http://localhost:8000/auth/validate',
+            logout: 'http://localhost:8000/auth/logout',
+        },
         crud: {
             select: 'http://localhost:8000/crud/select',
             insert: 'http://localhost:8000/crud/insert',
@@ -41,16 +47,16 @@ export function DataProvider({ children }) {
     const [categoryData, setCategoryData] = useState([]);
 
 
-    useEffect(() => {
-        /* Certain tables are required to be loaded on application start
-        in order to avoid repetitve querying throught component rendering 
-        (such as Select) */
-        const get_units = async () => {
-            await fetchData('units', {}, {}, false, false);
-        }
+    // useEffect(() => {
+    //     /* Certain tables are required to be loaded on application start
+    //     in order to avoid repetitve querying throught component rendering 
+    //     (such as Select) */
+    //     const get_units = async () => {
+    //         await fetchData('units', {}, {}, false, false);
+    //     }
 
-        get_units();
-    }, []);
+    //     get_units();
+    // }, []);
 
     const getState = (objectName) => {
         switch (objectName) {
@@ -91,7 +97,8 @@ export function DataProvider({ children }) {
      * @param {Object} options.body - The body of the request. Defaults to null.
      * @returns {Object} - The generated payload object.
      */
-    function generatePayload({ method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null }) {
+    // function generatePayload({ method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null }) {
+    function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null}) {
         return {
             method: method,
             credentials: credentials,
@@ -104,8 +111,9 @@ export function DataProvider({ children }) {
 
         if (overlay) await overlayContext.show();
 
-        const response = await fetch(url, payload).catch(error => error);
-        let content = { data: [] };
+        const response = await fetch(url, payload).catch(error => console.log(error));
+
+        let content;
         let title;
         let message;
         let variant;
@@ -153,7 +161,7 @@ export function DataProvider({ children }) {
      * @param {number} overlayLength - The duration of the overlay in milliseconds.
      * @returns {Promise<{ response: any, content: any }>} - The response and content of the request.
      */
-    const customRoute = async (url, payload, notification = true, overlay = true, overlayLength = 250) => {
+    const customRoute = async (url, payload = {}, notification = true, overlay = true, overlayLength = 250) => {
         const { response, content } = await _makeRequest(url, payload, notification, overlay, overlayLength);
         return { response, content };
     }
@@ -169,7 +177,7 @@ export function DataProvider({ children }) {
      * @returns {Promise<{response: Response, json: {data: []}}>} The response and JSON data from the API.
      */
     const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true, overlayLength = 250, structured = false) => {
-        const url = api.crud.select + '?table_name=' + tableName + '&structured=' + structured;
+        const url = api.crud.select + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'POST'
             , body: JSON.stringify({
