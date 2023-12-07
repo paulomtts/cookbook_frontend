@@ -108,38 +108,44 @@ export function DataProvider({ children }) {
     };
 
     const _makeRequest = async (url, payload, notification, overlay, overlayLength) => {
-
         if (overlay) await overlayContext.show();
 
-        const response = await fetch(url, payload).catch(error => console.log(error));
+        const response = await fetch(url, payload).catch((error) => console.log(error));
 
         let content;
         let title;
         let message;
         let variant;
 
-        if(response.status === 204) {
-            title = 'No Content';
-            message = 'The resource was found but had no data stored.';
-            variant = 'warning';
+        switch (response.status) {
+            case 204:
+                title = 'No Content';
+                message = 'The resource was found but had no data stored.';
+                variant = 'warning';
+                break;
+            case 304:
+                title = 'Not Modified';
+                message = 'You made no changes to the resource.';
+                variant = 'info';
+                break;
+            case 200:
+                content = await response.json();
+                title = 'Success';
+                message = content.message;
+                variant = 'success';
+                break;
+            case 422:
+                title = 'Unprocessable Entity';
+                message = 'The server could not process the request.';
+                variant = 'danger';
+            default:
+                title = 'Error';
+                message = 'An error occurred while processing the request.';
+                variant = 'danger';
+                break;
         }
 
-        if(response.status === 304) {
-            title = 'Not Modified';
-            message = 'You made no changes to the resource.';
-            variant = 'info';
-        }
-
-        if(response.status === 200) {
-            content = await response.json();
-
-            title = 'Success';
-            message = content.message;
-            variant = 'success';
-
-        }
-
-        if(notification) {
+        if (notification) {
             notificationContext.spawnToast({
                 title: title,
                 message: message,
@@ -149,8 +155,8 @@ export function DataProvider({ children }) {
 
         if (overlay) await overlayContext.hide(overlayLength);
 
-        return { response, content }
-    }
+        return { response, content };
+    };
 
     /**
      * Makes a custom route request.
@@ -233,9 +239,12 @@ export function DataProvider({ children }) {
         const payload = generatePayload({ 
             method: 'DELETE'
             , body: JSON.stringify({
-                filters: filters
+                table_name: tableName,
+                field: Object.keys(filters)[0],
+                ids: filters[Object.keys(filters)[0]]
             }) 
         });
+        console.log(payload)
         const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response
@@ -251,13 +260,13 @@ export function DataProvider({ children }) {
      * @param {number} [overlayLength=250] - The length of time (in milliseconds) to show the overlay.
      * @returns {Promise<Object>} - The response from the API.
      */
-    const submitData = async (tableName, data, bulk = false, notification = true, overlay = true, overlayLength = 250) => {
-        const url = bulk ? 
-            api.crud.insert_bulk + '?table_name=' + tableName
-            : 
-            api.crud.insert + '?table_name=' + tableName;
+    const submitData = async (tableName, data, notification = true, overlay = true, overlayLength = 250) => {
+        const url = api.crud.insert + '?table_name=' + tableName;
+        const payload = generatePayload({ method: 'POST', body: JSON.stringify({
+            data: [data]
+            , table_name: tableName
+        } )});
 
-        const payload = generatePayload({ method: 'POST', body: JSON.stringify({...data}) });
         const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response

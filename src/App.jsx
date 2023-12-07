@@ -7,12 +7,16 @@ import GenericForm from "./components/GenericForm/GenericForm";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
 import Select from "./components/Select";
 import { useConfigs } from "./core/configsContext";
+import { useDataFetcher } from "./hooks/useDataFetcher";
 
 export default function App() {
 
     const { maps } = useConfigs();
     const [fields, setFields] = useState({});
-    const [content, setContent] = useState('recipes');
+    const [content, setContent] = useState('registry');
+
+    const [ingredientsCategories] = useDataFetcher('categories', {'and_': {'type': ["ingredient"]}}, {}, false, true);
+    const [categoriesTypes] = useDataFetcher('categories', {'and_': {'type': ["type"]}}, {}, false, true);
 
     useEffect(() => {
         if (Object.keys(maps).length === 0) return;
@@ -34,7 +38,7 @@ export default function App() {
                         tableName='ingredients'
                         fields={fields['ingredients']}
                         customInputs={{
-                            'type': <Select tableName='categories' filters={{'and': {'type': ["ingredient"]}}} targetField="name"/>
+                            'type': <Select data={ingredientsCategories} targetField='name'/>
                         }}
                         imgSrc="./src/assets/ingredients.avif"
                     />
@@ -43,8 +47,15 @@ export default function App() {
                         title='categories'
                         tableName='categories'
                         fields={fields['categories']}
-                        customInputs={{
-                            'type':<Select customOptions={['ingredient', 'period', 'recipe', 'presentation']}/>
+                        customInputs={{'type': <Select 
+                                                    data={[
+                                                        {'name': 'ingredient'},
+                                                        {'name': 'period'},
+                                                        {'name': 'recipe'},
+                                                        {'name': 'presentation'}
+                                                    ]}
+                                                    targetField="name"
+                                                />
                         }}
                         imgSrc="./src/assets/categories.jpg"
                     />

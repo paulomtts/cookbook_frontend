@@ -39,7 +39,7 @@ export default function Navbar(props) {
                 text="Are you sure you want to logout?" 
                 placement={'bottom'}
                 onYes={logout}
-                style={{ marginLeft: "auto", zIndex: '9999' }}
+                style={{ marginLeft: "auto", zIndex: '2' }}
             >
                 <Button
                     className="NavbarButton"

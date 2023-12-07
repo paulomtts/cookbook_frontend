@@ -28,8 +28,15 @@ export default function LoginPage() {
             <div className='overlay' />
 
             <div className='content'>
-                <p className='title'>The Cookbook</p>
-
+                <p className='title'>The Cookbook<span style={{
+                    fontFamily: 'Arial',
+                    fontWeight: '100',
+                    fontSize: '0.75rem',
+                    color: 'white',
+                }}>alpha</span></p>
+                <p className='text'>Share amazing recipes!</p>
+                <br/>
+                <br/>
 
                 <Image 
                     className="GoogleButton" 
@@ -38,7 +45,6 @@ export default function LoginPage() {
                     onClick={login}
                 />
 
-                <p className='text'>Create and share amazing recipes!</p>
             </div>
             
 

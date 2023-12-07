@@ -103,12 +103,15 @@ export default function GenericForm({
             <div className="GenericForm-container">
 
                 <div className="GenericForm-body-container">
-                    <FormFields
-                        tableName={tableName}
-                        formData={formData}
-                        customInputs={customInputs}
-                        onInputChange={onInputChange}
-                    />
+                    {Object.keys(formData).length > 0 &&
+                        <FormFields
+                            tableName={tableName}
+                            fields={fields}
+                            formData={formData}
+                            customInputs={customInputs}
+                            onInputChange={onInputChange}
+                        />
+                    }
                 </div>
         
                 <div className="GenericForm-footer-container">
