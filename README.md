@@ -18,3 +18,11 @@ Upcoming:
 - Hovercards
 - Recipe sharing
 - Multi-recipe visualization
+
+Login screen:
+<img src="./assets/readme-1" alt="Alt text">
+
+<br/>
+
+Recipe form:
+<img src="./assets/readme-1" alt="Alt text">
