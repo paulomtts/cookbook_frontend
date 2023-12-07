@@ -20,9 +20,9 @@ Upcoming:
 - Multi-recipe visualization
 
 Login screen:
-<img src="./assets/readme-1" alt="Alt text">
+<img src="./src/assets/readme-1.png" alt="Alt text">
 
 <br/>
 
 Recipe form:
-<img src="./assets/readme-1" alt="Alt text">
+<img src="./src/assets/readme-2.png" alt="Alt text">
