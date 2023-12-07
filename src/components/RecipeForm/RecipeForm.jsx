@@ -48,8 +48,8 @@ export default function RecipeForm({imgSrc}) {
     
     const [formData, setFormData] = useState({...formModel});
     const [ selectCategoriesData ] = useDataFetcher("categories", {"and_": {"type": ["recipe"]}});
-    const [ selectPeriodsData ] = useDataFetcher("categories", {"and_": {"type": ["period"]}});
-    const [ selectPresentationsData ] = useDataFetcher("categories", {"and_": {"type": ["presentation"]}});
+    const [ selectPeriodsData ] = useDataFetcher("categories", {"and_": {"type": ["timing"]}});
+    const [ selectPresentationsData ] = useDataFetcher("categories", {"and_": {"type": ["course"]}});
 
     /* CustomData & Selected Rows */
     const [recipeIngredientCustomData, setRecipeIngredientCustomData] = useState({}); // reason: for ComboBox use
@@ -103,9 +103,9 @@ export default function RecipeForm({imgSrc}) {
 
 
     /* Handlers */
-    const handleInputChange = (e, key) => {
+    const handleInputChange = (value, key) => {
         const newFormData = {...formData};
-        newFormData[key] = e.target.value;
+        newFormData[key] = value;
         setFormData(newFormData);
     }
 
@@ -134,7 +134,7 @@ export default function RecipeForm({imgSrc}) {
         const url = api.custom.recipes.upsert;
         const payload = dataContext.generatePayload({method: 'POST', body: JSON.stringify({
             form_data: formData
-            , reference: now.toISOString()
+            , reference_time: now.toISOString()
             , recipe_ingredients_rows: consolidatedData
         })});
         
@@ -301,7 +301,7 @@ export default function RecipeForm({imgSrc}) {
                         <ComboBox
                             tableContainerClassName={`RecipeForm-recipe-table`}
                             pattern='^([a-zA-Z0-9]{1,})$'
-                            avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at']}
+                            avoid={['id', 'id_recipe_ingredient', 'id_recipe', 'id_ingredient', 'id_unit', 'created_at', 'updated_at', 'created_by', 'updated_by']}
                             selectable
                             single
                             footer
@@ -333,20 +333,20 @@ export default function RecipeForm({imgSrc}) {
                                 targetField='name'
                                 value={formData['type']}
                             />
-                        , 'period':
+                        , 'timing':
                             <Select
                                 data={selectPeriodsData}
                                 targetField='name'
                                 value={formData['period']}
                             />
-                        , 'presentation':
+                        , 'course':
                             <Select
                                 data={selectPresentationsData}
                                 targetField='name'
                                 value={formData['presentation']}
                             />
                     }}
-                    onInputChange={(e, key) => handleInputChange(e, key)}
+                    onInputChange={(value, key) => handleInputChange(value, key)}
                 />
 
                 <TooltipOverlay
@@ -359,22 +359,25 @@ export default function RecipeForm({imgSrc}) {
                         rename={{'id_unit': 'unit'}}
                         selectable
                         footer
+
+                        avoidSearch={['quantity', 'id_unit']}
                         
                         data={recipeIngredientData}
                         customComponents={{
                             'quantity': {
                                 "component": 
-                                    <Form.Control as="input" type="number" min={0} />
+                                    <Form.Control as="input" type="number" min={0}/>
                                 , "defaultValue": 100
                             }
                             , 'id_unit': {
                                 "component": 
                                     <Select 
                                         data={unitData}
-                                        targetField="name"
+                                        showField="name"
+                                        targetField="id"
                                         value={recipeIngredientCustomData['id_unit']}
                                     />
-                                , "defaultValue": 2
+                                , "defaultValue": 1
                             }
                         }}
                         

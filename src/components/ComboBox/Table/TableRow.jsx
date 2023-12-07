@@ -19,7 +19,7 @@ export default function TableRow({
         , selectable
         , editable
         , lock
-        , customData
+        , customData, setCustomData
         , selectedRows
         , handleClickRow
         , handleClickDelete
@@ -47,7 +47,7 @@ export default function TableRow({
                         size="sm"
                         disabled={lock}
                         onClick={() => handleClickDelete(row)}
-                        >
+                    >
                         <FontAwesomeIcon icon={faTrash}/>
                     </Button>}
 
@@ -65,7 +65,19 @@ export default function TableRow({
                             , id: `${key}-${index}`	
                             , disabled: lock
                             , value: customData[key][row['id']]
-                            , onChange: (e) => handleCustomDataChange(row, key, e.target.value)
+                            , onChange: (e) => {
+                                const value = e.target ? e.target.value : e;
+                                console.log(value)
+                                handleCustomDataChange(row, key, value)
+                            }
+                            , onFocus: (e) => e.target.select()
+                            , onBlur: () => {
+                                const newCustomData = {...customData};
+                                if (!selectedRows.includes(row)) {
+                                    newCustomData[key][row['id']] = 0;
+                                    setCustomData(newCustomData);
+                                }
+                            }
                         })}
                     </td>  
                 }

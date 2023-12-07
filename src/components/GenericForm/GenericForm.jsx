@@ -13,13 +13,16 @@ import './GenericForm.css';
 export default function GenericForm({
     tableName
     , fields = []
-    , avoid = ['id', 'created_at', 'updated_at']
+    , avoid = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by']
     , pattern = '^([a-zA-Z0-9]{1,})$'
         
     , title = ''
     , imgSrc = ''
 
     , customInputs = {}
+
+    , onSubmit = () => {}
+    , onDelete = () => {}
 }) {
 
     const notificationContext = useNotification();
@@ -73,20 +76,23 @@ export default function GenericForm({
         const fieldName = fields[0];
         const firstInput = document.getElementById(`${tableName}-form-input-${fieldName}`);
         firstInput.focus();
+
+        onSubmit();
     }
 
     const handleDelete = async (row) => {
         const response = await dataContext.deleteData(tableName, {id: [row[`id`]]});
         retrieveData();
 
+        onDelete();
         return response;
     }
 
 
     /* Events */
-    const onInputChange = (e, key) => {
+    const onInputChange = (value, key) => {
         const newFormData = {...formData};
-        newFormData[key] = e.target.value;
+        newFormData[key] = value;
         setFormData(newFormData);
     }
 
@@ -115,7 +121,6 @@ export default function GenericForm({
                 </div>
         
                 <div className="GenericForm-footer-container">
-                    {data.length > 0 &&
                         <FormAccordion
                             tableName={tableName}
                             dataLength={data.length}
@@ -132,7 +137,6 @@ export default function GenericForm({
                                 onClickDelete={handleDelete}
                             />
                         </FormAccordion>
-                    }
                 </div>
             </div>
 

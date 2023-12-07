@@ -34,20 +34,22 @@ export default function Navbar(props) {
                 onClick={() => props.onClickItem("registry")}
             />
 
-            <ConfirmationPopover 
-                title="Logout"
-                text="Are you sure you want to logout?" 
-                placement={'bottom'}
-                onYes={logout}
-                style={{ marginLeft: "auto", zIndex: '2' }}
-            >
-                <Button
-                    className="NavbarButton"
-                    variant="outline-light"
+            <div style={{ marginLeft: "auto", zIndex: '2'}}>
+                <ConfirmationPopover 
+                    title="Logout"
+                    text="Are you sure you want to logout?" 
+                    placement={'bottom'}
+                    onYes={logout}
+                    style={{ marginLeft: "auto", zIndex: '2' }}
                 >
-                    Logout
-                </Button>
-            </ConfirmationPopover>
+                    <Button
+                        className="NavbarButton"
+                        variant="outline-light"
+                        >
+                        Logout
+                    </Button>
+                </ConfirmationPopover>
+            </div>
         </div>
     </>);
 }

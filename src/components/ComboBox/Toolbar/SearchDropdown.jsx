@@ -6,7 +6,7 @@ import { Dropdown } from "react-bootstrap";
 import { ComboBoxContext } from "../ComboBox";
 
 export default function SearchInput(){
-    const { fields, lock, searchIn, handleSearchInClick } = useContext(ComboBoxContext);
+    const { fields, avoidSearch, lock, searchIn, handleSearchInClick } = useContext(ComboBoxContext);
 
     return(<>
         <Dropdown>
@@ -26,7 +26,7 @@ export default function SearchInput(){
                     All
                 </Dropdown.Item>
                 {fields.map((key, index) => {
-
+                    if(avoidSearch.includes(key)) return null;
                     return <Dropdown.Item
                         key={`dropdown-item-${index}`}
                         className="ComboBox-dropdown-item"

@@ -17,7 +17,16 @@ const { Provider } = ComboBoxContext;
 
 export default function ComboBox (props) {
     const {
-        data, pattern, avoid, rename = {} , selectable = false, single = false, editable = false, footer = false
+        data
+        , pattern
+        , avoid
+        , rename = {}
+        , selectable = false
+        , single = false
+        , editable = false
+        , footer = false
+
+        , avoidSearch = []
 
         , customComponents = {}
         
@@ -193,12 +202,25 @@ export default function ComboBox (props) {
      */
     const handleCustomDataChange = (row, key, value) => {
         const newCustomData = {...customData, [key]: {...customData[key], [row[`id`]]: value}};
-        setCustomData(newCustomData);
 
         if (key === 'quantity' && value < 1) {
+            Object.keys(customComponents).forEach((customKey) => {
+                if(customKey !== key){
+                    newCustomData[customKey][row['id']] = 0;
+                }
+            });
             setSelectedRows(selectedRows.filter((selRow) => selRow[`id`] !== row[`id`]));
+        } else if (key === 'quantity' && value > 0) {
+            Object.keys(customComponents).forEach((customKey) => {
+                if(customKey !== key){
+                    newCustomData[customKey][row['id']] = customComponents[customKey].defaultValue;
+                }
+            });
+            setSelectedRows([...selectedRows, row]);
         }
-
+        
+        
+        setCustomData(newCustomData);
         onChangeCustomData(newCustomData, row);
     }
 
@@ -218,6 +240,7 @@ export default function ComboBox (props) {
         , selectedRowsTrigger
         , selectable
         , editable
+        , avoidSearch
         , customComponents
         , lock, toggleLock
         , display, toggleDisplay, setDisplay

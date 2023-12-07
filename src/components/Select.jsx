@@ -5,6 +5,7 @@ import { Form } from "react-bootstrap";
 
 export default function Select({
     data = []
+    , showField = 'name'
     , targetField = 'id'
     , value // value is the id of the selected option, keep this name for compatibility with ComboBox
     , required
@@ -14,11 +15,15 @@ export default function Select({
 }) {
  
     const handleSelectChange = (e) => {
-        onChange(e);
+        const row = data.filter((row) => {
+            
+            return row[targetField] == e.target.value;
+        })[0];
+        onChange(row[targetField]);
     }
         
-    const row = data.filter((row) => row['id'] === value)[0];
-    if(row) value = row[targetField];
+    // const row = data.filter((row) => row['id'] === value)[0];
+    // if(row) value = row[targetField];
 
     return (<>
         <Form.Group>
@@ -33,7 +38,7 @@ export default function Select({
             >
                 <option key='blankChoice' value={null} hidden>Select...</option>
                 {data.map((option, index) => {
-                    const exhibitedOption = option[targetField];
+                    const exhibitedOption = option[showField];
 
                     return (<option key={index} value={option[targetField]}>{exhibitedOption.charAt(0).toUpperCase() + exhibitedOption.slice(1)}</option>)
                 })}

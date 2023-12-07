@@ -23,8 +23,12 @@ return (<div className="FormFields-container">
                     {customInputs[key] ? 
                         React.cloneElement(customInputs[key], { 
                             value: formData[key]
-                            , onChange: (e) => {
-                                onInputChange(e, key)
+                            , onChange: (e, someKey, row) => {
+                                if(e.target) {
+                                    onInputChange(e.target.value, key)
+                                } else {
+                                    onInputChange(e, key)
+                                }
                             }}
                         )
                         :
@@ -33,7 +37,7 @@ return (<div className="FormFields-container">
                             type="text" 
                             placeholder={key.charAt(0).toUpperCase() + key.slice(1)} 
                             value={formData[key]} 
-                            onChange={(e) => onInputChange(e, key)} 
+                            onChange={(e) => onInputChange(e.target.value, key)} 
                         />
                     }
 

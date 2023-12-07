@@ -17,11 +17,9 @@ export default function FormAccordion({
         <Accordion.Item className="FormAccordion-item" eventKey="0">
 
             <div className="FormAccordion-button-container">
-                {dataLength > 0 && (
-                    <FormAccordionButton eventKey="0">
-                        Show
-                    </FormAccordionButton>
-                )}
+                <FormAccordionButton eventKey="0">
+                    Show
+                </FormAccordionButton>
 
                 <FormButton
                     tableName={tableName}

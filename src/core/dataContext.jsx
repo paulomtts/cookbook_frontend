@@ -47,16 +47,16 @@ export function DataProvider({ children }) {
     const [categoryData, setCategoryData] = useState([]);
 
 
-    // useEffect(() => {
-    //     /* Certain tables are required to be loaded on application start
-    //     in order to avoid repetitve querying throught component rendering 
-    //     (such as Select) */
-    //     const get_units = async () => {
-    //         await fetchData('units', {}, {}, false, false);
-    //     }
+    useEffect(() => {
+        /* Certain tables are required to be loaded on application start
+        in order to avoid repetitve querying throught component rendering 
+        (such as Select) */
+        const get_units = async () => {
+            await fetchData('units', {}, {}, false, false);
+        }
 
-    //     get_units();
-    // }, []);
+        get_units();
+    }, []);
 
     const getState = (objectName) => {
         switch (objectName) {
@@ -236,12 +236,20 @@ export function DataProvider({ children }) {
      */
     const deleteData = async (tableName, filters, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.delete + '?table_name=' + tableName;
+        console.log(filters)
         const payload = generatePayload({ 
             method: 'DELETE'
             , body: JSON.stringify({
                 table_name: tableName,
-                field: Object.keys(filters)[0],
-                ids: filters[Object.keys(filters)[0]]
+                filters: [
+                    // build a {key: value} object for each filter
+                    ...Object.keys(filters).map((key) => {
+                        return {
+                            field: key,
+                            values: filters[key]
+                        }
+                    })
+                ]
             }) 
         });
         console.log(payload)

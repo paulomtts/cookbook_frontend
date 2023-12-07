@@ -22,50 +22,48 @@ export default function ConfirmationPopover({
     if (disabled) return (<>{children}</>);
 
     return (<>
-    <div style={{ zIndex: '9999', marginLeft: 'auto' }}>
-        <OverlayTrigger
-            container={this}
-            placement={placement}
-            trigger='click'
-            rootClose
-            overlay={
-                <Popover id={`popover-${placement}-${uuid}`} style={{ zIndex: '9999' }}>
-                    <Popover.Header as="h3" className='ConfirmationPopover-header'>
-                        {title}
-                    </Popover.Header>
-                    <Popover.Body className='ConfirmationPopover-body'>
-                        <div className='ConfirmationPopover-text-container'>
-                            {text}
-                        </div>
-                        <div className='ConfirmationPopover-button-container'>
-                            <FormButton
-                                className='ConfirmationPopover-FormButton-outlined'
-                                type='submit'
-                                onClick={() => {
-                                    document.body.click();
-                                    onYes();
-                                }}
-                                >
-                                Yes
-                            </FormButton>
-                            <FormButton
-                                type='button'
-                                onClick={() => {
-                                    document.body.click();
-                                    onNo();
-                                }}
+    <OverlayTrigger
+        container={this}
+        placement={placement}
+        trigger='click'
+        rootClose
+        overlay={
+            <Popover id={`popover-${placement}-${uuid}`} style={{ zIndex: '9999' }}>
+                <Popover.Header as="h3" className='ConfirmationPopover-header'>
+                    {title}
+                </Popover.Header>
+                <Popover.Body className='ConfirmationPopover-body'>
+                    <div className='ConfirmationPopover-text-container'>
+                        {text}
+                    </div>
+                    <div className='ConfirmationPopover-button-container'>
+                        <FormButton
+                            className='ConfirmationPopover-FormButton-outlined'
+                            type='submit'
+                            onClick={() => {
+                                document.body.click();
+                                onYes();
+                            }}
                             >
-                                No
-                            </FormButton>
-                        </div>
-                    </Popover.Body>
-                </Popover>
-            }
-        >
-            <div>
-                {children}
-            </div>
-        </OverlayTrigger>
-    </div>
+                            Yes
+                        </FormButton>
+                        <FormButton
+                            type='button'
+                            onClick={() => {
+                                document.body.click();
+                                onNo();
+                            }}
+                        >
+                            No
+                        </FormButton>
+                    </div>
+                </Popover.Body>
+            </Popover>
+        }
+    >
+        <div>
+            {children}
+        </div>
+    </OverlayTrigger>
     </>);
 }

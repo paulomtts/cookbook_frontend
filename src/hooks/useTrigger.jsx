@@ -1,23 +1,22 @@
 /* Foreign Dependencies */  
-import { useState } from "react";
-
-/* Local dependencies */    
-import { useRearm } from "./useRearm";
+import { useEffect, useState } from "react";
 
 
 /**
- * Custom hook that returns a stateful value and a function to update it. The trigger is
- * automatically re-armed (set to null) right after each update (using the useRearm hook). This hook is syntax
- * sugar for the useState and useRearm hooks.
- * @param {*} initialValue - The initial value of the state.
- * @returns {[*, Function]} An array with the current state value and a function to update it.
+ * Custom hook that provides rearmable trigger state.
+ * @param {any} initialValue - The initial value of the trigger.
+ * @returns {[any, function]} - An array containing the current value and a function to update it.
  */
 export const useTrigger = (
     initialValue = null
 ) => {
 
     const [state, setState] = useState(initialValue);
-    useRearm(setState, state); // re-arm mechanism
+
+    useEffect(() => {
+        if (state === initialValue || state === null) return;
+        setState(null);
+    }, [state]);
 
     return [state, setState];
 }
