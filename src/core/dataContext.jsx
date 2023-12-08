@@ -5,27 +5,28 @@ import React, { useState, useContext, createContext, useEffect } from 'react';
 import { useNotification } from './notificationContext';
 import { useOverlay } from './overlayContext';
 
+const useCloud = true;
+const baseURL = useCloud ? 'https://cbk-api-a0-0-4-a7a42b2d943a.herokuapp.com' : 'http://localhost:8000';
 
 const addresses = {
     local: {
-        health: 'http://localhost:8000/health',
+        health: `${baseURL}/health`,
         auth: {
-            login: 'http://localhost:8000/auth/login',
-            validate: 'http://localhost:8000/auth/validate',
-            logout: 'http://localhost:8000/auth/logout',
+            login: `${baseURL}/auth/login`,
+            validate: `${baseURL}/auth/validate`,
+            logout: `${baseURL}/auth/logout`,
         },
         crud: {
-            select: 'http://localhost:8000/crud/select',
-            insert: 'http://localhost:8000/crud/insert',
-            update: 'http://localhost:8000/crud/update',
-            delete: 'http://localhost:8000/crud/delete',
-            insert_bulk: 'http://localhost:8000/crud/insert_bulk',
+            select: `${baseURL}/crud/select`,
+            insert: `${baseURL}/crud/insert`,
+            update: `${baseURL}/crud/update`,
+            delete: `${baseURL}/crud/delete`,
         },
         custom: {
-            maps: 'http://localhost:8000/custom/maps',
+            maps: `${baseURL}/custom/maps`,
             recipes: {
-                upsert: 'http://localhost:8000/custom/upsert_recipe',
-                delete: 'http://localhost:8000/custom/delete_recipe',
+                upsert: `${baseURL}/custom/upsert_recipe`,
+                delete: `${baseURL}/custom/delete_recipe`,
             }
         }
     }
@@ -47,16 +48,16 @@ export function DataProvider({ children }) {
     const [categoryData, setCategoryData] = useState([]);
 
 
-    useEffect(() => {
-        /* Certain tables are required to be loaded on application start
-        in order to avoid repetitve querying throught component rendering 
-        (such as Select) */
-        const get_units = async () => {
-            await fetchData('units', {}, {}, false, false);
-        }
+    // useEffect(() => {
+    //     /* Certain tables are required to be loaded on application start
+    //     in order to avoid repetitve querying throught component rendering 
+    //     (such as Select) */
+    //     const get_units = async () => {
+    //         await fetchData('units', {}, {}, false, false);
+    //     }
 
-        get_units();
-    }, []);
+    //     get_units();
+    // }, []);
 
     const getState = (objectName) => {
         switch (objectName) {
