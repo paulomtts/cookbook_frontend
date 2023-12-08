@@ -16,7 +16,7 @@ export default function LoginPage() {
     const login = async () => {  
         overlayContext.show();
         const { response, content } = await dataContext.customRoute(api.auth.login, {}, false, false);
-
+        console.log(content.url)
         if (response.status === 200) {
            window.location.href = content.url;
         }

@@ -1,5 +1,5 @@
 /* Foreign dependencies */
-import React, { useState, useContext, createContext, useEffect } from 'react';
+import React, { useState, useContext, createContext } from 'react';
 
 /* Local dependencies */
 import { useNotification } from './notificationContext';
