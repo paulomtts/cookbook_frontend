@@ -8,7 +8,7 @@ import { useToggle } from "../../hooks/useToggle";
 import ComboBoxToolbar from "./Toolbar/ComboBoxToolbar";
 import ComboBoxTable from "./Table/ComboBoxTable";
 import ComboBoxInfo from "./InfoBar/ComboBoxInfo";
-import "./ComboBox.css";
+import "./combobox.css";
 
 
 const ComboBoxContext = createContext();
