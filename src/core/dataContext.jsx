@@ -1,5 +1,5 @@
 /* Foreign dependencies */
-import React, { useState, useContext, createContext } from 'react';
+import React, { useState, useContext, createContext, useEffect } from 'react';
 
 /* Local dependencies */
 import { useNotification } from './notificationContext';
@@ -48,16 +48,16 @@ export function DataProvider({ children }) {
     const [categoryData, setCategoryData] = useState([]);
 
 
-    // useEffect(() => {
-    //     /* Certain tables are required to be loaded on application start
-    //     in order to avoid repetitve querying throught component rendering 
-    //     (such as Select) */
-    //     const get_units = async () => {
-    //         await fetchData('units', {}, {}, false, false);
-    //     }
+    useEffect(() => {
+        /* Certain tables are required to be loaded on application start
+        in order to avoid repetitve querying throught component rendering 
+        (such as Select) */
+        const get_units = async () => {
+            await fetchData('units', {}, {}, false, false);
+        }
 
-    //     get_units();
-    // }, []);
+        get_units();
+    }, []);
 
     const getState = (objectName) => {
         switch (objectName) {
@@ -98,7 +98,6 @@ export function DataProvider({ children }) {
      * @param {Object} options.body - The body of the request. Defaults to null.
      * @returns {Object} - The generated payload object.
      */
-    // function generatePayload({ method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null }) {
     function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null}) {
         return {
             method: method,
