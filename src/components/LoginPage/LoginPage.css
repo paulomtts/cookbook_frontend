@@ -1,4 +1,5 @@
 .LoginPage {
+    background-image: url("../../assets/loginBackground.png");
     display: flex;
     flex-direction: row;
     justify-content: center;

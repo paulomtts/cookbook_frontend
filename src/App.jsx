@@ -9,7 +9,7 @@ import Select from "./components/Select";
 import { useConfigs } from "./core/configsContext";
 import { useDataFetcher } from "./hooks/useDataFetcher";
 import { useTrigger } from "./hooks/useTrigger";
-
+// console.log(document.currentScript.src);
 export default function App() {
 
     const { maps } = useConfigs();
