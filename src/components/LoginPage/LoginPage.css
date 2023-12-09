@@ -1,5 +1,6 @@
 .LoginPage {
-    background-image: url("../../assets/loginBackground.png");
+    /* background-image: url("../../assets/loginBackground.png");
+    background-size: cover; */
     display: flex;
     flex-direction: row;
     justify-content: center;

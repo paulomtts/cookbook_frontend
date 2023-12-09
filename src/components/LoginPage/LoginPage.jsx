@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     return (
         <div className="LoginPage text">
-            {/* <Image src="./src/assets/loginBackground.png" className="image" fluid /> */}
+            <Image src="src/assets/loginBackground.png" className="image" fluid />
             <div className='overlay' />
 
             <div className='content'>
