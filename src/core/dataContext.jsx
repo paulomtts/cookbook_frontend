@@ -5,7 +5,7 @@ import React, { useState, useContext, createContext } from 'react';
 import { useNotification } from './notificationContext';
 import { useOverlay } from './overlayContext';
 
-const useCloud = false;
+const useCloud = true;
 const baseURL = useCloud ? 'https://cbk-api-a0-0-4-a7a42b2d943a.herokuapp.com' : 'http://localhost:8000';
 
 const addresses = {
