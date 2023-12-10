@@ -96,7 +96,7 @@ export function DataProvider({ children }) {
      * @param {Object} options.body - The body of the request. Defaults to null.
      * @returns {Object} - The generated payload object.
      */
-    function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null}) {
+    function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json', 'Access-Control-Expose-Headers': 'Set-cookie'}, body = null}) {
         return {
             method: method,
             credentials: credentials,
