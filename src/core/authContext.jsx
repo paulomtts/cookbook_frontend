@@ -16,9 +16,11 @@ export function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        // const jwtToken = document.cookie.split('; ').find(row => row.startsWith('cbk_s=')).split('=')[1];
-        // console.log(jwtToken);
-        // console.log('here')
+        if(document.cookie) {
+            const jwtToken = document.cookie.split('; ').find(row => row.startsWith('cbk_s=')).split('=')[1];
+            console.log(jwtToken);
+            console.log('here');
+        }
 
         const validateSession = async () => {
             const payload = {
