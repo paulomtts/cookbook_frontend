@@ -10,6 +10,11 @@ import { useConfigs } from "./core/configsContext";
 import { useDataFetcher } from "./hooks/useDataFetcher";
 import { useTrigger } from "./hooks/useTrigger";
 
+import ingredientsHeaderImage from '/src/assets/ingredients.avif';
+import categoriesHeaderImage from '/src/assets/categories.jpg';
+import unitsHeaderImage from '/src/assets/units.jpg';
+import recipesHeaderImage from '/src/assets/recipes.avif';
+
 
 export default function App() {
 
@@ -31,7 +36,7 @@ export default function App() {
 
     return (<>
         <div className="main-container">
-            <Navbar onClickItem={handleNavigationComponentClick} imgSrc="./src/assets/recipes.avif"/>
+            <Navbar onClickItem={handleNavigationComponentClick} imgSrc="/src/assets/recipes.avif"/>
             <div className={`content-container fade-in-long`}>
                 {content === 'registry' && <>
                 
@@ -42,7 +47,7 @@ export default function App() {
                         customInputs={{
                             'type': <Select data={ingredientsCategories} showField='name' targetField='name'/>
                         }}
-                        imgSrc="./src/assets/ingredients.avif"
+                        imgSrc={ingredientsHeaderImage}
                     />
 
                     <GenericForm
@@ -60,7 +65,7 @@ export default function App() {
                                         targetField="name"
                                     />
                         }}
-                        imgSrc="./src/assets/categories.jpg"
+                        imgSrc={categoriesHeaderImage}
                         onSubmit={() => resetIngCatTrigger(true)}
                         onDelete={() => resetIngCatTrigger(true)}
                     />
@@ -69,12 +74,12 @@ export default function App() {
                         title='units'
                         tableName='units'
                         fields={fields['units']}
-                        imgSrc="./src/assets/units.jpg"
+                        imgSrc={unitsHeaderImage}
                     />
                 </>}
 
                 {content === 'recipes' && <>
-                    <RecipeForm imgSrc={"./src/assets/recipes.avif"}/>
+                    <RecipeForm imgSrc={recipesHeaderImage}/>
                 </>}
             </div>
         </div>

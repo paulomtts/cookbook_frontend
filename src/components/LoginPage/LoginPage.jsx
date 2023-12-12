@@ -5,6 +5,10 @@ import { Image } from 'react-bootstrap';
 /* Local dependencies */
 import { useData, api } from '../../core/dataContext';
 import { useOverlay } from '../../core/overlayContext';
+
+import backgroundImage from '/src/assets/loginBackground.png';
+import googleButtonImage from '/src/assets/web_neutral_sq_ctn.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -15,16 +19,16 @@ export default function LoginPage() {
 
     const login = async () => {  
         overlayContext.show();
-        const { response, content } = await dataContext.customRoute(api.auth.login, {}, false, false);
+        const { response, content } = await dataContext.customRoute(api.auth.login, {method: 'GET', credentials: 'include'}, false, false);
 
-        if (response.status === 200) {
+        if (response.ok) {
            window.location.href = content.url;
         }
     }
 
     return (
         <div className="LoginPage text">
-            <Image src="../../assets/loginBackground.png" className="image" fluid />
+            <Image src={backgroundImage} className="image" fluid />
             <div className='overlay' />
 
             <div className='content'>
@@ -40,7 +44,7 @@ export default function LoginPage() {
 
                 <Image 
                     className="GoogleButton" 
-                    src="./src/assets/web_neutral_sq_ctn.svg" 
+                    src={googleButtonImage}
                     title='Click to login with Google'
                     onClick={login}
                 />

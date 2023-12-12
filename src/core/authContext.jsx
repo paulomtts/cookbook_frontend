@@ -16,13 +16,6 @@ export function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        console.log(document.cookie)
-        if(document.cookie) {
-            const jwtToken = document.cookie.split('; ').find(row => row.startsWith('cbk_s=')).split('=')[1];
-            console.log(jwtToken);
-            console.log('here');
-        }
-
         const validateSession = async () => {
             const payload = {
                 method: 'GET',
@@ -32,6 +25,7 @@ export function AuthProvider({ children }) {
 
             await fetch(api.auth.validate, payload)
             .then((response) => {
+                console.log(response)
                 if (response.ok) {
                     setIsAuthenticated(true);
                 } else {

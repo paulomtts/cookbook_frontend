@@ -5,7 +5,8 @@ import React, { useState, useContext, createContext, useEffect } from 'react';
 import { useNotification } from './notificationContext';
 import { useOverlay } from './overlayContext';
 
-const baseURL = true ? 'https://cbk-api-a0-0-4-a7a42b2d943a.herokuapp.com' : 'http://localhost:8000';
+// const baseURL = true ? 'https://cbk-api-a0-0-4-a7a42b2d943a.herokuapp.com' : 'http://localhost:8000';
+const baseURL = true ? 'https://cbk-api.azurewebsites.net' : 'http://localhost:8000';
 const addresses = {
     local: {
         health: `${baseURL}/health`,
@@ -28,7 +29,6 @@ const addresses = {
             }
         }
     }
-    // add remote api here
 };
 export const api = addresses.local;
 
@@ -96,7 +96,7 @@ export function DataProvider({ children }) {
      * @param {Object} options.body - The body of the request. Defaults to null.
      * @returns {Object} - The generated payload object.
      */
-    function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json', 'Access-Control-Expose-Headers': 'Set-cookie'}, body = null}) {
+    function generatePayload({method = 'GET', credentials = 'include', headers = {'Content-Type': 'application/json'}, body = null}) {
         return {
             method: method,
             credentials: credentials,
@@ -180,7 +180,7 @@ export function DataProvider({ children }) {
      * @param {number} overlayLength - The length of time to show the overlay for.
      * @returns {Promise<{response: Response, json: {data: []}}>} The response and JSON data from the API.
      */
-    const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true, overlayLength = 250, structured = false) => {
+    const fetchData = async (tableName, filters = {}, lambdaKwargs = {}, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.select + '?table_name=' + tableName;
         const payload = generatePayload({ 
             method: 'POST'
