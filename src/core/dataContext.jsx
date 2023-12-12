@@ -6,7 +6,7 @@ import { useNotification } from './notificationContext';
 import { useOverlay } from './overlayContext';
 
 // const baseURL = true ? 'https://cbk-api-a0-0-4-a7a42b2d943a.herokuapp.com' : 'http://localhost:8000';
-const baseURL = false ? 'https://cbk-api.azurewebsites.net' : 'http://localhost:8000';
+const baseURL = true ? 'https://cbk-api.azurewebsites.net' : 'http://localhost:8000';
 const addresses = {
     local: {
         health: `${baseURL}/health`,
