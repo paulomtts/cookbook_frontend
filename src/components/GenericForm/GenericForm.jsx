@@ -81,7 +81,8 @@ export default function GenericForm({
     }
 
     const handleDelete = async (row) => {
-        const response = await dataContext.deleteData(tableName, {id: [row[`id`]]});
+        console.log(row)
+        const response = await dataContext.deleteData(tableName, {and_: {id: [row[`id`]]}});
         retrieveData();
 
         onDelete();

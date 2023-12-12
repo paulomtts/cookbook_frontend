@@ -25,7 +25,6 @@ export function AuthProvider({ children }) {
 
             await fetch(api.auth.validate, payload)
             .then((response) => {
-                console.log(response)
                 if (response.ok) {
                     setIsAuthenticated(true);
                 } else {
@@ -51,6 +50,7 @@ export function AuthProvider({ children }) {
     return (
         <Provider value={{ isAuthenticated }}>
             {isAuthenticated ? children : <LoginPage />}
+            {/* {children} */}
         </Provider>
     );
 }

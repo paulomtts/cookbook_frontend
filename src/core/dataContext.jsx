@@ -6,7 +6,7 @@ import { useNotification } from './notificationContext';
 import { useOverlay } from './overlayContext';
 
 // const baseURL = true ? 'https://cbk-api-a0-0-4-a7a42b2d943a.herokuapp.com' : 'http://localhost:8000';
-const baseURL = true ? 'https://cbk-api.azurewebsites.net' : 'http://localhost:8000';
+const baseURL = false ? 'https://cbk-api.azurewebsites.net' : 'http://localhost:8000';
 const addresses = {
     local: {
         health: `${baseURL}/health`,
@@ -16,16 +16,17 @@ const addresses = {
             logout: `${baseURL}/auth/logout`,
         },
         crud: {
-            select: `${baseURL}/crud/select`,
-            insert: `${baseURL}/crud/insert`,
-            update: `${baseURL}/crud/update`,
-            delete: `${baseURL}/crud/delete`,
+            select: `${baseURL}/custom/crud/select`,
+            insert: `${baseURL}/custom/crud/insert`,
+            update: `${baseURL}/custom/crud/update`,
+            delete: `${baseURL}/custom/crud/delete`,
         },
         custom: {
-            maps: `${baseURL}/custom/maps`,
+            maps: `${baseURL}/custom/configs/maps`,
+            user: `${baseURL}/custom/configs/user`,
             recipes: {
-                upsert: `${baseURL}/custom/upsert_recipe`,
-                delete: `${baseURL}/custom/delete_recipe`,
+                upsert: `${baseURL}/custom/recipes/upsert_recipe`,
+                delete: `${baseURL}/custom/recipes/delete_recipe`,
             }
         }
     }
@@ -234,23 +235,13 @@ export function DataProvider({ children }) {
      */
     const deleteData = async (tableName, filters, notification = true, overlay = true, overlayLength = 250) => {
         const url = api.crud.delete + '?table_name=' + tableName;
-        console.log(filters)
         const payload = generatePayload({ 
             method: 'DELETE'
             , body: JSON.stringify({
                 table_name: tableName,
-                filters: [
-                    // build a {key: value} object for each filter
-                    ...Object.keys(filters).map((key) => {
-                        return {
-                            field: key,
-                            values: filters[key]
-                        }
-                    })
-                ]
+                filters: filters
             }) 
         });
-        console.log(payload)
         const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response
@@ -272,7 +263,6 @@ export function DataProvider({ children }) {
             data: [data]
             , table_name: tableName
         } )});
-
         const response = await _makeRequest(url, payload, notification, overlay, overlayLength);
 
         return response
