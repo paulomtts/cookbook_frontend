@@ -234,9 +234,9 @@ export default function RecipeForm({imgSrc}) {
         <Form className="GenericForm">
 
             <Image className={`GenericForm-image`} src={imgSrc} />
-            <h2 className={`GenericForm-title`}>
+            {/* <h2 className={`GenericForm-title`}>
                 Recipes
-            </h2>
+            </h2> */}
 
             <div className="RecipeForm-container">
                 

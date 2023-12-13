@@ -1,5 +1,7 @@
 /* Foreign dependencies */
 import React, { useEffect, useState } from "react";
+import { faPizzaSlice, faScaleBalanced, faTags } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /* Local dependencies */
 import Navbar from "./components/Navbar/Navbar";
@@ -36,7 +38,35 @@ export default function App() {
 
     return (<>
         <div className="main-container">
-            <Navbar onClickItem={handleNavigationComponentClick} imgSrc="/src/assets/recipes.avif"/>
+            {/* <Navbar onClickItem={handleNavigationComponentClick} imgSrc="/src/assets/recipes.avif"/> */}
+
+            <div className="sidebar-container fade-in-long">
+                <div className="sidebar-item">
+                    <div>
+                        <FontAwesomeIcon icon={faPizzaSlice} />
+                    </div>
+                    <div>
+                        <span className="sidebar-text">Recipes</span>
+                    </div>
+                </div>
+                <div className="sidebar-item">
+                    <div>
+                        <FontAwesomeIcon icon={faScaleBalanced} />
+                    </div>
+                    <div>
+                        <span className="sidebar-text">Units</span>
+                    </div>
+                </div>
+                <div className="sidebar-item">
+                    <div>
+                        <FontAwesomeIcon icon={faTags} />
+                    </div>
+                    <div>
+                        <span className="sidebar-text">Tags</span>
+                    </div>
+                </div>
+            </div>
+
             <div className={`content-container fade-in-long`}>
                 {content === 'registry' && <>
                 
