@@ -1,0 +1,32 @@
+.Container {
+    width: 100%;
+    height: 100%;
+    
+    background-color: var(--darkgreen-opaque-20);
+}
+
+.Card {   
+    border: 1px solid var(--darkgreen);
+    border-radius: var(--radius);
+    
+    padding: 1rem;
+    
+    background-color: var(--main-bg-color);
+    box-shadow: 0px 5px 3px 0px rgba(0, 0, 0, 0.65);
+}
+
+.Badges-Container {
+    border: 1px solid gray;
+    border-radius: var(--radius);
+
+    padding: 1rem;
+}
+
+.Badge {
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.65);
+}
+
+.User .name {
+    font-size: 2rem;
+    font-weight: 200;
+}
