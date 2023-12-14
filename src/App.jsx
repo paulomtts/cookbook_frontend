@@ -1,22 +1,22 @@
 /* Foreign dependencies */
 import React, { useEffect, useState } from "react";
-import { faHome, faPizzaSlice, faTags } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faPizzaSlice } from "@fortawesome/free-solid-svg-icons";
 
 /* Local dependencies */
+import { useConfigs } from "./core/configsContext";
+import { useDataFetcher } from "./hooks/useDataFetcher";
+import { useTrigger } from "./hooks/useTrigger";
 import Sidebar from "./components/Sidebar/Sidebar";
 import GenericForm from "./components/GenericForm/GenericForm";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
 import Select from "./components/Select";
-import { useConfigs } from "./core/configsContext";
-import { useDataFetcher } from "./hooks/useDataFetcher";
-import { useTrigger } from "./hooks/useTrigger";
+import Profile from "./components/Profile/Profile";
+
 
 import ingredientsHeaderImage from '/src/assets/ingredients.avif';
 import categoriesHeaderImage from '/src/assets/categories.jpg';
 import unitsHeaderImage from '/src/assets/units.jpg';
 import recipesHeaderImage from '/src/assets/recipes.avif';
-
-import EditableContent from "./components/EditableInput/EditableInput";
 
 
 export default function App() {
@@ -25,8 +25,8 @@ export default function App() {
     const [fields, setFields] = useState({});
     const [content, setContent] = useState('recipes');
 
-    const [ingCatTrigger, resetIngCatTrigger] = useTrigger(false);
-    const [ingredientsCategories] = useDataFetcher('categories', {'and_': {'type': ["ingredient"]}}, [ingCatTrigger]);
+    const [ingredientCategoriesTrigger, resetIngredientCategoriesTrigger] = useTrigger(false);
+    const [ingredientsCategories] = useDataFetcher('categories', {'and_': {'type': ["ingredient"]}}, [ingredientCategoriesTrigger]);
 
     useEffect(() => {
         if (Object.keys(maps).length === 0) return;
@@ -38,18 +38,19 @@ export default function App() {
     }
 
     return (<>
-        <div className="main-container">
+        <div className="flex">
             <Sidebar menus={[
-                {label: 'Home', icon: faHome, key: 'home'},
-                {label: 'Recipes', icon: faPizzaSlice, key: 'recipes'},
-                {label: 'Tags', icon: faTags, key: 'units'},
+                {label: 'Home', icon: faHome, key: 'home', submenus: [
+                    {label: 'New recipe', key: 'new-recipe'},
+                ]},
             ]} onClickMenuItem={handleNavigationComponentClick}/>
 
-            <div className={`content-container fade-in-long`}>
-
-                {content === 'home' && <>
-                    <EditableContent/>
+            <div className={`Content fade-in-long`}>
+                {content === 'profile' && <>
+                    <Profile/>
                 </>}
+
+                
 
                 {content === 'registry' && <>
                 
@@ -79,8 +80,8 @@ export default function App() {
                                     />
                         }}
                         imgSrc={categoriesHeaderImage}
-                        onSubmit={() => resetIngCatTrigger(true)}
-                        onDelete={() => resetIngCatTrigger(true)}
+                        onSubmit={() => resetIngredientCategoriesTrigger(true)}
+                        onDelete={() => resetIngredientCategoriesTrigger(true)}
                     />
 
                     <GenericForm

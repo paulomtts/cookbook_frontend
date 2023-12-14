@@ -31,7 +31,7 @@ export function NotificationProvider({ children }) {
 
         setNotification([
             ...notification,
-            <ToastContainer className='notification-toast-container' key={id}>
+            <ToastContainer className='Notification-toast' key={id}>
                 <Toast 
                     id={id}
                     show={true}
@@ -65,7 +65,7 @@ export function NotificationProvider({ children }) {
     return (
         <NotificationContext.Provider value={{ notification, spawnToast }}>
             {children}
-            <div className='notification-container'>
+            <div className='flex Notification'>
                 {...notification}
             </div>
         </NotificationContext.Provider>

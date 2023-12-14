@@ -8,7 +8,6 @@ import FormButton from "../FormButton/FormButton";
 
 export default function FormAccordion({
     tableName
-    , dataLength
     , inputFields
     , children
     , onSubmit = () => {}
