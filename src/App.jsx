@@ -1,10 +1,9 @@
 /* Foreign dependencies */
 import React, { useEffect, useState } from "react";
-import { faPizzaSlice, faScaleBalanced, faTags } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faPizzaSlice, faTags } from "@fortawesome/free-solid-svg-icons";
 
 /* Local dependencies */
-import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
 import GenericForm from "./components/GenericForm/GenericForm";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
 import Select from "./components/Select";
@@ -16,6 +15,8 @@ import ingredientsHeaderImage from '/src/assets/ingredients.avif';
 import categoriesHeaderImage from '/src/assets/categories.jpg';
 import unitsHeaderImage from '/src/assets/units.jpg';
 import recipesHeaderImage from '/src/assets/recipes.avif';
+
+import EditableContent from "./components/EditableInput/EditableInput";
 
 
 export default function App() {
@@ -38,36 +39,18 @@ export default function App() {
 
     return (<>
         <div className="main-container">
-            {/* <Navbar onClickItem={handleNavigationComponentClick} imgSrc="/src/assets/recipes.avif"/> */}
-
-            <div className="sidebar-container fade-in-long">
-                <div className="sidebar-item">
-                    <div>
-                        <FontAwesomeIcon icon={faPizzaSlice} />
-                    </div>
-                    <div>
-                        <span className="sidebar-text">Recipes</span>
-                    </div>
-                </div>
-                <div className="sidebar-item">
-                    <div>
-                        <FontAwesomeIcon icon={faScaleBalanced} />
-                    </div>
-                    <div>
-                        <span className="sidebar-text">Units</span>
-                    </div>
-                </div>
-                <div className="sidebar-item">
-                    <div>
-                        <FontAwesomeIcon icon={faTags} />
-                    </div>
-                    <div>
-                        <span className="sidebar-text">Tags</span>
-                    </div>
-                </div>
-            </div>
+            <Sidebar menus={[
+                {label: 'Home', icon: faHome, key: 'home'},
+                {label: 'Recipes', icon: faPizzaSlice, key: 'recipes'},
+                {label: 'Tags', icon: faTags, key: 'units'},
+            ]} onClickMenuItem={handleNavigationComponentClick}/>
 
             <div className={`content-container fade-in-long`}>
+
+                {content === 'home' && <>
+                    <EditableContent/>
+                </>}
+
                 {content === 'registry' && <>
                 
                     <GenericForm
