@@ -63,11 +63,10 @@ export default function TableRow({
                         {React.cloneElement(customComponents[key].component, {
                             className: `ComboBox-${key}-input ComboBox-Select`
                             , id: `${key}-${index}`	
-                            , disabled: lock
+                            , disabled: lock || customComponents[key].component.props.disabled
                             , value: customData[key][row['id']]
                             , onChange: (e) => {
                                 const value = e.target ? e.target.value : e;
-                                console.log(value)
                                 handleCustomDataChange(row, key, value)
                             }
                             , onFocus: (e) => e.target.select()

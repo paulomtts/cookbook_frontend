@@ -29,6 +29,7 @@ export default function ComboBox (props) {
         , avoidSearch = []
 
         , customComponents = {}
+        , initialCustomData = {}
         
         , lockTrigger = null
         , displayTrigger = null
@@ -47,13 +48,14 @@ export default function ComboBox (props) {
     const [searchIn, setSearchIn] = useState("all");
     const [searchFor, setSearchFor] = useState("");
 
-    const [customData, setCustomData] = useState({});
+    const [customData, setCustomData] = useState(initialCustomData);
     const [selectedRows, setSelectedRows] = useState([]);
 
 
     /* Hooks */
     useEffect(() => {
-        const newCustomData = {};
+        if (Object.keys(initialCustomData).length > 0) return;
+        const newCustomData = {...initialCustomData};
 
         data.forEach((row) => {
             Object.keys(customComponents).map((key) => {
@@ -83,12 +85,6 @@ export default function ComboBox (props) {
     }, [selectedRowsTrigger]);
 
 
-    /* Methods */
-    /**
-     * Determines whether a row should be displayed based on search criteria and display mode.
-     * @param {Object} row - The row to be checked.
-     * @returns {boolean} - True if the row should be displayed, false otherwise.
-     */
     const checkDisplay = (row) => {
         if (searchFor) {
 
@@ -142,16 +138,8 @@ export default function ComboBox (props) {
         setSearchFor(e.target.value);  
     }
     
-    /**
-     * Handles the click event on a row in the ComboBox component.
-     * 
-     * Triggers the onClickRow prop, passing the selected rows and the clicked row as arguments.
-     * Triggers the onCustomDataChange prop, passing the new custom data and the clicked row as arguments.
-     * @param {Object} row - The row object that was clicked.
-     * @returns {void}
-     */
     const handleClickRow = (row) => {
-        if(lock) return;
+        if(lock || !selectable) return;
         if(single && selectedRows.includes(row)) return;
 
         let newSelectedRows;
@@ -183,23 +171,10 @@ export default function ComboBox (props) {
         onClickRow(newSelectedRows, row);
     }
 
-    /**
-     * Handles the click event for the delete button.
-     * 
-     * This also triggers the onClickDelete prop, passing the clicked row as an argument.
-     * @param {Object} row - The row to be deleted.
-     */
     const handleClickDelete = (row) => {
         onClickDelete(row);
     }
 
-
-    /**
-     * Handles the change of custom data for a specific row.
-     * @param {object} row - The row object.
-     * @param {string} key - The key of the custom data.
-     * @param {any} value - The new value for the custom data.
-     */
     const handleCustomDataChange = (row, key, value) => {
         const newCustomData = {...customData, [key]: {...customData[key], [row[`id`]]: value}};
 
@@ -217,8 +192,8 @@ export default function ComboBox (props) {
                 }
             });
             setSelectedRows([...selectedRows, row]);
+            onClickRow(selectedRows, row);
         }
-        
         
         setCustomData(newCustomData);
         onChangeCustomData(newCustomData, row);

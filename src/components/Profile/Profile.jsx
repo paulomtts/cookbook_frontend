@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useConfigs } from "../../core/configsContext";
-import { Form, Image, Badge } from "react-bootstrap";
+import { Image, Badge } from "react-bootstrap";
 
 import './Profile.css';
 

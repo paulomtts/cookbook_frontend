@@ -5,28 +5,19 @@ import './FormButton.css';
 
 
 export default function FormButton({
-    tableName = ''
-    , inputFields = []
+    children
     , type = 'submit'
-    , className = 'FormButton'
     , disabled = false
+    , outline = false
     , onClick = () => {}
-    , children
 }) {
 
     return (<>
         <Button
             disabled={disabled}
             type={type}
-            className={className}
+            className={outline ? 'FormButton-outline' : 'FormButton'}
             onClick={onClick}
-            onKeyDown={(e) => {
-                if(e.key === 'Tab' && inputFields.length > 0) {
-                    e.preventDefault();
-                    const firstInput = document.getElementById(`${tableName}-form-input-${inputFields[0]}`);
-                    firstInput.focus();
-                }
-            }}
             >
             {children}
         </Button>

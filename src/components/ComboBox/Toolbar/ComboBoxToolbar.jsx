@@ -19,6 +19,7 @@ export default function ComboBoxToolbar() {
             <SearchInput/>
         </InputGroup>
         {selectable && <DisplaySwitch />}
-        <LockButton />
+        {selectable && <LockButton />}
+        
     </>)
 }

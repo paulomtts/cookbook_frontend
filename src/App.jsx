@@ -1,6 +1,6 @@
 /* Foreign dependencies */
 import React, { useEffect, useState } from "react";
-import { faHome, faPizzaSlice } from "@fortawesome/free-solid-svg-icons";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
 
 /* Local dependencies */
 import { useConfigs } from "./core/configsContext";
@@ -11,6 +11,7 @@ import GenericForm from "./components/GenericForm/GenericForm";
 import RecipeForm from "./components/RecipeForm/RecipeForm";
 import Select from "./components/Select";
 import Profile from "./components/Profile/Profile";
+import Recipe from "./components/RecipeWorkflow/Recipe";
 
 
 import ingredientsHeaderImage from '/src/assets/ingredients.avif';
@@ -47,10 +48,12 @@ export default function App() {
 
             <div className={`Content fade-in-long`}>
                 {content === 'profile' && <>
-                    <Profile/>
+                    <Profile />
                 </>}
 
-                
+                {content === 'new-recipe' && <>
+                    <Recipe imgSrc={recipesHeaderImage} onSubmit={(key) => handleNavigationComponentClick(key)}/>
+                </>}
 
                 {content === 'registry' && <>
                 

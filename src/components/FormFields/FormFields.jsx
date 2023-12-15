@@ -9,6 +9,7 @@ export default function FormFields({
     , fields = []
     , formData = {}
     , customInputs = {}
+    , readOnly = false
     , onInputChange = () => {}
 }) {
 
@@ -16,7 +17,7 @@ return (<div className="FormFields-container">
         {fields.map((key, index) => {
             return (<Form.Group key={index}>
 
-                    <Form.Label style={{marginLeft: '0.80rem'}}>
+                    <Form.Label>
                         {key.charAt(0).toUpperCase() + key.slice(1)}
                     </Form.Label>
 
@@ -35,8 +36,8 @@ return (<div className="FormFields-container">
                         <Form.Control 
                             id={`${tableName}-form-input-${key}`}
                             type="text" 
-                            placeholder={key.charAt(0).toUpperCase() + key.slice(1)} 
                             value={formData[key]} 
+                            disabled={readOnly}
                             onChange={(e) => onInputChange(e.target.value, key)} 
                         />
                     }

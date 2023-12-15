@@ -35,3 +35,39 @@
     box-shadow: none;
     pointer-events: none;
 }
+
+
+.FormButton-outline {
+    color: var(--darkgreen);
+    background-color: transparent;
+    border-color: var(--darkgreen);
+    
+    transition: all 0.1s ease-in-out;
+}
+
+.FormButton-outline:hover {
+    color: white;
+    background-color: var(--darkgreen);
+    box-shadow: var(--smooth-box-shadow);
+    border-color: var(--darkgreen);
+}
+
+.FormButton-outline:focus {
+    color: white;
+    background-color: var(--darkgreen-opaque-60);
+    border-color: var(--darkgreen);    
+}
+
+.FormButton-outline:active {
+    background-color: var(--darkgreen-fill) !important;
+    border-color: var(--darkgreen) !important;
+    box-shadow: none;
+}
+
+.FormButton-outline:disabled {
+    color: var(--darkgreen-opaque-35);
+    background-color: var(--darkgreen-opaque-20);
+    border-color: var(--darkgreen-opaque-20);
+    box-shadow: none;
+    pointer-events: none;
+}

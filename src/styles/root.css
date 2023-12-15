@@ -24,6 +24,7 @@
     --smooth-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.8);
     --highlight-box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.7);
     --margin-box-shadow: 0px 1px 1px 0px lightgray;
+    --downward-box-shadow: 0px 3px 1px 0px rgba(0, 0, 0, 0.65);
 
     /* Text */
     --title-text-shadow: 2px 2px 6px #000000;

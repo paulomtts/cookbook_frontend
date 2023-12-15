@@ -74,8 +74,8 @@ export default function Sidebar({
             </div>
 
             <ConfirmationPopover
-                title="Logout"
-                text="Are you sure you want to logout?" 
+                title="Are you sure?"
+                text="Any unsaved changes will be lost." 
                 placement={'top'}
                 onYes={logout}
                 style={{ marginLeft: "auto", zIndex: '2' }}
