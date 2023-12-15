@@ -144,8 +144,6 @@ export default function GenericForm({
             {data.length < 0 && <div className="FormAccordion-text">
                 No entries found.
             </div>}
-
-    </Form>
-
+        </Form>
     </>)
 }
